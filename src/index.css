@@ -22,10 +22,18 @@
     font-style: normal;
 }
 
+@font-face {
+    font-family: 'Erotique-Bold';
+    src: url('./assets/fonts/ErotiqueAlternateTrial-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
+
 @theme{
     --font-neuton: Neuton, "sans-serif";
     --font-erotique: Erotique, "sans-serif";
     --font-cotta: Cotta, "sans-serif";
+    --font-erotique-bold: Erotique-Bold, "sans-serif";
 }
 html, body, #root {
     height: 100%;
