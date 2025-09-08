@@ -1,5 +1,6 @@
 import InfoImage from '../assets/frontend.png';
 import {useState} from "react";
+import {useNavigate} from "react-router-dom";
 
 export default function Signup() {
     const [formData, setFormData] = useState({
@@ -7,6 +8,11 @@ export default function Signup() {
         email: '',
         password: ''
     })
+
+    const [sessionId, setSessionId] = useState('');
+    const [showVerification, setShowVerification] = useState(false);
+    const [verificationCode, setVerificationCode] = useState('');
+    const navigate = useNavigate();
 
     const [error, setError] = useState('');
 
@@ -21,13 +27,15 @@ export default function Signup() {
         setError('');
 
         try{
-            const response = await fetch('/api/users', {
+            const response = await fetch('http://localhost:8080/api/v1/auth/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(formData)
             })
+
+            const data = await response.json();
 
             if(!response.ok){
                 switch (response.status) {
@@ -41,14 +49,62 @@ export default function Signup() {
                         throw new Error('Unable to create account. Please try again');
                 }
             }
-
+            setSessionId(data.sessionId);
+            setShowVerification(true);
             console.log('Signup successful');
         }catch(err){
             setError(err.message);
         }
     }
 
+    const handleVerification = async(e) => {
+        e.preventDefault();
+        try{
+            const response = await fetch('http://localhost:8080/api/v1/auth/verify-code',{
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({sessionId,
+                    code: verificationCode})
+            })
+            if(!response.ok) {
+                throw new Error('Invalid verification code. Please try again.');
+            }
+            const data = await response.json();
+            localStorage.setItem('token', data.token);
+            navigate('/welcome', {state:{username: formData.username}})
+            }catch(err) {
+            setError(err.message);
+            setShowVerification(false);
+        }
+        }
+
+
     return (
+        <>
+                {showVerification && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center">
+                        <div className="absolute inset-0 backdrop-blur-sm bg-black/30" />
+                        <div className="relative z-50 bg-[#D9D9D9] p-8 rounded-lg shadow-xl w-[90%] max-w-[400px]">
+                            <h3 className="text-2xl font-cotta text-[#331517] mb-4">Verify Your Email</h3>
+                            <p className="font-neuton text-[#331517] mb-6">Please enter the verification code sent to your email.</p>
+                            <form onSubmit={handleVerification} className="flex flex-col gap-4">
+                                <input
+                                    type="text"
+                                    value={verificationCode}
+                                    onChange={(e) => setVerificationCode(e.target.value)}
+                                    className="px-4 font-neuton text-[#331517] h-12 border border-[#331517] rounded-md focus:outline-none focus:ring-2 focus:ring-[#331517]/50"
+                                    placeholder="Enter verification code"
+                                    required
+                                />
+                                <button type="submit" className="bg-[#331517] text-[#D9D9D9] py-3 rounded-md hover:bg-[#D9D9D9] hover:text-[#331517] border border-[#331517] transition-colors duration-200">
+                                    Verify
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                )}
         <div className="bg-[#D9D1C0] min-h-screen flex flex-col justify-center items-center lg:flex-row">
             {/*LEFT SIDE WITH IMAGE */}
             <div
@@ -102,7 +158,7 @@ export default function Signup() {
                         </div>
                     </div>
                     <button type="submit" className="hover:bg-[#D9D9D9] hover:text-[#331517] border border-[#331517] max-w-45 w-full bg-[#331517] font-neuton-light text-[#D9D9D9] rounded-md mt-4 text-base py-2
-                md:max-w-[228px] md:text-xl md:mt-6 cursor-pointer">
+                md:max-w-[228px] md:text-xl md:mt-6 cursor-pointer transition-colors duration-200">
                         Create Account
                     </button>
                     <div className="flex items-center my-4 w-full md:w-[443px] lg:w-[350px]">
@@ -111,17 +167,18 @@ export default function Signup() {
                         <hr className="flex-grow border-[#331517]" />
                     </div>
                     <button className="hover:bg-[#D9D9D9] max-w-45 w-full flex items-center justify-center border border-[#331517] bg-[#D9D1C0] py-2 rounded-md hover:opacity-90
-                md:max-w-[228px] md:text-xl cursor-pointer">
+                md:max-w-[228px] md:text-xl cursor-pointer transition-colors duration-200">
                         <img src="../src/assets/google.png" alt="Google" className="w-5 h-5 mr-2
                     md:w-7 md:h-6 md:ml-2"/>
                         <span className="text-[#331517] font-neuton text-base md:text-xl "
                         >Sign Up with Google</span>
                     </button>
                     <button className="font-neuton-light text-sm mt-2
-                md:text-lg md:mb-8 cursor-pointer hover:text-[#331517]">Sign in to your account</button>
+                md:text-lg md:mb-8 cursor-pointer hover:text-[#331517] transition-colors duration-200">Sign in to your account</button>
                 </form>
             </div>
 
         </div>
+        </>
     )
 }
