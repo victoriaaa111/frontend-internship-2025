@@ -14,6 +14,10 @@ export default function Signup() {
     const [verificationCode, setVerificationCode] = useState('');
     const navigate = useNavigate();
 
+    const MAX_ATTEMPTS = 5;
+    const [attemptsLeft, setAttemptsLeft] = useState(MAX_ATTEMPTS);
+    const [verifying, setVerifying] = useState(false);
+
     const [error, setError] = useState('');
 
     const handleChange = (e) => {
@@ -22,22 +26,20 @@ export default function Signup() {
         )
     }
 
-    const handleSubmit = async(e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
 
-        try{
+        try {
             const response = await fetch('http://localhost:8080/api/v1/auth/register', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
-            })
+            });
 
             const data = await response.json();
 
-            if(!response.ok){
+            if (!response.ok) {
                 switch (response.status) {
                     case 400:
                         throw new Error('Please check your information and try again');
@@ -49,63 +51,106 @@ export default function Signup() {
                         throw new Error('Unable to create account. Please try again');
                 }
             }
+
             setSessionId(data.sessionId);
             setShowVerification(true);
+            setAttemptsLeft(MAX_ATTEMPTS); // reset attempts when opening modal
+            setVerificationCode('');
             console.log('Signup successful');
-        }catch(err){
+        } catch (err) {
             setError(err.message);
         }
-    }
+    };
 
-    const handleVerification = async(e) => {
+    const handleVerification = async (e) => {
         e.preventDefault();
-        try{
-            const response = await fetch('http://localhost:8080/api/v1/auth/verify-code',{
+        if (attemptsLeft <= 0) return;
+
+        setError('');
+        setVerifying(true);
+
+        try {
+            const response = await fetch('http://localhost:8080/api/v1/auth/verify-code', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({sessionId,
-                    code: verificationCode})
-            })
-            if(!response.ok) {
-                throw new Error('Invalid verification code. Please try again.');
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ sessionId, code: verificationCode })
+            });
+
+            if (!response.ok) {
+                throw new Error('Invalid verification code.');
             }
+
             const data = await response.json();
             localStorage.setItem('token', data.token);
-            navigate('/welcome', {state:{username: formData.username}})
-            }catch(err) {
-            setError(err.message);
-            setShowVerification(false);
+            navigate('/welcome', { state: { username: formData.username } });
+        } catch (err) {
+            const remaining = attemptsLeft - 1;
+            setAttemptsLeft(remaining);
+
+            if (remaining > 0) {
+
+                setError(`Invalid verification code. You have ${remaining} attempt${remaining === 1 ? '' : 's'} left.`);
+                setShowVerification(true);
+            } else {
+                setError(err.message);
+                setShowVerification(true);
+
+
+                setTimeout(() => {
+                    setShowVerification(false);
+                    setAttemptsLeft(MAX_ATTEMPTS);
+                    setVerificationCode('');
+                }, 5000);
+            }
+        } finally {
+            setVerifying(false);
         }
-        }
+    };
+
 
 
     return (
         <>
-                {showVerification && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center">
-                        <div className="absolute inset-0 backdrop-blur-sm bg-black/30" />
-                        <div className="relative z-50 bg-[#D9D9D9] p-8 rounded-lg shadow-xl w-[90%] max-w-[400px]">
-                            <h3 className="text-2xl font-cotta text-[#331517] mb-4">Verify Your Email</h3>
-                            <p className="font-neuton text-[#331517] mb-6">Please enter the verification code sent to your email.</p>
-                            <form onSubmit={handleVerification} className="flex flex-col gap-4">
-                                <input
-                                    type="text"
-                                    value={verificationCode}
-                                    onChange={(e) => setVerificationCode(e.target.value)}
-                                    className="px-4 font-neuton text-[#331517] h-12 border border-[#331517] rounded-md focus:outline-none focus:ring-2 focus:ring-[#331517]/50"
-                                    placeholder="Enter verification code"
-                                    required
-                                />
-                                <button type="submit" className="bg-[#331517] text-[#D9D9D9] py-3 rounded-md hover:bg-[#D9D9D9] hover:text-[#331517] border border-[#331517] transition-colors duration-200">
-                                    Verify
-                                </button>
-                            </form>
-                        </div>
+            {showVerification && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center">
+                    <div className="absolute inset-0 backdrop-blur-sm bg-black/30" />
+                    <div className="relative z-50 bg-[#D9D9D9] p-8 rounded-lg shadow-xl w-[90%] max-w-[400px]">
+                        <h3 className="text-2xl font-cotta text-[#331517] mb-4">Verify Your Email</h3>
+                        <p className="font-neuton text-[#331517] mb-2">Please enter the verification code sent to your email.</p>
+                        {error && (
+                            <p className="text-red-600 bg-red-100 border border-red-300 rounded px-2 py-1 mb-3 font-neuton">
+                                {error}
+                            </p>
+                        )}
+                        <form onSubmit={handleVerification} className="flex flex-col gap-4">
+                            <input
+                                type="text"
+                                inputMode="numeric"
+                                pattern="[0-9]*"
+                                value={verificationCode}
+                                onChange={(e) => setVerificationCode(e.target.value)}
+                                className="px-4 font-neuton text-[#331517] h-12 border border-[#331517] rounded-md focus:outline-none focus:ring-2 focus:ring-[#331517]/50"
+                                placeholder="Enter verification code"
+                                required
+                                disabled={verifying || attemptsLeft <= 0}
+                            />
+                            <button
+                                type="submit"
+                                disabled={verifying || attemptsLeft <= 0}
+                                className={`bg-[#331517] text-[#D9D9D9] py-3 rounded-md border border-[#331517] transition-colors duration-200
+                            ${verifying || attemptsLeft <= 0 ? 'opacity-60 cursor-not-allowed' : 'hover:bg-[#D9D9D9] hover:text-[#331517]'}`}
+                            >
+                                {verifying ? 'Verifying…' : 'Verify'}
+                            </button>
+                            <p className="text-sm text-[#331517] font-neuton text-center">
+                                Attempts left: {attemptsLeft}/{MAX_ATTEMPTS}
+                            </p>
+                        </form>
                     </div>
-                )}
-        <div className="bg-[#D9D1C0] min-h-screen flex flex-col justify-center items-center lg:flex-row">
+                </div>
+            )}
+
+            <div className="bg-[#D9D1C0] min-h-screen flex flex-col justify-center items-center lg:flex-row">
             {/*LEFT SIDE WITH IMAGE */}
             <div
                 className="min-h-screen hidden lg:flex w-1/2 bg-cover bg-center flex-col justify-center h-full p-12"
