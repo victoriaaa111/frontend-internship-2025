@@ -1,6 +1,7 @@
 import InfoImage from '../assets/frontend.png';
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import {useNavigate} from "react-router-dom";
+import { initCsrf, csrfFetch } from "../csrf.js";
 
 export default function Signup() {
     const [formData, setFormData] = useState({
@@ -20,6 +21,10 @@ export default function Signup() {
 
     const [error, setError] = useState('');
 
+    useEffect(() => {
+        initCsrf("http://localhost:8080");
+    }, []);
+
     const handleChange = (e) => {
         setFormData(
             {...formData, [e.target.name]: e.target.value}
@@ -31,15 +36,14 @@ export default function Signup() {
         setError('');
 
         try {
-            const response = await fetch('http://localhost:8080/api/v1/auth/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
+            const response = await csrfFetch("http://localhost:8080/api/v1/auth/register", {
+                method: "POST",
+                body: formData,
             });
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) throw new Error(data?.message || "Registration failed");
 
-            const data = await response.json();
-
-            if (!response.ok) {
+            if (response.status !== 201) {
                 switch (response.status) {
                     case 400:
                         throw new Error('Please check your information and try again');
@@ -70,19 +74,21 @@ export default function Signup() {
         setVerifying(true);
 
         try {
-            const response = await fetch('http://localhost:8080/api/v1/auth/verify-code', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ sessionId, code: verificationCode })
+            const res = await csrfFetch("http://localhost:8080/api/v1/auth/verify-code", {
+                method: "POST",
+                body: { sessionId, code: verificationCode },
             });
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) throw new Error(data?.message || "Invalid verification code");
 
-            if (!response.ok) {
-                throw new Error('Invalid verification code.');
-            }
+            // Clear sessionId since it's no longer needed
+            setSessionId('');
 
-            const data = await response.json();
-            localStorage.setItem('token', data.token);
-            navigate('/welcome', { state: { username: formData.username } });
+            // Navigate to welcome page
+            navigate("/welcome", {
+                state: { username: formData.username },
+                replace: true
+            });
         } catch (err) {
             const remaining = attemptsLeft - 1;
             setAttemptsLeft(remaining);
@@ -106,6 +112,7 @@ export default function Signup() {
             setVerifying(false);
         }
     };
+
 
 
 
