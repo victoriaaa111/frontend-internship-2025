@@ -14,6 +14,12 @@
     font-weight: 400;
     font-style: normal;
 }
+@font-face {
+    font-family: 'Erotique-Bold';
+    src: url('./assets/fonts/ErotiqueAlternateTrial-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
 
 @font-face {
     font-family: 'Neuton';
@@ -23,17 +29,18 @@
 }
 
 @font-face {
-    font-family: 'Erotique-Bold';
-    src: url('./assets/fonts/ErotiqueAlternateTrial-Bold.ttf') format('truetype');
-    font-weight: 700;
+    font-family: 'Neuton-Light';
+    src: url('./assets/fonts/Neuton-Light.ttf') format('truetype');
+    font-weight: 300;
     font-style: normal;
 }
 
 @theme{
     --font-neuton: Neuton, "sans-serif";
     --font-erotique: Erotique, "sans-serif";
-    --font-cotta: Cotta, "sans-serif";
+    --font-neuton-light: Neuton-Light, "sans-serif";
     --font-erotique-bold: Erotique-Bold, "sans-serif";
+    --font-cotta: Cotta, "sans-serif";
 }
 html, body, #root {
     height: 100%;
