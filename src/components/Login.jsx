@@ -1,5 +1,6 @@
-import { useState } from "react";
-
+import {useEffect, useState} from "react";
+import { initCsrf, csrfFetch } from "../csrf.js";
+import {useNavigate} from "react-router-dom";
 const MAX_ATTEMPTS = 5;
 const DEV_FAKE_SESSION = true; // set to false in production
 
@@ -17,8 +18,12 @@ export default function Login() {
   const [verifying, setVerifying] = useState(false);
   const [attemptsLeft, setAttemptsLeft] = useState(MAX_ATTEMPTS);
   const [sessionId, setSessionId] = useState("");
-  const [loggedInUsername, setLoggedInUsername] = useState("");
-  const [token, setToken] = useState(""); // Store token after verification
+
+    const navigate = useNavigate();
+
+  useEffect(() => {
+    initCsrf("http://localhost:8080");
+  }, []);
 
   const handleChange = (e) => {
     setFormData({
@@ -35,10 +40,9 @@ export default function Login() {
     setAttemptsLeft(MAX_ATTEMPTS);
 
     try {
-      const response = await fetch("http://localhost:8080/api/v1/auth/login", {
+      const response = await csrfFetch("http://localhost:8080/api/v1/auth/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: formData,
       });
 
       if (!response.ok) {
@@ -68,7 +72,6 @@ export default function Login() {
 
       setSessionId(receivedSession);
       setShowVerification(true);
-      setLoggedInUsername(formData.username);
       setError("");
     } catch (err) {
       setError(err.message);
@@ -79,72 +82,50 @@ export default function Login() {
 
   const handleVerification = async (e) => {
     e.preventDefault();
+    if (attemptsLeft <= 0) return;
+
+    setError('');
     setVerifying(true);
-    setError("");
 
     try {
-      const response = await fetch("http://localhost:8080/api/v1/auth/verify-code", {
+      const res = await csrfFetch("http://localhost:8080/api/v1/auth/verify-code", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          sessionId,
-          code: verificationCode,
-        }),
+        body: { sessionId, code: verificationCode },
       });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.message || "Invalid verification code");
 
-      if (!response.ok) {
-        // decrement attempts and handle exhaust
-        const newAttempts = attemptsLeft - 1;
-        setAttemptsLeft(newAttempts);
+      // Clear sessionId since it's no longer needed
+      setSessionId('');
 
-        if (newAttempts <= 0) {
-          // close popup and reset relevant state
-          setShowVerification(false);
-          setVerificationCode("");
-          setSessionId("");
-          setError("");
-          setVerifying(false);
-          return;
-        }
-
-        switch (response.status) {
-          case 400:
-            throw new Error("Invalid code format.");
-          case 401:
-            throw new Error("Incorrect code. Please try again.");
-          case 500:
-            throw new Error("Server error. Please try again later.");
-          default:
-            throw new Error("Verification failed.");
-        }
-      }
-
-      const data = await response.json();
-      console.log("Verification response:", data);
-
-      if (!data.token) {
-        throw new Error("No token received from server.");
-      }
-
-      setToken(data.token);
-      setShowVerification(false);
-      setError("");
-      // optionally persist token: localStorage.setItem('token', data.token)
+      // Navigate to welcome page
+      navigate("/welcome", {
+        state: { username: formData.username },
+        replace: true
+      });
     } catch (err) {
-      setError(err.message);
+      const remaining = attemptsLeft - 1;
+      setAttemptsLeft(remaining);
+
+      if (remaining > 0) {
+
+        setError(`Invalid verification code. You have ${remaining} attempt${remaining === 1 ? '' : 's'} left.`);
+        setShowVerification(true);
+      } else {
+        setError(err.message);
+        setShowVerification(true);
+
+
+        setTimeout(() => {
+          setShowVerification(false);
+          setAttemptsLeft(MAX_ATTEMPTS);
+          setVerificationCode('');
+        }, 5000);
+      }
     } finally {
       setVerifying(false);
     }
   };
-
-  // Show welcome page only if token exists
-  if (token) {
-    return (
-      <div className="flex items-center justify-center h-screen bg-[#D9D1C0]">
-        <h1 className="text-4xl font-erotique-bold text-[#B57E25]">Welcome @{loggedInUsername}</h1>
-      </div>
-    );
-  }
 
   return (
     <div className="bg-[#D9D1C0] h-screen w-screen overflow-hidden flex flex-col lg:flex-row fixed top-0 left-0">
