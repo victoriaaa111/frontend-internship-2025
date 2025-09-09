@@ -1,0 +1,149 @@
+import React from "react";
+
+// Reusable BookCard Component
+function BookCard({ cover, title, author, status }) {
+  return (
+    <div
+      className={`lg:w-65 bg-[#d9d9d9] rounded-xl p-3 mx-auto flex flex-col items-center transition ${
+        status === "Borrowed" ? "blur-[1.5px]" : ""
+      }`}
+      style={{
+        boxShadow: "5px 5px 4px rgba(0, 0, 0, 0.3)",
+      }}
+    >
+      {/* Book Cover */}
+      <img
+        src={cover}
+        alt={title}
+        className="w-full aspect-[3/4] object-cover rounded-md mb-3"
+      />
+
+      {/* Book Info - Responsive text sizing */}
+      <p className="font-cotta text-sm md:text-base lg:text-lg text-[#331517] text-center truncate w-full">
+        {title}
+      </p>
+      <p className="font-cotta text-xs md:text-sm lg:text-base text-[#331517] text-center truncate w-full">
+        {author}
+      </p>
+
+      {/* Status - Responsive text sizing */}
+      <span
+        className={`mt-1 px-2 py-0.5 rounded-full text-xs md:text-sm lg:text-base font-neuton ${
+          status === "Available"
+            ? "bg-green-100 text-green-600"
+            : "bg-red-100 text-red-600"
+        }`}
+      >
+        {status}
+      </span>
+    </div>
+  );
+}
+
+
+export default function ProfilePage() {
+  // Mock data (later you replace with Google Books API results)
+  const books = [
+    {
+      cover: "https://covers.openlibrary.org/b/id/11153271-L.jpg",
+      title: "Rich Dad, Poor Dad",
+      author: "Robert T. Kiyosaki",
+      status: "Borrowed",
+    },
+    {
+      cover: "https://covers.openlibrary.org/b/id/11153271-L.jpg",
+      title: "Rich Dad, Poor Dad",
+      author: "Robert T. Kiyosaki",
+      status: "Available",
+    },
+    {
+      cover: "https://covers.openlibrary.org/b/id/11153271-L.jpg",
+      title: "Rich Dad, Poor Dad",
+      author: "Robert T. Kiyosaki",
+      status: "Available",
+    },
+    {
+      cover: "https://covers.openlibrary.org/b/id/11153271-L.jpg",
+      title: "Rich Dad, Poor Dad",
+      author: "Robert T. Kiyosaki",
+      status: "Available",
+    },
+    {
+      cover: "https://covers.openlibrary.org/b/id/11153271-L.jpg",
+      title: "Rich Dad, Poor Dad",
+      author: "Robert T. Kiyosaki",
+      status: "Borrowed",
+    },
+    {
+      cover: "https://covers.openlibrary.org/b/id/11153271-L.jpg",
+      title: "Rich Dad, Poor Dad",
+      author: "Robert T. Kiyosaki",
+      status: "Borrowed",
+    },
+    {
+      cover: "https://covers.openlibrary.org/b/id/11153271-L.jpg",
+      title: "Rich Dad, Poor Dad",
+      author: "Robert T. Kiyosaki",
+      status: "Available",
+    },
+    {
+      cover: "https://covers.openlibrary.org/b/id/11153271-L.jpg",
+      title: "Rich Dad, Poor Dad",
+      author: "Robert T. Kiyosaki",
+      status: "Borrowed",
+    },
+    {
+      cover: "https://covers.openlibrary.org/b/id/11153271-L.jpg",
+      title: "Rich Dad, Poor Dad",
+      author: "Robert T. Kiyosaki",
+      status: "Borrowed",
+    },
+  ];
+
+  return (
+    <div className="min-h-screen bg-[#d9d1c0] mx-auto relative font-sans overflow-y-auto">
+      {/* Top Bar */}
+      <div className="flex justify-between items-center px-4 py-2">
+        {/* Logo */}
+        <img
+          src="src/assets/BB-Profile.png"
+          alt="logo"
+          className="w-12 h-12 object-contain md:w-16 md:h-16 lg:w-20 lg:h-20"
+        />
+
+        {/* Navigation - Responsive text sizing */}
+        <div className="flex space-x-4 text-[#331517] text-xl md:text-2xl lg:text-3xl font-neuton-light pr-10">
+          <button className="hover:underline">Home</button>
+          <button className="underline">Profile</button>
+        </div>
+      </div>
+
+      {/* Profile Section */}
+      <div className="flex justify-between items-center px-6 mt-8 flex-wrap gap-4 ml-7">
+        {/* Username + Friends - Responsive text sizing */}
+        <div className="rounded-xl px-4 py-3 bg-[#d9d9d9] shadow-md text-center">
+          <p className="font-neuton text-base md:text-lg lg:text-xl text-[#3d2b1f]">@victoriaaa111</p>
+          <p className="font-neuton text-sm md:text-base lg:text-lg text-[#d4a373]">1111 friends</p>
+        </div>
+
+        {/* Add Book Button - Responsive text sizing */}
+        <button className="bg-[#d9d9d9] px-5 py-2 rounded-full shadow-md hover:shadow-lg transition font-neuton-light text-[#331517] text-lg md:text-xl lg:text-2xl ml-auto mr-7">
+          + Add Book
+        </button>
+      </div>
+
+      {/* Book Collection */}
+      <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-x-1 gap-y-10 px-5 mt-6 ">
+        {books.map((book, index) => (
+          <BookCard
+            key={index}
+            cover={book.cover}
+            title={book.title}
+            author={book.author}
+            status={book.status}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
