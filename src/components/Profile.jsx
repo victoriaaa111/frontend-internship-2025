@@ -4,7 +4,7 @@ import React from "react";
 function BookCard({ cover, title, author, status }) {
   return (
     <div
-      className={`lg:w-65 bg-[#d9d9d9] rounded-xl p-3 mx-auto flex flex-col items-center transition ${
+      className={`xl:w-65 bg-[#d9d9d9] rounded-xl p-3 mx-auto flex flex-col items-center transition ${
         status === "Borrowed" ? "blur-[1.5px]" : ""
       }`}
       style={{
@@ -133,7 +133,7 @@ export default function ProfilePage() {
       </div>
 
       {/* Book Collection */}
-      <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-x-1 gap-y-10 px-5 mt-6 ">
+      <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5  gap-x-10 gap-y-10 px-5 mt-6 ">
         {books.map((book, index) => (
           <BookCard
             key={index}
