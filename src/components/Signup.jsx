@@ -177,7 +177,11 @@ export default function Signup() {
                 <h1 className="font-erotique-bold text-4xl mx-2
             md:text-6xl
             ">BorrowBook</h1>
-                <form onSubmit={handleSubmit} className="bg-[#D9D9D9] rounded-lg shadow-md w-[90%] max-w-[298px] border border-[#331517] flex flex-col justify-center items-center px-5 py-6
+                <form onSubmit={handleSubmit}
+                      style={{
+                    boxShadow: "5px 5px 4px rgba(0, 0, 0, 0.2)",
+                }}
+                      className="bg-[#D9D9D9] rounded-4xl w-[90%] max-w-[298px] flex flex-col justify-center items-center px-5 py-6
             md:max-w-[616px] md:w-[80%]
              ">
                     {error && <p className="text-red-500 text-base mb-4 font-neuton bg-red-100 px-2 py-1 rounded-md drop-shadow-md
