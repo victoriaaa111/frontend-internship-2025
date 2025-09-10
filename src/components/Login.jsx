@@ -5,7 +5,7 @@ import OAuthButton from "./OAuthButton.jsx";
 
 const MAX_ATTEMPTS = 5;
 const DEV_FAKE_SESSION = true; // set to false in production
-const GOOGLE_AUTH_URL = 'http://localhost:8080/oauth2/authorization/google';
+// const GOOGLE_AUTH_URL = 'http://localhost:8080/oauth2/authorization/google';
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -200,7 +200,7 @@ export default function Login() {
             <hr className="flex-grow border-[#331517]" />
           </div>
 
-          <OAuthButton />
+          <OAuthButton type="Login"/>
           {/* Create an account */}
           <div className="w-full text-center mt-4">
             <span className="text-[#B57E25] font-neuton text-sm sm:text-base cursor-pointer">
