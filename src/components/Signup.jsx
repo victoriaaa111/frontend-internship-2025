@@ -3,6 +3,8 @@ import {useState, useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 import { initCsrf, csrfFetch } from "../csrf.js";
 
+import OAuthButton from "./OAuthButton.jsx";
+
 export default function Signup() {
     const [formData, setFormData] = useState({
         username: '',
@@ -121,7 +123,6 @@ export default function Signup() {
 
 
 
-
     return (
         <>
             {showVerification && (
@@ -182,7 +183,11 @@ export default function Signup() {
                 <h1 className="font-erotique-bold text-4xl mx-2
             md:text-6xl
             ">BorrowBook</h1>
-                <form onSubmit={handleSubmit} className="bg-[#D9D9D9] rounded-lg shadow-md w-[90%] max-w-[298px] border border-[#331517] flex flex-col justify-center items-center px-5 py-6
+                <form onSubmit={handleSubmit}
+                      style={{
+                    boxShadow: "5px 5px 4px rgba(0, 0, 0, 0.2)",
+                }}
+                      className="bg-[#D9D9D9] rounded-4xl w-[90%] max-w-[298px] flex flex-col justify-center items-center px-5 py-6
             md:max-w-[616px] md:w-[80%]
              ">
                     {error && <p className="text-red-500 text-base mb-4 font-neuton bg-red-100 px-2 py-1 rounded-md drop-shadow-md
@@ -224,15 +229,11 @@ export default function Signup() {
                         <span className="px-2 text-sm text-[#331517] font-neuton md:text-xl">OR</span>
                         <hr className="flex-grow border-[#331517]" />
                     </div>
-                    <button className="hover:bg-[#D9D9D9] max-w-45 w-full flex items-center justify-center border border-[#331517] bg-[#D9D1C0] py-2 rounded-md hover:opacity-90
-                md:max-w-[228px] md:text-xl cursor-pointer transition-colors duration-200">
-                        <img src="../src/assets/google.png" alt="Google" className="w-5 h-5 mr-2
-                    md:w-7 md:h-6 md:ml-2"/>
-                        <span className="text-[#331517] font-neuton text-base md:text-xl "
-                        >Sign Up with Google</span>
-                    </button>
-                    <button className="font-neuton-light text-sm mt-2
-                md:text-lg md:mb-8 cursor-pointer hover:text-[#331517] transition-colors duration-200">Sign in to your account</button>
+
+                        <OAuthButton type="Sign Up"/>
+
+
+                    <button onClick={()=>navigate('/login')} className="font-neuton-light text-sm mt-2 md:text-lg md:mb-8 cursor-pointer hover:text-[#331517] transition-colors duration-200">Sign in to your account</button>
                 </form>
             </div>
 

@@ -3,6 +3,7 @@ import {BrowserRouter as Router, Route, Routes} from 'react-router-dom'
 import Signup from './components/Signup'
 import Welcome from './components/Welcome'
 import Profile from './components/Profile'
+
 function App() {
   return (
     <Router>
