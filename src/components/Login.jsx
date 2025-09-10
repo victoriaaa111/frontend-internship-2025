@@ -1,8 +1,11 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import { initCsrf, csrfFetch } from "../csrf.js";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import OAuthButton from "./OAuthButton.jsx";
+
 const MAX_ATTEMPTS = 5;
 const DEV_FAKE_SESSION = true; // set to false in production
+const GOOGLE_AUTH_URL = 'http://localhost:8080/oauth2/authorization/google';
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -19,7 +22,7 @@ export default function Login() {
   const [attemptsLeft, setAttemptsLeft] = useState(MAX_ATTEMPTS);
   const [sessionId, setSessionId] = useState("");
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
     initCsrf("http://localhost:8080");
@@ -31,6 +34,7 @@ export default function Login() {
       [e.target.name]: e.target.value,
     });
   };
+
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -64,7 +68,6 @@ export default function Login() {
       const data = await response.json();
       console.log("Login response:", data);
 
-      // Accept { sessionId } in production, accept dev fallback (id) when using jsonplaceholder
       const receivedSession =
         data.sessionId ??
         (DEV_FAKE_SESSION ? (data.id ? String(data.id) : `dev-${Date.now()}`) : undefined);
@@ -101,10 +104,7 @@ export default function Login() {
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data?.message || "Invalid verification code");
 
-      // Clear sessionId since it's no longer needed
       setSessionId('');
-
-      // Navigate to welcome page
       navigate("/welcome", {
         state: { username: formData.username },
         replace: true
@@ -114,13 +114,11 @@ export default function Login() {
       setAttemptsLeft(remaining);
 
       if (remaining > 0) {
-
         setError(`Invalid verification code. You have ${remaining} attempt${remaining === 1 ? '' : 's'} left.`);
         setShowVerification(true);
       } else {
         setError(err.message);
         setShowVerification(true);
-
 
         setTimeout(() => {
           setShowVerification(false);
@@ -135,7 +133,7 @@ export default function Login() {
 
   return (
     <div className="bg-[#D9D1C0] h-screen w-screen overflow-hidden flex flex-col lg:flex-row fixed top-0 left-0">
-      {/* LEFT IMAGE SECTION (desktop only) */}
+      {/* LEFT IMAGE SECTION */}
       <div
         className="hidden lg:flex w-1/2 h-full bg-cover bg-center flex-col justify-center p-12"
         style={{ backgroundImage: "url('frontend.png')" }}
@@ -150,7 +148,6 @@ export default function Login() {
 
       {/* RIGHT LOGIN SECTION */}
       <div className="flex flex-col items-center justify-center w-full lg:w-1/2 h-full px-6 sm:px-12">
-        {/* Title */}
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-erotique-bold text-[#B57E25] mb-6">BorrowBook</h1>
 
         {/* Login Card */}
@@ -203,18 +200,12 @@ export default function Login() {
             <hr className="flex-grow border-[#331517]" />
           </div>
 
-          {/* Google login */}
-          <button
-            type="button"
-            className="w-1/2  mx-auto flex items-center justify-center border border-[#331517] bg-[#D9D1C0] py-2 rounded-md hover:bg-[#D9D9D9] transition duration-200 cursor-pointer"
-          >
-            <img src="google.png" alt="Google" className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
-            <span className="text-[#331517] font-neuton text-sm sm:text-base">Login with Google</span>
-          </button>
-
+          <OAuthButton />
           {/* Create an account */}
           <div className="w-full text-center mt-4">
-            <span className="text-[#B57E25] font-neuton text-sm sm:text-base cursor-pointer">Create an account</span>
+            <span className="text-[#B57E25] font-neuton text-sm sm:text-base cursor-pointer">
+              Create an account
+            </span>
           </div>
         </form>
       </div>
@@ -225,9 +216,13 @@ export default function Login() {
           <div className="absolute inset-0 backdrop-blur-sm bg-black/30" />
           <div className="relative z-50 bg-[#D9D9D9] p-8 rounded-lg shadow-xl w-[90%] max-w-[400px]">
             <h3 className="text-2xl font-cotta text-[#331517] mb-4">Verify Your Email</h3>
-            <p className="font-neuton text-[#331517] mb-2">Please enter the verification code sent to your email.</p>
+            <p className="font-neuton text-[#331517] mb-2">
+              Please enter the verification code sent to your email.
+            </p>
             {error && (
-              <p className="text-red-600 bg-red-100 border border-red-300 rounded px-2 py-1 mb-3 font-neuton">{error}</p>
+              <p className="text-red-600 bg-red-100 border border-red-300 rounded px-2 py-1 mb-3 font-neuton">
+                {error}
+              </p>
             )}
             <form onSubmit={handleVerification} className="flex flex-col gap-4">
               <input
@@ -245,16 +240,20 @@ export default function Login() {
                 type="submit"
                 disabled={verifying || attemptsLeft <= 0}
                 className={`bg-[#331517] text-[#D9D9D9] py-3 rounded-md border border-[#331517] transition-colors duration-200 ${
-                  verifying || attemptsLeft <= 0 ? "opacity-60 cursor-not-allowed" : "hover:bg-[#D9D9D9] hover:text-[#331517]"
+                  verifying || attemptsLeft <= 0
+                    ? "opacity-60 cursor-not-allowed"
+                    : "hover:bg-[#D9D9D9] hover:text-[#331517]"
                 }`}
               >
                 {verifying ? "Verifying…" : "Verify"}
               </button>
-                      <p className="text-sm text-[#331517] font-neuton text-center">Attempts left: {attemptsLeft}/{MAX_ATTEMPTS}</p>
-                    </form>
-                  </div>
-                </div>
-              )}
-            </div>
-          );
-        }
+              <p className="text-sm text-[#331517] font-neuton text-center">
+                Attempts left: {attemptsLeft}/{MAX_ATTEMPTS}
+              </p>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
