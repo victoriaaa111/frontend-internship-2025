@@ -152,7 +152,10 @@ export default function Login() {
 
         {/* Login Card */}
         <form
-          className="bg-[#d9d9d9] w-full max-w-sm sm:max-w-md rounded-lg border border-[#331517] p-6 sm:p-8 shadow-md"
+          className="bg-[#d9d9d9] w-full max-w-sm sm:max-w-md rounded-4xl p-6 sm:p-8"
+          style={{
+        boxShadow: "5px 5px 4px rgba(0, 0, 0, 0.2)",
+      }}
           onSubmit={handleLogin}
         >
           <h2 className="text-xl sm:text-2xl md:text-3xl font-cotta font-bold text-[#331517] text-center mb-6">
