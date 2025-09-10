@@ -105,10 +105,7 @@ export default function Login() {
       if (!res.ok) throw new Error(data?.message || "Invalid verification code");
 
       setSessionId('');
-      navigate("/welcome", {
-        state: { username: formData.username },
-        replace: true
-      });
+      navigate("/profile");
     } catch (err) {
       const remaining = attemptsLeft - 1;
       setAttemptsLeft(remaining);
