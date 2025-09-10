@@ -40,6 +40,9 @@ export default function Signup() {
                 method: "POST",
                 body: formData,
             });
+            if (response.__unauthorized) {
+                navigate("/login");
+            }
             const data = await response.json().catch(() => ({}));
             if (!response.ok) throw new Error(data?.message || "Registration failed");
 
@@ -78,6 +81,9 @@ export default function Signup() {
                 method: "POST",
                 body: { sessionId, code: verificationCode },
             });
+            if (res.__unauthorized) {
+                navigate("/login");
+            }
             const data = await res.json().catch(() => ({}));
             if (!res.ok) throw new Error(data?.message || "Invalid verification code");
 
