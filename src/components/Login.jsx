@@ -44,6 +44,9 @@ export default function Login() {
         method: "POST",
         body: formData,
       });
+      if (response.__unauthorized) {
+        navigate("/login");
+      }
 
       if (!response.ok) {
         switch (response.status) {
@@ -92,6 +95,9 @@ export default function Login() {
         method: "POST",
         body: { sessionId, code: verificationCode },
       });
+      if (res.__unauthorized) {
+        navigate("/login");
+      }
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data?.message || "Invalid verification code");
 

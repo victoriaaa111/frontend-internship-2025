@@ -45,5 +45,30 @@ export const csrfFetch = async (url, options = {}) => {
         ...rest,
     };
 
-    return fetch(url, finalOptions);
+    let response = await fetch(url, finalOptions);
+
+    if (response.status === 401) {
+        try {
+            const refreshResponse = await fetch(
+                'http://localhost:8080/api/v1/auth/refreshtoken',
+                {
+                    method: 'GET',
+                    credentials: 'include',
+                }
+            );
+
+            if (refreshResponse.ok) {
+                response = await fetch(url, finalOptions);
+                if (response.status === 401) {
+                    return { __unauthorized: true };
+                }
+            } else {
+                return { __unauthorized: true };
+            }
+        } catch (err) {
+            return { __unauthorized: true };
+        }
+    }
+
+    return response;
 };
