@@ -208,7 +208,9 @@ export default function Login() {
 
           {/* Create an account */}
           <div className="w-full text-center mt-4">
-            <span className="text-[#B57E25] font-neuton text-sm sm:text-base cursor-pointer">Create an account</span>
+            <button onClick={()=>navigate('/signup')}>
+              <span className="text-[#B57E25] font-neuton text-sm sm:text-base cursor-pointer">Create an account</span>
+            </button>
           </div>
         </form>
       </div>

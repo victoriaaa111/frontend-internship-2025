@@ -225,8 +225,7 @@ export default function Signup() {
                         <span className="text-[#331517] font-neuton text-base md:text-xl "
                         >Sign Up with Google</span>
                     </button>
-                    <button className="font-neuton-light text-sm mt-2
-                md:text-lg md:mb-8 cursor-pointer hover:text-[#331517] transition-colors duration-200">Sign in to your account</button>
+                    <button onClick={()=>navigate('/login')} className="font-neuton-light text-sm mt-2 md:text-lg md:mb-8 cursor-pointer hover:text-[#331517] transition-colors duration-200">Sign in to your account</button>
                 </form>
             </div>
 
