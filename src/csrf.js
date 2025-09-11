@@ -1,4 +1,3 @@
-
 const CSRF_COOKIE = 'XSRF-TOKEN';
 const CSRF_HEADER = 'X-XSRF-TOKEN';
 
@@ -12,8 +11,23 @@ export const getCsrfTokenFromCookie = () => {
 };
 
 export const initCsrf = async (baseUrl = 'http://localhost:8080') => {
-    const url = `${baseUrl.replace(/\/$/, '')}/api/v1/auth/get`;
-    await fetch(url, { method: 'GET', credentials: 'include', headers: { 'Accept': 'application/json' } });
+  const url = `${baseUrl.replace(/\/$/, '')}/api/v1/auth/get`;
+  const response = await fetch(url, {
+    method: 'GET',
+    credentials: 'include',
+    headers: {
+      'Accept': 'application/json',
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to initialize CSRF token');
+  }
+
+  // Force the browser to save the cookie
+  document.cookie = response.headers.get('set-cookie');
+  
+  return response;
 };
 
 export const csrfFetch = async (url, options = {}) => {
@@ -65,7 +79,7 @@ export const csrfFetch = async (url, options = {}) => {
             } else {
                 return { __unauthorized: true };
             }
-        } catch (err) {
+        } catch {
             return { __unauthorized: true };
         }
     }

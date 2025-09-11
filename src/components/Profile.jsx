@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from "react";
+import { csrfFetch } from "../csrf.js";
 
 // Reusable BookCard Component
-function BookCard({ cover, title, author, status }) {
+function BookCard({ cover, title, author, status, lender }) {
   return (
     <div
       className={`xl:w-65 bg-[#d9d9d9] rounded-xl p-2 mx-auto flex flex-col items-center transition ml-4 ${
         status === "Borrowed" ? "blur-[1.5px]" : ""
       }`}
-      style={{
-        boxShadow: "5px 5px 4px rgba(0, 0, 0, 0.2)",
-      }}
+      style={{ boxShadow: "5px 5px 4px rgba(0, 0, 0, 0.2)" }}
     >
       <img
         src={cover}
@@ -22,6 +21,11 @@ function BookCard({ cover, title, author, status }) {
       <p className="font-cotta text-xs md:text-sm lg:text-base text-[#331517] text-center truncate w-full">
         {author}
       </p>
+      {lender && (
+        <p className="font-cotta text-xs md:text-sm lg:text-base text-[#331517] text-center truncate w-full">
+          From: @{lender}
+        </p>
+      )}
       <span
         className={`mt-1 px-2 py-0.5 rounded-full text-xs md:text-sm lg:text-base font-neuton ${
           status === "Available"
@@ -45,7 +49,9 @@ const CustomDropdown = ({ value, onChange }) => {
         className="relative inline-flex w-48 sm:w-56 md:w-64 lg:w-72 justify-center items-center rounded-2xl bg-[#d9d9d9] px-5 py-2 font-neuton-light text-lg md:text-xl lg:text-2xl text-[#331517] shadow-md hover:shadow-lg hover:bg-[#331517] hover:text-[#d9d9d9] transition cursor-pointer"
       >
         <svg
-          className={`absolute right-4 w-5 h-5 ${isOpen ? "transform rotate-180" : ""}`}
+          className={`absolute right-4 w-5 h-5 ${
+            isOpen ? "transform rotate-180" : ""
+          }`}
           viewBox="0 0 20 20"
           fill="currentColor"
           aria-hidden="true"
@@ -61,7 +67,7 @@ const CustomDropdown = ({ value, onChange }) => {
         </span>
       </button>
 
-{isOpen && (
+      {isOpen && (
         <div className="absolute left-0 mt-2 w-48 sm:w-56 md:w-64 lg:w-72 rounded-2xl bg-[#d9d9d9] shadow-md focus:outline-none z-10 overflow-hidden">
           <div className="py-1">
             <button
@@ -70,9 +76,10 @@ const CustomDropdown = ({ value, onChange }) => {
                 setIsOpen(false);
               }}
               className={`block w-full px-4 py-2 text-center font-neuton-light text-lg md:text-xl lg:text-2xl transition rounded-2xl mx-auto -my-1 cursor-pointer
-                ${value === "myCollection" 
-                  ? "bg-[#331517] text-[#d9d9d9]" 
-                  : "text-[#331517]"
+                ${
+                  value === "myCollection"
+                    ? "bg-[#331517] text-[#d9d9d9]"
+                    : "text-[#331517]"
                 }`}
             >
               My Collection
@@ -83,9 +90,10 @@ const CustomDropdown = ({ value, onChange }) => {
                 setIsOpen(false);
               }}
               className={`block w-full px-4 py-2 text-center font-neuton-light text-lg md:text-xl lg:text-2xl transition rounded-2xl mx-auto -my-1 cursor-pointer
-                ${value === "borrowedBooks" 
-                  ? "bg-[#331517] text-[#d9d9d9]" 
-                  : "text-[#331517]"
+                ${
+                  value === "borrowedBooks"
+                    ? "bg-[#331517] text-[#d9d9d9]"
+                    : "text-[#331517]"
                 }`}
             >
               Borrowed Books
@@ -101,6 +109,29 @@ export default function ProfilePage() {
   const [collectionType, setCollectionType] = useState("myCollection");
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [username, setUsername] = useState("");
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await csrfFetch("http://localhost:8080/api/user/me");
+
+        if (response.__unauthorized) {
+          // Handle unauthorized access - maybe redirect to login
+          return;
+        }
+
+        if (!response.ok) throw new Error("Failed to fetch user data");
+
+        const userData = await response.json();
+        setUsername(userData.username);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -108,23 +139,35 @@ export default function ProfilePage() {
       try {
         const url =
           collectionType === "myCollection"
-            ? "http://localhost:8080/api/v1/books/my-collection"
-            : "http://localhost:8080/api/v1/books/borrowed";
+            ? "http://localhost:8080/api/book/my-collection"
+            : "http://localhost:8080/api/book/borrowed";
 
-        const response = await fetch(url);
+        const response = await csrfFetch(url);
+
+        if (response.__unauthorized) {
+          // Handle unauthorized access
+          return;
+        }
+
+        if (!response.ok) throw new Error("Failed to fetch books");
+
         const data = await response.json();
-        setBooks(data);
+
+        const mapped = data.map((b) => ({
+          cover: b.imageLink,
+          title: b.title,
+          author: Array.isArray(b.authors) ? b.authors.join(", ") : b.authors,
+          status: collectionType === "myCollection" ? b.status : "Borrowed",
+          lender:
+            collectionType === "borrowedBooks" && b.lender
+              ? b.lender.username
+              : null,
+        }));
+
+        setBooks(mapped);
       } catch (error) {
         console.error("Error fetching books:", error);
-        setBooks([
-          {
-            cover: "https://covers.openlibrary.org/b/id/11153271-L.jpg",
-            title: "Rich Dad, Poor Dad",
-            author: "Robert T. Kiyosaki",
-            status:
-              collectionType === "myCollection" ? "Available" : "Borrowed",
-          },
-        ]);
+        setBooks([]);
       } finally {
         setLoading(false);
       }
@@ -144,7 +187,7 @@ export default function ProfilePage() {
           className="w-12 h-12 object-contain md:w-15 md:h-15 lg:w-20 lg:h-20"
         />
 
-        {/* Navigation - Responsive text sizing */}
+        {/* Navigation */}
         <div className="flex space-x-4 text-[#331517] text-xl md:text-2xl lg:text-2xl font-neuton-light pr-10">
           <button className="hover:underline cursor-pointer">Home</button>
           <button className="underline cursor-pointer">Profile</button>
@@ -154,9 +197,12 @@ export default function ProfilePage() {
       {/* Profile Section */}
       <div className="flex justify-between items-center px-6 mt-8 flex-wrap gap-4 ml-7">
         {/* Username + Friends */}
-        <div className="rounded-lg px-4 py-3 bg-[#d9d9d9] text-center outline-1 outline outline-[#331517] shadow-md" style={{boxShadow: "5px 5px 4px rgba(0, 0, 0, 0.1)"}}>
+        <div
+          className="rounded-lg px-4 py-3 bg-[#d9d9d9] text-center outline-1 outline outline-[#331517] shadow-md"
+          style={{ boxShadow: "5px 5px 4px rgba(0, 0, 0, 0.1)" }}
+        >
           <p className="font-neuton text-base md:text-lg lg:text-xl text-[#331517]">
-            @victoriaaa111
+            @{username || "Loading..."} {/* Display username or loading state */}
           </p>
           <p className="font-neuton text-sm md:text-base lg:text-lg text-[#b57e25]">
             1111 friends
@@ -165,10 +211,7 @@ export default function ProfilePage() {
 
         {/* Collection Dropdown */}
         <div className="relative flex-1 flex justify-center">
-          <CustomDropdown
-            value={collectionType}
-            onChange={setCollectionType}
-          />
+          <CustomDropdown value={collectionType} onChange={setCollectionType} />
         </div>
 
         {/* Add Book Button */}
@@ -183,6 +226,10 @@ export default function ProfilePage() {
           <div className="col-span-full text-center font-neuton text-lg md:text-xl lg:text-2xl text-[#331517]">
             Loading...
           </div>
+        ) : books.length === 0 ? (
+          <div className="col-span-full text-center font-neuton text-lg md:text-xl lg:text-2xl text-[#331517]">
+            No books found.
+          </div>
         ) : (
           books.map((book, index) => (
             <BookCard
@@ -191,6 +238,7 @@ export default function ProfilePage() {
               title={book.title}
               author={book.author}
               status={book.status}
+              lender={book.lender}
             />
           ))
         )}
