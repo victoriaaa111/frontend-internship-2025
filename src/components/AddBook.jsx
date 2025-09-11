@@ -1,8 +1,10 @@
 import {useState, useRef, useEffect} from 'react';
 const GOOGLE_SEARCH_URL = "http://localhost:8080/api/book/search/google?q=";
 import {csrfFetch, initCsrf} from '../csrf.js';
+import {useNavigate} from "react-router-dom";
 
 export default function AddBook({ onClose }) {
+    const navigate = useNavigate();
     useEffect(() => {
         initCsrf("http://localhost:8080");
     }, []);
@@ -14,10 +16,16 @@ export default function AddBook({ onClose }) {
     const [searchResults, setSearchResults] = useState([]);
     const [showResults, setShowResults] = useState(false);
     const [selectedBook, setSelectedBook] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
     const modalRef = useRef(null);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (isLoading || open || showResults) {
+            return;
+        }
+
         if (!selectedBook) {
             setError('Please select a book from the search results');
             return;
@@ -25,19 +33,73 @@ export default function AddBook({ onClose }) {
         // Add your submit logic here
     };
 
+    const handleKeyDown = (e) => {
+        // Prevent Enter key from submitting form when search results are visible or dropdown is open
+        if (e.key === 'Enter' && (showResults || open || isLoading)) {
+            e.preventDefault();
+
+            // If Enter is pressed while searching, trigger search
+            if (e.target.type === 'text' && title.trim() && !isLoading) {
+                handleSearch();
+            }
+        }
+    };
+
     const handleSearch = async () => {
         if (!title.trim()) return;
 
+        setIsLoading(true);
+        setError('');
+        setShowResults(false);
+        setOpen(false); // Hide dropdown when searching
+
         try {
             const response = await csrfFetch(`${GOOGLE_SEARCH_URL}${encodeURIComponent(title)}`);
-            if (!response.ok) throw new Error('Search failed');
+
+            if (response.__unauthorized) {
+                navigate('/login');
+                return;
+            }
+
+            if (!response.ok) {
+                if (response.status === 500) {
+                    throw new Error('Server error occurred. Please try again.');
+                }
+                throw new Error('Search failed');
+            }
 
             const data = await response.json();
-            setSearchResults(data);
-            setShowResults(true);
-        } catch (err) {
-            setError('Failed to search books');
+
+            // Handle different response formats
+            let results = [];
+            if (Array.isArray(data)) {
+                results = data;
+            } else if (data && typeof data === 'object') {
+                results = [data];
+            }
+
+            if (results.length === 0) {
+                setError('No books found');
+                setShowResults(false);
+                return;
+            }
+
+            if (results.length === 1) {
+                const book = results[0];
+                setSelectedBook(book);
+                setTitle(book.title);
+                setShowResults(false);
+                setError(''); // Clear any previous errors
+            } else {
+                setSearchResults(results);
+                setShowResults(true);
+            }
+        } catch (error) {
+            console.error('Search error:', error);
+            setError(error.message || 'Failed to search books');
             setShowResults(false);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -50,7 +112,7 @@ export default function AddBook({ onClose }) {
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
             <div className="absolute inset-0 backdrop-blur-sm bg-black/30" onClick={onClose} />
-            <div ref={modalRef} className="relative z-50 bg-[#D9D9D9] p-8 rounded-lg shadow-xl w-[90%] max-w-[400px]">
+            <div ref={modalRef} className={`relative z-50 bg-[#D9D9D9] p-8  ${open ? 'pb-10' : ''} rounded-lg shadow-xl w-[90%] max-w-[400px]`}>
                 <button onClick={onClose} className="absolute right-4 top-4 text-[#331517] hover:text-[#331517]/70" aria-label="Close">✕</button>
                 <h3 className="text-center text-2xl font-cotta text-[#331517] mb-4">Add New Book</h3>
 
@@ -58,7 +120,7 @@ export default function AddBook({ onClose }) {
                     <p className="text-red-600 bg-red-100 border border-red-300 rounded px-2 py-1 mb-3 font-neuton">{error}</p>
                 )}
 
-                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                <form onSubmit={handleSubmit} onKeyDown={handleKeyDown} className="flex flex-col gap-4">
                     <div className="relative">
                         <input
                             type="text"
@@ -67,34 +129,42 @@ export default function AddBook({ onClose }) {
                             className="w-full px-4 pr-12 font-neuton text-[#331517] h-12 border border-[#331517] rounded-md focus:outline-none focus:ring-2 focus:ring-[#331517]/50"
                             placeholder="Enter book title"
                             required
+                            disabled={isLoading}
                         />
                         <button
                             type="button"
                             onClick={handleSearch}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#331517] hover:text-[#331517]/70"
+                            disabled={isLoading}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#331517] hover:text-[#331517]/70 disabled:opacity-50"
                         >
-                            <svg
-                                className="h-6 w-6"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                                />
-                            </svg>
+                            {isLoading ? (
+                                <div className="animate-spin h-6 w-6 border-2 border-[#331517] border-t-transparent rounded-full"></div>
+                            ) : (
+                                <svg
+                                    className="h-6 w-6"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                    />
+                                </svg>
+                            )}
                         </button>
 
                         {showResults && searchResults.length > 0 && (
                             <ul className="absolute w-full bg-[#D9D9D9] border border-[#331517] rounded-md mt-1 max-h-60 overflow-y-auto z-50">
-                                {searchResults.map((book) => (
+                                {searchResults.map((book, index) => (
                                     <li
                                         key={book.googleBookId}
                                         onClick={() => selectBook(book)}
-                                        className="flex items-center gap-3 p-2 hover:bg-[#331517] hover:text-[#D9D9D9] cursor-pointer"
+                                        className={`flex items-center gap-3 p-2 hover:bg-[#331517] hover:text-[#D9D9D9] cursor-pointer ${
+                                            index !== searchResults.length - 1 ? 'border-b border-[#331517]/20' : ''
+                                        }`}
                                     >
                                         <img
                                             src={book.imageLink}
@@ -130,7 +200,7 @@ export default function AddBook({ onClose }) {
                             </svg>
                         </button>
 
-                        {open && (
+                        {open && !showResults && (
                             <ul
                                 role="listbox"
                                 className="absolute font-neuton-light left-0 right-0 top-full mt-1 z-[60] bg-[#D9D9D9] border border-[#331517] rounded-md shadow-lg overflow-hidden"
@@ -157,8 +227,9 @@ export default function AddBook({ onClose }) {
 
                     <button
                         type="submit"
+                        disabled={isLoading || open || showResults}
                         className="text-lg bg-[#331517] font-neuton text-[#D9D9D9] py-1 rounded-md border border-[#331517] transition-colors duration-200
-                        hover:bg-[#D9D9D9] hover:text-[#331517]"
+                        hover:bg-[#D9D9D9] hover:text-[#331517] disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         Add Book
                     </button>
