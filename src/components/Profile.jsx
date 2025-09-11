@@ -1,8 +1,11 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import AddBook from "./AddBook.jsx";
+import {initCsrf} from "../csrf.js";
+
 
 // Reusable BookCard Component
 function BookCard({ cover, title, author, status }) {
+
   return (
     <div
       className={`xl:w-65 bg-[#d9d9d9] rounded-xl p-3 mx-auto flex flex-col items-center transition ${
