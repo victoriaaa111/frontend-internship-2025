@@ -1,4 +1,5 @@
-import React from "react";
+import React, {useState} from "react";
+import AddBook from "./AddBook.jsx";
 
 // Reusable BookCard Component
 function BookCard({ cover, title, author, status }) {
@@ -42,6 +43,7 @@ function BookCard({ cover, title, author, status }) {
 
 
 export default function ProfilePage() {
+  const [showAddBook, setShowAddBook] = useState(false);
   // Mock data (later you replace with Google Books API results)
   const books = [
     {
@@ -127,10 +129,12 @@ export default function ProfilePage() {
         </div>
 
         {/* Add Book Button - Responsive text sizing */}
-        <button className="bg-[#d9d9d9] px-5 py-2 rounded-full shadow-md hover:shadow-lg transition font-neuton-light text-[#331517] text-lg md:text-xl lg:text-2xl ml-auto mr-7">
+        <button onClick={()=>setShowAddBook(true)} className="bg-[#d9d9d9] px-5 py-2 rounded-full shadow-md hover:shadow-lg transition font-neuton-light text-[#331517] text-lg md:text-xl lg:text-2xl ml-auto mr-7">
           + Add Book
         </button>
+        {showAddBook && <AddBook onClose={() => setShowAddBook(false)} />}
       </div>
+
 
       {/* Book Collection */}
       <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5  gap-x-10 gap-y-10 px-5 mt-6 ">
