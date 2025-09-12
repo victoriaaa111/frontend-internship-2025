@@ -7,7 +7,9 @@ export default function OAuthButton({type}) {
 
   return (
           <button
-          type = "button"
+
+              type="button"
+    
             onClick={handleGoogleLogin}
             className="w-1/2 mx-auto flex items-center justify-center border border-[#331517] bg-[#D9D1C0] py-2 rounded-md hover:bg-[#D9D9D9] transition duration-200 cursor-pointer"
           >
@@ -16,3 +18,4 @@ export default function OAuthButton({type}) {
           </button>
   );
 }
+

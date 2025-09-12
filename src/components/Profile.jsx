@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { csrfFetch } from "../csrf.js";
+import React, {useState} from "react";
+import AddBook from "./AddBook.jsx";
 
 // Reusable BookCard Component
-function BookCard({ cover, title, author, status, lender }) {
+function BookCard({ cover, title, author, status, lender}) {
+
   return (
     <div
       className={`xl:w-65 bg-[#d9d9d9] rounded-xl p-2 mx-auto flex flex-col items-center transition ml-4 ${
@@ -107,9 +110,15 @@ const CustomDropdown = ({ value, onChange }) => {
 
 export default function ProfilePage() {
   const [collectionType, setCollectionType] = useState("myCollection");
-  const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState("");
+  const [showAddBook, setShowAddBook] = useState(false);
+  const [flash, setFlash] = useState("");
+  // Mock data (later you replace with Google Books API results)
+  const [books, setBooks] = useState([
+    { cover: "https://covers.openlibrary.org/b/id/11153271-L.jpg", title: "Rich Dad, Poor Dad", author: "Robert T. Kiyosaki", status: "Borrowed" },
+    { cover: "https://covers.openlibrary.org/b/id/11153271-L.jpg", title: "Rich Dad, Poor Dad", author: "Robert T. Kiyosaki", status: "Available" },
+  ]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -175,6 +184,11 @@ export default function ProfilePage() {
 
     fetchBooks();
   }, [collectionType]);
+  const handleAdded = (created) => {
+    // Show banner
+    setFlash(`Book “${created.title}” added successfully.`);
+    setTimeout(() => setFlash(""), 3500);
+  };
 
   return (
     <div className="min-h-screen bg-[#d9d1c0] mx-auto relative font-sans overflow-y-auto">
@@ -193,6 +207,15 @@ export default function ProfilePage() {
           <button className="underline cursor-pointer">Profile</button>
         </div>
       </div>
+
+      {/* Success banner */}
+      {flash && (
+          <div className="flex justify-center mt-3 mb-2">
+            <div className="bg-green-100 text-green-800 border border-green-300 rounded-lg px-4 py-2 font-neuton inline-block">
+            {flash}
+          </div>
+          </div>
+      )}
 
       {/* Profile Section */}
       <div className="flex justify-between items-center px-6 mt-8 flex-wrap gap-4 ml-7">
@@ -214,11 +237,14 @@ export default function ProfilePage() {
           <CustomDropdown value={collectionType} onChange={setCollectionType} />
         </div>
 
-        {/* Add Book Button */}
-        <button className="bg-[#d9d9d9] px-5 py-2 rounded-full shadow-md hover:shadow-lg transition font-neuton-light text-[#331517] text-lg md:text-xl lg:text-2xl ml-auto mr-7 cursor-pointer hover:bg-[#331517] hover:text-[#d9d9d9]">
+        {/* Add Book Button - Responsive text sizing */}
+        <button onClick={()=>setShowAddBook(true)} className="bg-[#d9d9d9] px-5 py-2 rounded-full shadow-md hover:shadow-lg transition font-neuton-light text-[#331517] text-lg md:text-xl lg:text-2xl ml-auto mr-7">
+
           + Add Book
         </button>
+        {showAddBook && <AddBook onClose={() => setShowAddBook(false)} onAdded={handleAdded} />}
       </div>
+
 
       {/* Book Collection */}
       <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-10 gap-y-10 px-5 mt-6">
