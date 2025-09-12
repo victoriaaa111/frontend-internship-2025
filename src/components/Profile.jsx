@@ -4,11 +4,15 @@ import AddBook from "./AddBook.jsx";
 
 // Reusable BookCard Component
 function BookCard({ cover, title, author, status, lender}) {
+  const isInBorrowedCollection = Boolean(lender);
 
+  const formatStatus = (status) => {
+  return status?.charAt(0).toUpperCase() + status?.slice(1).toLowerCase();
+};
   return (
     <div
       className={`xl:w-65 bg-[#d9d9d9] rounded-xl p-2 mx-auto flex flex-col items-center transition ml-4 ${
-        status === "Borrowed" ? "blur-[1.5px]" : ""
+        status === "BORROWED" && !isInBorrowedCollection ? "blur-[1.5px]" : ""
       }`}
       style={{ boxShadow: "5px 5px 4px rgba(0, 0, 0, 0.2)" }}
     >
@@ -23,20 +27,21 @@ function BookCard({ cover, title, author, status, lender}) {
       <p className="font-cotta text-xs md:text-sm lg:text-base text-[#331517] text-center truncate w-full">
         {author}
       </p>
-      {lender && (
+      {isInBorrowedCollection ? (
         <p className="font-cotta text-xs md:text-sm lg:text-base text-[#331517] text-center truncate w-full">
-          From: @{lender}
+          owned by @{lender}
         </p>
+      ) : (
+        <span
+          className={`mt-1 px-2 py-0.5 rounded-full text-xs md:text-sm lg:text-base font-neuton ${
+            status === "AVAILABLE"
+              ? "bg-green-100 text-green-600"
+              : "bg-red-100 text-red-600"
+          }`}
+        >
+          {formatStatus(status)}
+        </span>
       )}
-      <span
-        className={`mt-1 px-2 py-0.5 rounded-full text-xs md:text-sm lg:text-base font-neuton ${
-          status === "Available"
-            ? "bg-green-100 text-green-600"
-            : "bg-red-100 text-red-600"
-        }`}
-      >
-        {status}
-      </span>
     </div>
   );
 }
@@ -113,11 +118,63 @@ export default function ProfilePage() {
   const [username, setUsername] = useState("");
   const [showAddBook, setShowAddBook] = useState(false);
   const [flash, setFlash] = useState("");
-  // Mock data (later you replace with Google Books API results)
-  const [books, setBooks] = useState([
-    { cover: "https://covers.openlibrary.org/b/id/11153271-L.jpg", title: "Rich Dad, Poor Dad", author: "Robert T. Kiyosaki", status: "Borrowed" },
-    { cover: "https://covers.openlibrary.org/b/id/11153271-L.jpg", title: "Rich Dad, Poor Dad", author: "Robert T. Kiyosaki", status: "Available" },
-  ]);
+  const [books, setBooks] = useState([]);
+
+  // Separate the fetchBooks function so it can be reused
+  const fetchBooks = async () => {
+    setLoading(true);
+    try {
+      // Different endpoints for different collection types
+      const url = collectionType === "myCollection" 
+        ? "http://localhost:8080/api/book"
+        : "http://localhost:8080/api/book/borrowed"; // Dummy endpoint for borrowed books
+
+      const response = await csrfFetch(url);
+
+      if (response.__unauthorized) {
+        return;
+      }
+
+      if (!response.ok) throw new Error("Failed to fetch books");
+
+      const data = await response.json();
+
+      const mapped = data.map((b) => ({
+        cover: b.imageLink,
+        title: b.title,
+        author: Array.isArray(b.authors) ? b.authors.join(", ") : b.authors,
+        status: b.status || "AVAILABLE",  
+        lender: collectionType === "borrowedBooks" ? b.lender?.username : null,
+      }));
+
+      setBooks(mapped);
+    } catch (error) {
+      console.error("Error fetching books:", error);
+      if (collectionType === "borrowedBooks") {
+        setBooks([]);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Initial fetch on mount and collection type change
+  useEffect(() => {
+    fetchBooks();
+  }, [collectionType]);
+
+  // Update handleAdded to fetch books instead of managing state locally
+  const handleAdded = async (created) => {
+    // Show success message
+    setFlash(`Book "${created.title}" added successfully.`);
+    setTimeout(() => setFlash(""), 3500);
+
+    // Close the add book modal
+    setShowAddBook(false);
+
+    // Fetch updated book list
+    await fetchBooks();
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -140,54 +197,6 @@ export default function ProfilePage() {
 
     fetchUserData();
   }, []);
-
-  useEffect(() => {
-    const fetchBooks = async () => {
-      setLoading(true);
-      try {
-        const url =
-          collectionType === "myCollection"
-            ? "http://localhost:8080/api/book/my-collection"
-            : "http://localhost:8080/api/book/borrowed";
-
-        const response = await csrfFetch(url);
-
-        if (response.__unauthorized) {
-          // Handle unauthorized access
-          return;
-        }
-
-        if (!response.ok) throw new Error("Failed to fetch books");
-
-        const data = await response.json();
-
-        const mapped = data.map((b) => ({
-          cover: b.imageLink,
-          title: b.title,
-          author: Array.isArray(b.authors) ? b.authors.join(", ") : b.authors,
-          status: collectionType === "myCollection" ? b.status : "Borrowed",
-          lender:
-            collectionType === "borrowedBooks" && b.lender
-              ? b.lender.username
-              : null,
-        }));
-
-        setBooks(mapped);
-      } catch (error) {
-        console.error("Error fetching books:", error);
-        setBooks([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBooks();
-  }, [collectionType]);
-  const handleAdded = (created) => {
-    // Show banner
-    setFlash(`Book “${created.title}” added successfully.`);
-    setTimeout(() => setFlash(""), 3500);
-  };
 
   return (
     <div className="min-h-screen bg-[#d9d1c0] mx-auto relative font-sans overflow-y-auto">
