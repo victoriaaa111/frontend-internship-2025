@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { csrfFetch } from "../csrf.js";
 import AddBook from "./AddBook.jsx";
+import BookCard from "./BookCard.jsx";
+import {csrfFetch, initCsrf} from '../csrf.js';
+import {useNavigate} from "react-router-dom";
 
 // Reusable BookCard Component
 function BookCard({ cover, title, author, status, lender}) {
@@ -111,8 +114,11 @@ const CustomDropdown = ({ value, onChange }) => {
     </div>
   );
 };
-
 export default function ProfilePage() {
+  useEffect(() => { initCsrf("http://localhost:8080"); }, []);
+
+  const navigate = useNavigate();
+
   const [collectionType, setCollectionType] = useState("myCollection");
   const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState("");
@@ -176,6 +182,31 @@ export default function ProfilePage() {
     await fetchBooks();
   };
 
+  const handleDelete = async (userBookId) => {
+    try {
+      const res = await csrfFetch(`http://localhost:8080/api/book/${userBookId}`, {
+        method: "DELETE",
+      });
+
+      if (res.__unauthorized) { navigate("/login"); return; }
+      if (!res.ok) {
+        const msg = await res.text().catch(() => "");
+        throw new Error(msg || "Failed to delete book");
+      }
+
+      // Remove from UI and show flash
+      setBooks((prev) => {
+        const removed = prev.find((b) => b.userBookId === userBookId);
+        const next = prev.filter((b) => b.userBookId !== userBookId);
+        setFlash(`Deleted “${removed?.title || "Book"}” successfully.`);
+        setTimeout(() => setFlash(""), 3000);
+        return next;
+      });
+    } catch (err) {
+      setFlash(`Delete failed: ${err.message}`);
+      setTimeout(() => setFlash(""), 3500);
+    }
+  };
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -197,6 +228,7 @@ export default function ProfilePage() {
 
     fetchUserData();
   }, []);
+
 
   return (
     <div className="min-h-screen bg-[#d9d1c0] mx-auto relative font-sans overflow-y-auto">
@@ -255,27 +287,29 @@ export default function ProfilePage() {
 
 
       {/* Book Collection */}
-      <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-10 gap-y-10 px-5 mt-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5  gap-x-10 gap-y-10 px-5 mt-6 ">
         {loading ? (
           <div className="col-span-full text-center font-neuton text-lg md:text-xl lg:text-2xl text-[#331517]">
             Loading...
           </div>
-        ) : books.length === 0 ? (
+         ): books.length === 0 ? (
           <div className="col-span-full text-center font-neuton text-lg md:text-xl lg:text-2xl text-[#331517]">
             No books found.
           </div>
-        ) : (
-          books.map((book, index) => (
-            <BookCard
-              key={index}
-              cover={book.cover}
-              title={book.title}
-              author={book.author}
-              status={book.status}
-              lender={book.lender}
-            />
-          ))
+           ) : (
+        {books.map((book, index) => (
+          <BookCard
+            key={index}
+            cover={book.cover}
+            title={book.title}
+            author={book.author}
+            status={book.status}
+            onDelete={handleDelete}
+            bookId={book.userBookId}
+          />
+        ))
         )}
+
       </div>
     </div>
   );
