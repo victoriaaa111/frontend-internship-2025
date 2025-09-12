@@ -1,47 +1,6 @@
 import React, {useState} from "react";
 import AddBook from "./AddBook.jsx";
-
-// Reusable BookCard Component
-function BookCard({ cover, title, author, status }) {
-
-  return (
-    <div
-      className={`xl:w-65 bg-[#d9d9d9] rounded-xl p-3 mx-auto flex flex-col items-center transition ${
-        status === "Borrowed" ? "blur-[1.5px]" : ""
-      }`}
-      style={{
-        boxShadow: "5px 5px 4px rgba(0, 0, 0, 0.3)",
-      }}
-    >
-      {/* Book Cover */}
-      <img
-        src={cover}
-        alt={title}
-        className="w-full aspect-[3/4] object-cover rounded-md mb-3"
-      />
-
-      {/* Book Info - Responsive text sizing */}
-      <p className="font-cotta text-sm md:text-base lg:text-lg text-[#331517] text-center truncate w-full">
-        {title}
-      </p>
-      <p className="font-cotta text-xs md:text-sm lg:text-base text-[#331517] text-center truncate w-full">
-        {author}
-      </p>
-
-      {/* Status - Responsive text sizing */}
-      <span
-        className={`mt-1 px-2 py-0.5 rounded-full text-xs md:text-sm lg:text-base font-neuton ${
-          status === "Available"
-            ? "bg-green-100 text-green-600"
-            : "bg-red-100 text-red-600"
-        }`}
-      >
-        {status}
-      </span>
-    </div>
-  );
-}
-
+import BookCard from "./BookCard.jsx";
 
 export default function ProfilePage() {
   const [showAddBook, setShowAddBook] = useState(false);
@@ -101,7 +60,7 @@ export default function ProfilePage() {
 
 
       {/* Book Collection */}
-      <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5  gap-x-10 gap-y-10 px-5 mt-6 ">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5  gap-x-10 gap-y-10 px-5 mt-6 ">
         {books.map((book, index) => (
           <BookCard
             key={index}
