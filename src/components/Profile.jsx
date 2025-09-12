@@ -1,8 +1,14 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import AddBook from "./AddBook.jsx";
 import BookCard from "./BookCard.jsx";
+import {csrfFetch, initCsrf} from '../csrf.js';
+import {useNavigate} from "react-router-dom";
 
 export default function ProfilePage() {
+  useEffect(() => { initCsrf("http://localhost:8080"); }, []);
+
+  const navigate = useNavigate();
+
   const [showAddBook, setShowAddBook] = useState(false);
   const [flash, setFlash] = useState("");
   // Mock data (later you replace with Google Books API results)
@@ -14,6 +20,32 @@ export default function ProfilePage() {
     // Show banner
     setFlash(`Book “${created.title}” added successfully.`);
     setTimeout(() => setFlash(""), 3500);
+  };
+
+  const handleDelete = async (userBookId) => {
+    try {
+      const res = await csrfFetch(`http://localhost:8080/api/book/${userBookId}`, {
+        method: "DELETE",
+      });
+
+      if (res.__unauthorized) { navigate("/login"); return; }
+      if (!res.ok) {
+        const msg = await res.text().catch(() => "");
+        throw new Error(msg || "Failed to delete book");
+      }
+
+      // Remove from UI and show flash
+      setBooks((prev) => {
+        const removed = prev.find((b) => b.userBookId === userBookId);
+        const next = prev.filter((b) => b.userBookId !== userBookId);
+        setFlash(`Deleted “${removed?.title || "Book"}” successfully.`);
+        setTimeout(() => setFlash(""), 3000);
+        return next;
+      });
+    } catch (err) {
+      setFlash(`Delete failed: ${err.message}`);
+      setTimeout(() => setFlash(""), 3500);
+    }
   };
 
   return (
@@ -68,6 +100,8 @@ export default function ProfilePage() {
             title={book.title}
             author={book.author}
             status={book.status}
+            onDelete={handleDelete}
+            bookId={book.userBookId}
           />
         ))}
       </div>
