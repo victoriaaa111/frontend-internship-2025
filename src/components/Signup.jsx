@@ -93,10 +93,7 @@ export default function Signup() {
             setSessionId('');
 
             // Navigate to welcome page
-            navigate("/welcome", {
-                state: { username: formData.username },
-                replace: true
-            });
+            navigate("/profile");
         } catch (err) {
             const remaining = attemptsLeft - 1;
             setAttemptsLeft(remaining);

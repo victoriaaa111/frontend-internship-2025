@@ -19,6 +19,7 @@ export const initCsrf = async (baseUrl = 'http://localhost:8080') => {
 export const csrfFetch = async (url, options = {}) => {
     const { headers = {}, body, credentials, ...rest } = options;
 
+    // Get CSRF token
     let token = getCsrfTokenFromCookie();
     if (!token) {
         let inferredBase = undefined;
@@ -31,6 +32,7 @@ export const csrfFetch = async (url, options = {}) => {
         token = getCsrfTokenFromCookie();
     }
 
+    // Prepare headers with CSRF token
     const finalHeaders = {
         'Content-Type': 'application/json',
         [CSRF_HEADER]: token || '',
@@ -45,27 +47,41 @@ export const csrfFetch = async (url, options = {}) => {
         ...rest,
     };
 
+    // Make initial request
     let response = await fetch(url, finalOptions);
 
+    // Handle 401 Unauthorized
     if (response.status === 401) {
         try {
+            // Try to refresh token
             const refreshResponse = await fetch(
                 'http://localhost:8080/api/v1/auth/refreshtoken',
                 {
-                    method: 'GET',
+                    method: 'POST',
                     credentials: 'include',
+                    headers: {
+                        [CSRF_HEADER]: token || '',
+                    }
                 }
             );
 
             if (refreshResponse.ok) {
+                // Retry original request with new token
+                const newToken = getCsrfTokenFromCookie();
+                finalOptions.headers[CSRF_HEADER] = newToken;
                 response = await fetch(url, finalOptions);
+
                 if (response.status === 401) {
+                    window.location.href = '/login'; // Redirect to login if still unauthorized
                     return { __unauthorized: true };
                 }
             } else {
+                window.location.href = '/login'; // Redirect to login if refresh fails
                 return { __unauthorized: true };
             }
         } catch (err) {
+            console.error('Token refresh failed:', err);
+            window.location.href = '/login';
             return { __unauthorized: true };
         }
     }
