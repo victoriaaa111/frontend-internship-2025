@@ -315,7 +315,7 @@ export default function ProfilePage() {
         {confirmDeleteId && (
             <div className="fixed inset-0 z-50 flex items-center justify-center">
               <div className="absolute inset-0 backdrop-blur-sm bg-black/30" onClick={cancelDelete} />
-              <div className="relative z-50 bg-[#D9D9D9] p-6 rounded-xl shadow-xl w-[90%] max-w-[380px]">
+              <div className="relative z-50 bg-[#EEE8DF] p-6 rounded-xl shadow-xl w-[90%] max-w-[380px]">
                 <h3 className="font-fraunces text-xl text-[#4B3935] mb-3">Delete book?</h3>
                 <p className="font-fraunces text-[#4B3935] mb-5">
                   This action cannot be undone.
@@ -323,13 +323,13 @@ export default function ProfilePage() {
                 <div className="flex gap-3 justify-end">
                   <button
                       onClick={cancelDelete}
-                      className="px-4 py-2 rounded-full bg-[#d9d9d9] outline outline-1 outline-[#4B3935] text-[#4B3935] hover:bg-[#e6e6e6] transition"
+                      className="font-fraunces lg:text-lg px-4 py-2 rounded-full bg-[#F6F2ED] outline outline-[#4B3935] text-[#4B3935] hover:shadow-[0_2px_6px_#9C8F7F] transition duration-200 cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                       onClick={confirmDelete}
-                      className="px-4 py-2 rounded-full bg-[#4B3935] text-[#d9d9d9] hover:opacity-90 transition disabled:opacity-50"
+                      className="font-fraunces-light px-4 py-2 rounded-full bg-[#4B3935] text-[#F6F2ED] hover:shadow-[0_2px_6px_#9C8F7F] transition duration-200 cursor-pointer disabled:opacity-50"
                       disabled={deleting}
                   >
                     {deleting ? "Deleting..." : "Delete"}
