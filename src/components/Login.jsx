@@ -138,14 +138,16 @@ export default function Login() {
         <h2 className="text-4xl xl:text-5xl font-erotique-bold text-[#D9D1C0] mb-4 border-b border-[#D9D1C0] pb-2 drop-shadow-[0_4px_3px_rgba(51,21,23,0.4)]">
           Share Your Library
         </h2>
-        <p className="text-lg xl:text-2xl font-cotta text-[#D9D1C0] drop-shadow-[0_4px_3px_rgba(51,21,23,0.4)] max-w-md">
+        <p className="text-3xl font-cotta text-[#D9D1C0] max-w-[700px] drop-shadow-[0_4px_3px_rgba(51,21,23,0.4)]">
           Save money, reduce clutter, and give your books new journeys through your community.
         </p>
       </div>
 
       {/* RIGHT LOGIN SECTION */}
       <div className="flex flex-col items-center justify-center w-full lg:w-1/2 h-full px-6 sm:px-12">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-erotique-bold text-[#B57E25] mb-6">BorrowBook</h1>
+        <h1 className="font-erotique-bold text-4xl mx-2
+            md:text-6xl text-[#916243] mb-6">BorrowBook</h1>
+
 
         {/* Login Card */}
         <form
