@@ -12,9 +12,9 @@ function BookCard({ cover, title, author, status, lender, onDelete, bookId}) {
   };
 
   return (
-      <div className="relative">
+      <div className="relative h-full">
         <div
-            className={`w-full aspect-[3/5] bg-[#d9d9d9] rounded-xl p-4 flex flex-col items-center transition ${
+            className={`w-full h-full bg-[#d9d9d9] rounded-xl p-4 flex flex-col items-center transition ${
                 status === "BORROWED" && !isInBorrowedCollection ? "blur-[1.5px]" : ""
             }`}
             style={{ boxShadow: "5px 5px 4px rgba(0, 0, 0, 0.2)" }}
@@ -23,7 +23,7 @@ function BookCard({ cover, title, author, status, lender, onDelete, bookId}) {
           {!isInBorrowedCollection && (
               <button
                   onClick={()=>onDelete(bookId)}
-                  className="absolute right-2 top-1 text-[#331517] hover:text-red-600 transition-colors z-0"
+                  className="absolute right-2 top-1 text-[#331517] hover:text-red-600 transition-colors z-10"
                   aria-label="Delete book"
               >
                 ✕
@@ -142,34 +142,29 @@ export default function ProfilePage() {
   const [flash, setFlash] = useState("");
   const [books, setBooks] = useState([]);
 
-  // Separate the fetchBooks function so it can be reused
   const fetchBooks = async () => {
     setLoading(true);
     try {
-      // Different endpoints for different collection types
-      const url = collectionType === "myCollection" 
-        ? "http://localhost:8080/api/book"
-        : "http://localhost:8080/api/book/borrowed"; // Dummy endpoint for borrowed books
+      const url = collectionType === "myCollection"
+          ? "http://localhost:8080/api/book"
+          : "http://localhost:8080/api/book/borrowed";
 
       const response = await csrfFetch(url);
-
-      if (response.__unauthorized) {
-        return;
-      }
-
+      if (response.__unauthorized) return;
       if (!response.ok) throw new Error("Failed to fetch books");
 
       const data = await response.json();
 
-      const mapped = data.map((b) => ({
-        key: b.userBookId,
-        userBookId: b.userBookId,
+      const mapped = data.map((b, index) => ({
+        key: b.userBookId ?? `temp-${index}`,
+        userBookId: b.userBookId ?? null,
         cover: b.imageLink,
         title: b.title,
         author: Array.isArray(b.authors) ? b.authors.join(", ") : b.authors,
-        status: b.status || "AVAILABLE",  
+        status: b.status ?? "AVAILABLE",
         lender: collectionType === "borrowedBooks" ? b.lender?.username : null,
       }));
+
 
       setBooks(mapped);
     } catch (error) {
@@ -200,23 +195,41 @@ export default function ProfilePage() {
     await fetchBooks();
   };
 
+
   const handleDelete = async (userBookId) => {
     try {
+      // Validate userBookId
+       if (!userBookId || userBookId === null) {
+        console.error('Invalid book ID for deletion');
+        setFlash('Cannot delete book: Invalid book ID');
+        setTimeout(() => setFlash(''), 3000);
+        return;
+      }
+
+
+
+      if (!window.confirm('Are you sure you want to delete this book?')) {
+        return;
+      }
+
       const res = await csrfFetch(`http://localhost:8080/api/book/${userBookId}`, {
         method: "DELETE",
       });
 
-      if (res.__unauthorized) { navigate("/login"); return; }
+      if (res.__unauthorized) {
+        navigate("/login");
+        return;
+      }
+
       if (!res.ok) {
         const msg = await res.text().catch(() => "");
         throw new Error(msg || "Failed to delete book");
       }
 
-      // Remove from UI and show flash
       setBooks((prev) => {
         const removed = prev.find((b) => b.userBookId === userBookId);
         const next = prev.filter((b) => b.userBookId !== userBookId);
-        setFlash(`Deleted “${removed?.title || "Book"}” successfully.`);
+        setFlash(`Deleted "${removed?.title || "Book"}" successfully.`);
         setTimeout(() => setFlash(""), 3000);
         return next;
       });
@@ -225,6 +238,7 @@ export default function ProfilePage() {
       setTimeout(() => setFlash(""), 3500);
     }
   };
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
