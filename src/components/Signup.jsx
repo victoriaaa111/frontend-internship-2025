@@ -68,6 +68,9 @@ export default function Signup() {
             console.log('Signup successful');
         } catch (err) {
             setError(err.message);
+            setTimeout(() => {
+                setError("");
+            }, 4500)
         }
     };
 
@@ -125,14 +128,21 @@ export default function Signup() {
             {showVerification && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center">
                     <div className="absolute inset-0 backdrop-blur-sm bg-black/30" />
-                    <div className="relative z-50 bg-[#D9D9D9] p-8 rounded-lg shadow-xl w-[90%] max-w-[400px]">
-                        <h3 className="text-2xl font-cotta text-[#331517] mb-4">Verify Your Email</h3>
-                        <p className="font-neuton text-[#331517] mb-2">Please enter the verification code sent to your email.</p>
+                    <div className="relative z-50 bg-[#D9D9D9] p-8 rounded-lg shadow-xl w-[90%] max-w-[450px]">
+                        {/* Error */}
                         {error && (
-                            <p className="text-red-600 bg-red-100 border border-red-300 rounded px-2 py-1 mb-3 font-neuton">
-                                {error}
-                            </p>
+                            <div className="bg-red-50 border text-red-700 px-4 py-3 rounded-lg mb-4 text-center">
+                                <div className="flex items-center justify-center">
+                                    <svg className="w-4 h-4 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                    </svg>
+                                    <span className="font-fraunces-light text-base">{error}</span>
+                                </div>
+                            </div>
                         )}
+                        <h3 className="text-2xl font-cotta text-[#4B3935] mb-4">Verify Your Email</h3>
+                        <p className="font-fraunces text-base text-[#4B3935] mb-2">Please enter the verification code sent to your email.</p>
+
                         <form onSubmit={handleVerification} className="flex flex-col gap-4 ">
                             <input
                                 type="text"
@@ -140,7 +150,7 @@ export default function Signup() {
                                 pattern="[0-9]*"
                                 value={verificationCode}
                                 onChange={(e) => setVerificationCode(e.target.value)}
-                                className="px-4 font-neuton text-[#331517] h-12 border border-[#331517] rounded-md focus:outline-none focus:ring-2 focus:ring-[#331517]/50"
+                                className="px-4 font-fraunces text-[#4B3935] h-12 border border-[#4B3935] rounded-md focus:outline-none focus:ring-2 focus:ring-[#331517]/50"
                                 placeholder="Enter verification code"
                                 required
                                 disabled={verifying || attemptsLeft <= 0}
@@ -148,12 +158,12 @@ export default function Signup() {
                             <button
                                 type="submit"
                                 disabled={verifying || attemptsLeft <= 0}
-                                className={`bg-[#331517] text-[#D9D9D9] py-3 rounded-md border border-[#331517] transition-colors duration-200
-                            ${verifying || attemptsLeft <= 0 ? 'opacity-60 cursor-not-allowed' : 'hover:bg-[#D9D9D9] hover:text-[#331517]'}`}
+                                className={`bg-[#4B3935] text-[#D9D9D9] py-2 rounded-md border border-[#4B3935] transition-colors duration-200 font-fraunces-light 
+                            ${verifying || attemptsLeft <= 0 ? 'opacity-60 cursor-not-allowed' : 'hover:shadow-[0_2px_6px_#9C8F7F] transition duration-200 cursor-pointer'}`}
                             >
                                 {verifying ? 'Verifying…' : 'Verify'}
                             </button>
-                            <p className="text-sm text-[#331517] font-neuton text-center">
+                            <p className="text-sm text-[#4B3935] font-fraunces text-center">
                                 Attempts left: {attemptsLeft}/{MAX_ATTEMPTS}
                             </p>
                         </form>
@@ -184,8 +194,17 @@ export default function Signup() {
                       className="shadow-[0_2px_3px_#9C8F7F] bg-[#EEE8DF] rounded-4xl w-[90%] max-w-[298px] flex flex-col justify-center items-center px-5 py-6
             md:max-w-[500px] md:w-[80%]
              ">
-                    {error && <p className="text-red-500 text-base mb-4 font-neuton bg-red-100 px-2 py-1 rounded-md drop-shadow-md
-                 ">{error}</p>}
+                    {/* Error */}
+                    {error && !showVerification && (
+                        <div className="bg-red-50 border text-red-700 px-4 py-3 rounded-lg mb-4 text-center">
+                            <div className="flex items-center justify-center">
+                                <svg className="w-4 h-4 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                </svg>
+                                <span className="font-fraunces-light text-base">{error}</span>
+                            </div>
+                        </div>
+                    )}
                     <h2 className="text-2xl font-cotta text-[#4B3935] mb-4
                 md:text-3xl md:mt-3
                 ">Create Account</h2>
