@@ -185,7 +185,7 @@ export default function Signup() {
                     boxShadow: "5px 5px 4px rgba(0, 0, 0, 0.2)",
                 }}
                       className="bg-[#D9D9D9] rounded-4xl w-[90%] max-w-[298px] flex flex-col justify-center items-center px-5 py-6
-            md:max-w-[616px] md:w-[80%]
+            md:max-w-[500px] md:w-[80%]
              ">
                     {error && <p className="text-red-500 text-base mb-4 font-neuton bg-red-100 px-2 py-1 rounded-md drop-shadow-md
                  ">{error}</p>}
@@ -193,35 +193,70 @@ export default function Signup() {
                 md:text-3xl md:mt-3
                 ">Create Account</h2>
                     <div className="w-full flex flex-col justify-center items-center md:mt-2">
-                        <div className="w-full md:max-w-[443px]">
-                            <label className="font-neuton-light text-[#331517] text-base
-                        md:text-xl
-                        ">Username</label>
-                            <input required name="username" value={formData.username} onChange={handleChange} className="px-2 text-base font-neuton text-[#331517] w-full h-10 border border-[#331517] rounded-md
-                            lg:text-lg"/>
+
+                        <div className="w-full md:max-w-[400px] mt-4 relative">
+                            <div className="relative flex items-center">
+                                <img
+                                    src="./src/assets/profile.png"
+                                    alt="Person icon for username"
+                                    className="absolute translate-y-0.5 left-2 w-5.5 h-5.5 z-10 opacity-50"
+                                />
+                                <input
+                                    placeholder="Username"
+                                    required
+                                    name="username"
+                                    value={formData.username}
+                                    onChange={handleChange}
+                                    className="px-2 pl-9 text-base font-neuton text-[#331517] w-full h-12 border border-[#331517] rounded-md lg:text-lg"
+                                />
+                            </div>
                         </div>
 
-                        <div className="w-full md:max-w-[443px] mt-4">
-                            <label className="font-neuton-light text-[#331517] text-base
-                        md:text-xl
-                        ">Email</label>
-                            <input required type="email" name="email" value={formData.email} onChange={handleChange} className="px-2 text-base font-neuton text-[#331517] w-full h-10 border border-[#331517] rounded-md
-                            lg:text-lg"/>
+
+
+                        <div className="w-full md:max-w-[400px] mt-4 relative">
+                            <div className="relative flex items-center">
+                                <img
+                                    src="./src/assets/mail.png"
+                                    alt="Mail icon for email"
+                                    className="absolute translate-y-0.5 left-2.5 w-4.5 h-4.5 z-10 opacity-60"
+                                />
+                                <input
+                                    placeholder="Email"
+                                    required
+                                    type="email"
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    className="px-2 pl-9 text-base font-neuton text-[#331517] w-full h-12 border border-[#331517] rounded-md lg:text-lg"
+                                />
+                            </div>
                         </div>
 
-                        <div className="w-full md:max-w-[443px] mt-4">
-                            <label className="font-neuton-light text-[#331517] text-base
-                        md:text-xl
-                        ">Password</label>
-                            <input type="password" required name="password" value={formData.password} onChange={handleChange} className="px-2 text-base font-neuton text-[#331517] w-full h-10 border border-[#331517] rounded-md
-                            lg:text-lg"/>
+                        <div className="w-full md:max-w-[400px] mt-4 relative">
+                            <div className="relative flex items-center">
+                                <img
+                                    src="./src/assets/lock.png"
+                                    alt="Lock icon for password"
+                                    className="absolute translate-y-0.5 left-2 w-5 h-5 z-10 opacity-70"
+                                />
+                                <input
+                                    placeholder="Password"
+                                    type="password"
+                                    required
+                                    name="password"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    className="px-2 pl-9 text-base font-neuton text-[#331517] w-full h-12 border border-[#331517] rounded-md lg:text-lg"
+                                />
+                            </div>
                         </div>
                     </div>
                     <button type="submit" className="hover:bg-[#D9D9D9] hover:text-[#331517] border border-[#331517] max-w-45 w-full bg-[#331517] font-neuton-light text-[#D9D9D9] rounded-md mt-4 text-base py-2
                 md:max-w-[228px] md:text-xl md:mt-6 cursor-pointer transition-colors duration-200">
                         Create Account
                     </button>
-                    <div className="flex items-center my-4 w-full md:w-[443px] lg:w-[350px]">
+                    <div className="flex items-center my-4 w-full md:w-[400px] lg:w-[350px]">
                         <hr className="flex-grow border-[#331517]" />
                         <span className="px-2 text-sm text-[#331517] font-neuton md:text-xl">OR</span>
                         <hr className="flex-grow border-[#331517]" />
