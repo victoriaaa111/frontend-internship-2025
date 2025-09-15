@@ -165,7 +165,6 @@ export default function ProfilePage() {
               : "http://localhost:8080/api/book/borrowed";
 
       const response = await csrfFetch(url);
-      if (response.__unauthorized) return;
       if (!response.ok) throw new Error("Failed to fetch books");
 
       const data = await response.json();
@@ -231,11 +230,6 @@ export default function ProfilePage() {
       const res = await csrfFetch(`http://localhost:8080/api/book/${userBookId}`, {
         method: "DELETE",
       });
-
-      if (res.__unauthorized) {
-        navigate("/login");
-        return;
-      }
 
       if (!res.ok) {
         const msg = await res.text().catch(() => "");
