@@ -207,7 +207,7 @@ export default function Signup() {
                                     name="username"
                                     value={formData.username}
                                     onChange={handleChange}
-                                    className="px-2 pl-9 text-base font-neuton text-[#331517] w-full h-12 border border-[#331517] rounded-md lg:text-lg"
+                                    className="focus:outline-none focus:ring-2 focus:ring-[#331517]/50 px-2 pl-9 text-base font-neuton text-[#331517] w-full h-12 border border-[#331517] rounded-md lg:text-lg"
                                 />
                             </div>
                         </div>
@@ -228,7 +228,7 @@ export default function Signup() {
                                     name="email"
                                     value={formData.email}
                                     onChange={handleChange}
-                                    className="px-2 pl-9 text-base font-neuton text-[#331517] w-full h-12 border border-[#331517] rounded-md lg:text-lg"
+                                    className="focus:outline-none focus:ring-2 focus:ring-[#331517]/50 px-2 pl-9 text-base font-neuton text-[#331517] w-full h-12 border border-[#331517] rounded-md lg:text-lg"
                                 />
                             </div>
                         </div>
@@ -247,7 +247,7 @@ export default function Signup() {
                                     name="password"
                                     value={formData.password}
                                     onChange={handleChange}
-                                    className="px-2 pl-9 text-base font-neuton text-[#331517] w-full h-12 border border-[#331517] rounded-md lg:text-lg"
+                                    className="focus:outline-none focus:ring-2 focus:ring-[#331517]/50 px-2 pl-9 text-base font-neuton text-[#331517] w-full h-12 border border-[#331517] rounded-md lg:text-lg"
                                 />
                             </div>
                         </div>

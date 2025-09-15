@@ -160,26 +160,40 @@ export default function Login() {
           </h2>
 
           {/* Username */}
-          <label className="block text-sm sm:text-base text-[#331517] mb-1 font-neuton">Username</label>
-          <input
-            type="text"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            className="w-full border border-[#331517] rounded-md px-3 py-2 mb-4 focus:outline-none font-neuton text-sm sm:text-base"
-            required
-          />
+          <div className="relative flex items-center text-[#331517] mb-4">
+            <img
+                src="./src/assets/profile.png"
+                alt="Person icon for username"
+                className="absolute translate-y-0.5 left-2 w-5 h-5 z-10 opacity-50"
+            />
+            <input
+                type="text"
+                name="username"
+                value={formData.username}
+                onChange={handleChange}
+                placeholder="Username"
+                className="focus:outline-none focus:ring-2 focus:ring-[#331517]/50 px-2 pl-9 text-base font-neuton text-[#331517] w-full h-12 border border-[#331517] rounded-md lg:text-lg"
+                required
+            />
+          </div>
 
           {/* Password */}
-          <label className="block text-sm sm:text-base text-[#331517] mb-1 font-neuton">Password</label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            className="w-full border border-[#331517] rounded-md px-3 py-2 mb-6 focus:outline-none font-neuton text-sm sm:text-base"
-            required
+          <div className="relative flex items-center text-[#331517] mb-4">
+          <img
+              src="./src/assets/lock.png"
+              alt="Lock icon for password"
+              className="absolute translate-y-0.5 left-2 w-5 h-5 z-10 opacity-50"
           />
+          <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Password"
+              className="focus:outline-none focus:ring-2 focus:ring-[#331517]/50 px-2 pl-9 text-base font-neuton text-[#331517] w-full h-12 border border-[#331517] rounded-md lg:text-lg"
+              required
+          />
+      </div>
 
           {/* Error */}
           {error && !showVerification && <div className="text-red-600 text-sm mb-2 text-center">{error}</div>}
