@@ -129,16 +129,16 @@ export default function Login() {
   };
 
   return (
-    <div className="bg-[#D9D1C0] h-screen w-screen overflow-hidden flex flex-col lg:flex-row fixed top-0 left-0">
+    <div className="bg-[#F6F2ED] h-screen w-screen overflow-hidden flex flex-col lg:flex-row fixed top-0 left-0">
       {/* LEFT IMAGE SECTION */}
       <div
         className="hidden lg:flex w-1/2 h-full bg-cover bg-center flex-col justify-center p-12"
         style={{ backgroundImage: "url('frontend.png')" }}
       >
-        <h2 className="text-4xl xl:text-5xl font-erotique-bold text-[#D9D1C0] mb-4 border-b border-[#D9D1C0] pb-2 drop-shadow-[0_4px_3px_rgba(51,21,23,0.4)]">
+        <h2 className="text-4xl xl:text-5xl font-erotique-bold text-[#DAD1C6] mb-4 border-b border-[#EEE8DF] pb-2 drop-shadow-[0_4px_3px_rgba(51,21,23,0.4)]">
           Share Your Library
         </h2>
-        <p className="text-3xl font-cotta text-[#D9D1C0] max-w-[700px] drop-shadow-[0_4px_3px_rgba(51,21,23,0.4)]">
+        <p className="text-3xl font-cotta text-[#DAD1C6] max-w-[700px] drop-shadow-[0_4px_3px_rgba(51,21,23,0.4)]">
           Save money, reduce clutter, and give your books new journeys through your community.
         </p>
       </div>
@@ -146,23 +146,20 @@ export default function Login() {
       {/* RIGHT LOGIN SECTION */}
       <div className="flex flex-col items-center justify-center w-full lg:w-1/2 h-full px-6 sm:px-12">
         <h1 className="font-erotique-bold text-4xl mx-2
-            md:text-6xl text-[#916243] mb-6">BorrowBook</h1>
+            md:text-6xl text-[#2C365A] mb-6">BorrowBook</h1>
 
 
         {/* Login Card */}
         <form
-          className="bg-[#d9d9d9] w-full max-w-sm sm:max-w-md rounded-4xl p-6 sm:p-8"
-          style={{
-        boxShadow: "5px 5px 4px rgba(0, 0, 0, 0.2)",
-      }}
+          className="bg-[#EEE8DF] w-full max-w-sm sm:max-w-md rounded-4xl p-6 sm:p-8 shadow-[0_2px_3px_#9C8F7F]"
           onSubmit={handleLogin}
         >
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-cotta font-bold text-[#331517] text-center mb-6">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-cotta font-bold text-[#4B3935] text-center mb-6">
             User Login
           </h2>
 
           {/* Username */}
-          <div className="relative flex items-center text-[#331517] mb-4">
+          <div className="relative flex items-center text-[#4B3935] mb-4">
             <img
                 src="./src/assets/profile.png"
                 alt="Person icon for username"
@@ -174,13 +171,13 @@ export default function Login() {
                 value={formData.username}
                 onChange={handleChange}
                 placeholder="Username"
-                className="focus:outline-none focus:ring-2 focus:ring-[#331517]/50 px-2 pl-9 text-base font-fraunces text-[#331517] w-full h-12 border border-[#331517] rounded-md lg:text-lg"
+                className="focus:outline-none focus:ring-2 focus:ring-[#4B3935]/50 px-2 pl-9 text-base font-fraunces text-[#4B3935] w-full h-12 border border-[#4B3935] rounded-md lg:text-lg"
                 required
             />
           </div>
 
           {/* Password */}
-          <div className="relative flex items-center text-[#331517] mb-4">
+          <div className="relative flex items-center text-[#4B3935] mb-4">
           <img
               src="./src/assets/lock.png"
               alt="Lock icon for password"
@@ -192,7 +189,7 @@ export default function Login() {
               value={formData.password}
               onChange={handleChange}
               placeholder="Password"
-              className="focus:outline-none focus:ring-2 focus:ring-[#331517]/50 px-2 pl-9 text-base font-fraunces text-[#331517] w-full h-12 border border-[#331517] rounded-md lg:text-lg"
+              className="focus:outline-none focus:ring-2 focus:ring-[#4B3935]/50 px-2 pl-9 text-base font-fraunces text-[#4B3935] w-full h-12 border border-[#4B3935] rounded-md lg:text-lg"
               required
           />
       </div>
@@ -204,16 +201,16 @@ export default function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="w-1/2 bg-[#331517] text-[#D9D9D9] text-sm sm:text-lg py-2 rounded-md font-fraunces-light mx-auto block mb-4 transition-colors duration-200 hover:bg-[#D9D9D9] hover:text-[#331517] focus:outline-none focus:ring-2 focus:ring-[#331517] hover:outline hover:outline-2 hover:outline-[#331517] cursor-pointer"
+            className="hover:shadow-[0_2px_6px_#9C8F7F] transition duration-200 cursor-pointer w-1/2 bg-[#4B3935] text-[#F6F2ED] text-sm sm:text-lg py-2 rounded-md font-fraunces-light mx-auto block mb-4"
           >
             {loading ? "Logging in..." : "Login"}
           </button>
 
           {/* Divider */}
           <div className="flex items-center my-4">
-            <hr className="flex-grow border-[#331517]" />
-            <span className="px-2 text-sm text-[#331517] font-neuton md:text-xl">OR</span>
-            <hr className="flex-grow border-[#331517]" />
+            <hr className="flex-grow border-[#4B3935]" />
+            <span className="px-2 text-sm text-[#4B3935] font-neuton md:text-xl">OR</span>
+            <hr className="flex-grow border-[#4B3935]" />
           </div>
 
           <OAuthButton type="Login"/>
@@ -221,7 +218,7 @@ export default function Login() {
           <div className="w-full text-center mt-4">
 
             <button onClick={()=>navigate('/signup')}>
-              <span className="text-[#B57E25] font-fraunces-light text-sm sm:text-base cursor-pointer">Create an account</span>
+              <span className="hover:text-[#9C8F7F] transition duration-200 text-[#4B3935] font-fraunces-light text-sm sm:text-base cursor-pointer">Create an account</span>
             </button>
 
           </div>
@@ -233,8 +230,8 @@ export default function Login() {
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div className="absolute inset-0 backdrop-blur-sm bg-black/30" />
           <div className="relative z-50 bg-[#D9D9D9] p-8 rounded-lg shadow-xl w-[90%] max-w-[400px]">
-            <h3 className="text-2xl font-cotta text-[#331517] mb-4">Verify Your Email</h3>
-            <p className="font-neuton text-[#331517] mb-2">
+            <h3 className="text-2xl font-cotta text-[#4B3935] mb-4">Verify Your Email</h3>
+            <p className="font-neuton text-[#4B3935] mb-2">
               Please enter the verification code sent to your email.
             </p>
             {error && (
@@ -249,7 +246,7 @@ export default function Login() {
                 pattern="[0-9]*"
                 value={verificationCode}
                 onChange={(e) => setVerificationCode(e.target.value)}
-                className="px-4 font-neuton text-[#331517] h-12 border border-[#331517] rounded-md focus:outline-none focus:ring-2 focus:ring-[#331517]/50"
+                className="px-4 font-neuton text-[#4B3935] h-12 border border-[#4B3935] rounded-md focus:outline-none focus:ring-2 focus:ring-[#4B3935]/50"
                 placeholder="Enter verification code"
                 required
                 disabled={verifying || attemptsLeft <= 0}
@@ -257,15 +254,15 @@ export default function Login() {
               <button
                 type="submit"
                 disabled={verifying || attemptsLeft <= 0}
-                className={`bg-[#331517] text-[#D9D9D9] py-3 rounded-md border border-[#331517] transition-colors duration-200 ${
+                className={`bg-[#4B3935] text-[#D9D9D9] py-3 rounded-md border border-[#4B3935] transition-colors duration-200 ${
                   verifying || attemptsLeft <= 0
                     ? "opacity-60 cursor-not-allowed"
-                    : "hover:bg-[#D9D9D9] hover:text-[#331517]"
+                    : "hover:bg-[#D9D9D9] hover:text-[#4B3935]"
                 }`}
               >
                 {verifying ? "Verifying…" : "Verify"}
               </button>
-              <p className="text-sm text-[#331517] font-neuton text-center">
+              <p className="text-sm text-[#4B3935] font-neuton text-center">
                 Attempts left: {attemptsLeft}/{MAX_ATTEMPTS}
               </p>
             </form>

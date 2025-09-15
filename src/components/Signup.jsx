@@ -133,7 +133,7 @@ export default function Signup() {
                                 {error}
                             </p>
                         )}
-                        <form onSubmit={handleVerification} className="flex flex-col gap-4">
+                        <form onSubmit={handleVerification} className="flex flex-col gap-4 ">
                             <input
                                 type="text"
                                 inputMode="numeric"
@@ -161,35 +161,32 @@ export default function Signup() {
                 </div>
             )}
 
-            <div className="bg-[#D9D1C0] min-h-screen flex flex-col justify-center items-center lg:flex-row">
+            <div className="bg-[#F6F2ED] min-h-screen flex flex-col justify-center items-center lg:flex-row">
             {/*LEFT SIDE WITH IMAGE */}
             <div
                 className="min-h-screen hidden lg:flex w-1/2 bg-cover bg-center flex-col justify-center h-full p-12"
                 style={{ backgroundImage: `url(${InfoImage})` }}
             >
-                <h2 className="text-5xl font-erotique-bold text-[#D9D1C0] mb-4 border-b border-[#D9D1C0] pb-2 drop-shadow-[0_4px_3px_rgba(51,21,23,0.4)]">
+                <h2 className="text-5xl font-erotique-bold text-[#DAD1C6] mb-4 border-b border-[#EEE8DF] pb-2 drop-shadow-[0_4px_3px_rgba(51,21,23,0.4)]">
                     Share Your Library
                 </h2>
-                <p className="text-3xl font-cotta text-[#D9D1C0] max-w-[700px] drop-shadow-[0_4px_3px_rgba(51,21,23,0.4)]" >
+                <p className="text-3xl font-cotta text-[#DAD1C6] max-w-[700px] drop-shadow-[0_4px_3px_rgba(51,21,23,0.4)]" >
                     Save money, reduce clutter, and give your books new journeys through your community.
                 </p>
             </div>
 
             {/*RIGHT SIDE WITH FORM */}
-            <div className=" w-full flex flex-col items-center gap-6 px-2 lg:w-1/2  text-[#B57E25]">
+            <div className=" w-full flex flex-col items-center gap-6 px-2 lg:w-1/2 ">
                 <h1 className="font-erotique-bold text-4xl mx-2
-            md:text-6xl
+            md:text-6xl text-[#2C365A]
             ">BorrowBook</h1>
                 <form onSubmit={handleSubmit}
-                      style={{
-                    boxShadow: "5px 5px 4px rgba(0, 0, 0, 0.2)",
-                }}
-                      className="bg-[#D9D9D9] rounded-4xl w-[90%] max-w-[298px] flex flex-col justify-center items-center px-5 py-6
+                      className="shadow-[0_2px_3px_#9C8F7F] bg-[#EEE8DF] rounded-4xl w-[90%] max-w-[298px] flex flex-col justify-center items-center px-5 py-6
             md:max-w-[500px] md:w-[80%]
              ">
                     {error && <p className="text-red-500 text-base mb-4 font-neuton bg-red-100 px-2 py-1 rounded-md drop-shadow-md
                  ">{error}</p>}
-                    <h2 className="text-2xl font-cotta text-[#331517] mb-4
+                    <h2 className="text-2xl font-cotta text-[#4B3935] mb-4
                 md:text-3xl md:mt-3
                 ">Create Account</h2>
                     <div className="w-full flex flex-col justify-center items-center md:mt-2">
@@ -207,7 +204,7 @@ export default function Signup() {
                                     name="username"
                                     value={formData.username}
                                     onChange={handleChange}
-                                    className="focus:outline-none focus:ring-2 focus:ring-[#331517]/50 px-2 pl-9 text-base font-fraunces text-[#331517] w-full h-12 border border-[#331517] rounded-md lg:text-lg"
+                                    className="focus:outline-none focus:ring-2 focus:ring-[#4B3935]/50 px-2 pl-9 text-base font-fraunces text-[#4B3935] w-full h-12 border border-[#4B3935] rounded-md lg:text-lg"
                                 />
                             </div>
                         </div>
@@ -228,7 +225,7 @@ export default function Signup() {
                                     name="email"
                                     value={formData.email}
                                     onChange={handleChange}
-                                    className="focus:outline-none focus:ring-2 focus:ring-[#331517]/50 px-2 pl-9 text-base font-fraunces text-[#331517] w-full h-12 border border-[#331517] rounded-md lg:text-lg"
+                                    className="focus:outline-none focus:ring-2 focus:ring-[#4B3935]/50 px-2 pl-9 text-base font-fraunces text-[#4B3935] w-full h-12 border border-[#4B3935] rounded-md lg:text-lg"
                                 />
                             </div>
                         </div>
@@ -247,25 +244,25 @@ export default function Signup() {
                                     name="password"
                                     value={formData.password}
                                     onChange={handleChange}
-                                    className="focus:outline-none focus:ring-2 focus:ring-[#331517]/50 px-2 pl-9 text-base font-fraunces text-[#331517] w-full h-12 border border-[#331517] rounded-md lg:text-lg"
+                                    className="focus:outline-none focus:ring-2 focus:ring-[#4B3935]/50 px-2 pl-9 text-base font-fraunces text-[#4B3935] w-full h-12 border border-[#4B3935] rounded-md lg:text-lg"
                                 />
                             </div>
                         </div>
                     </div>
-                    <button type="submit" className="hover:bg-[#D9D9D9] hover:text-[#331517] border border-[#331517] max-w-45 w-full bg-[#331517] font-fraunces-light text-[#D9D9D9] rounded-md mt-4 text-base py-2
-                md:max-w-[228px] md:text-xl md:mt-6 cursor-pointer transition-colors duration-200">
+                    <button type="submit" className="max-w-45 w-full bg-[#4B3935] font-fraunces-light text-[#F6F2ED] rounded-md mt-4 text-base py-2
+                md:max-w-[228px] md:text-xl md:mt-6 cursor-pointer hover:shadow-[0_2px_6px_#9C8F7F] transition duration-200">
                         Create Account
                     </button>
                     <div className="flex items-center my-4 w-full md:w-[400px] lg:w-[350px]">
-                        <hr className="flex-grow border-[#331517]" />
-                        <span className="px-2 text-sm text-[#331517] font-neuton md:text-xl">OR</span>
-                        <hr className="flex-grow border-[#331517]" />
+                        <hr className="flex-grow border-[#4B3935]" />
+                        <span className="px-2 text-sm text-[#4B3935] font-neuton md:text-xl">OR</span>
+                        <hr className="flex-grow border-[#4B3935]" />
                     </div>
 
                         <OAuthButton type="Sign Up"/>
 
 
-                    <button onClick={()=>navigate('/login')} className="font-fraunces-light text-sm mt-2 md:text-lg md:mb-8 cursor-pointer hover:text-[#331517] transition-colors duration-200">Sign in to your account</button>
+                    <button onClick={()=>navigate('/login')} className="hover:text-[#9C8F7F] text-[#4B3935] transition duration-200 font-fraunces-light text-sm mt-2 md:text-lg md:mb-8 cursor-pointer">Sign in to your account</button>
                 </form>
             </div>
 
