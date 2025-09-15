@@ -11,14 +11,14 @@ function BookCard({ cover, title, author, status, lender, onDelete, bookId, dele
   };
 
   return (
-      <div className="relative h-full">
-        <div
-            className={`w-full h-full bg-[#d9d9d9] rounded-xl p-4 flex flex-col items-center transition ${
-                status === "BORROWED" && !isInBorrowedCollection ? "blur-[1.5px]" : ""
-            }`}
-            style={{ boxShadow: "5px 5px 4px rgba(0, 0, 0, 0.2)" }}
-        >
-          {!isInBorrowedCollection && bookId && bookId !== null && (
+    <div className="relative w-full h-full flex justify-center">
+      <div
+        className={`w-full aspect-[3/5] bg-[#d9d9d9] rounded-xl p-4 flex flex-col items-center transition ${
+          status === "BORROWED" && !isInBorrowedCollection ? "blur-[1.5px]" : ""
+        }`}
+        style={{ boxShadow: "5px 5px 4px rgba(0, 0, 0, 0.2)" }}
+      >
+      {!isInBorrowedCollection && bookId && bookId !== null && (
               <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -33,40 +33,36 @@ function BookCard({ cover, title, author, status, lender, onDelete, bookId, dele
                 {deleting ? "⟳" : "✕"}
               </button>
           )}
-
-          <img
-              src={cover}
-              alt={title}
-              className="w-full aspect-[3/4] object-cover rounded-md mt-3 mb-3"
-          />
-
-          <div className="w-full flex flex-col items-center mt-2">
-            <p className="font-cotta text-sm md:text-base lg:text-lg text-[#331517] text-center truncate w-full">
-              {title}
-            </p>
-            <p className="font-cotta text-xs md:text-sm lg:text-base text-[#331517] text-center truncate w-full">
-              {author}
-            </p>
-            {isInBorrowedCollection ? (
-                <p className="font-cotta text-xs md:text-sm lg:text-base text-[#331517] text-center truncate w-full mt-1">
-                  owned by @{lender}
-                </p>
-            ) : (
-                <span
-                    className={`mt-1 px-2 py-0.5 rounded-full text-xs md:text-sm lg:text-base font-neuton ${
-                        status === "AVAILABLE"
-                            ? "bg-green-100 text-green-600"
-                            : "bg-red-100 text-red-600"
-                    }`}
-                >
-              {formatStatus(status)}
-            </span>
-            )}
-          </div>
-        </div>
+        <img
+          src={cover}
+          alt={title}
+          className="w-full aspect-[3/4] object-cover rounded-md mb-3 outline-1 outline outline-[#331517]"
+        />
+        <p className="font-cotta text-sm md:text-base lg:text-lg text-[#331517] text-center truncate w-full">
+          {title}
+        </p>
+        <p className="font-cotta text-xs md:text-sm lg:text-base text-[#331517] text-center truncate w-full mb-3">
+          {author}
+        </p>
+        {!isInBorrowedCollection ? (
+          <span
+            className={`px-2 py-0.5 rounded-full text-xs md:text-sm lg:text-base font-neuton ${
+              status === "AVAILABLE"
+                ? "bg-green-100 text-green-600"
+                : "bg-red-100 text-red-600"
+            }`}
+          >
+            {formatStatus(status)}
+          </span>
+        ) : (
+          <p className="font-cotta text-xs md:text-sm lg:text-base text-[#331517] text-center truncate w-full">
+            owned by @{lender}
+          </p>
+        )}
       </div>
+    </div>
   );
-}
+};
 
 const CustomDropdown = ({ value, onChange }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -180,8 +176,8 @@ export default function ProfilePage() {
         cover: b.imageLink,
         title: b.title,
         author: Array.isArray(b.authors) ? b.authors.join(", ") : b.authors,
-        status: b.status ?? "AVAILABLE",
-        lender: collectionType === "borrowedBooks" ? b.lender?.username : null,
+        status: b.status || "AVAILABLE",  
+        lender: collectionType === "borrowedBooks" ? b.ownerUsername : null,
       }));
 
       setBooks(mapped);
