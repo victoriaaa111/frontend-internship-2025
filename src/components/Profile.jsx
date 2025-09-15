@@ -10,41 +10,43 @@ function BookCard({ cover, title, author, status, lender}) {
   return status?.charAt(0).toUpperCase() + status?.slice(1).toLowerCase();
 };
   return (
-    <div
-      className={`xl:w-65 bg-[#d9d9d9] rounded-xl p-2 mx-auto flex flex-col items-center transition ml-4 ${
-        status === "BORROWED" && !isInBorrowedCollection ? "blur-[1.5px]" : ""
-      }`}
-      style={{ boxShadow: "5px 5px 4px rgba(0, 0, 0, 0.2)" }}
-    >
-      <img
-        src={cover}
-        alt={title}
-        className="w-full aspect-[3/4] object-cover rounded-md mb-3"
-      />
-      <p className="font-cotta text-sm md:text-base lg:text-lg text-[#331517] text-center truncate w-full">
-        {title}
-      </p>
-      <p className="font-cotta text-xs md:text-sm lg:text-base text-[#331517] text-center truncate w-full">
-        {author}
-      </p>
-      {isInBorrowedCollection ? (
-        <p className="font-cotta text-xs md:text-sm lg:text-base text-[#331517] text-center truncate w-full">
-          owned by @{lender}
+    <div className="relative w-full h-full flex justify-center">
+      <div
+        className={`w-full aspect-[3/5] bg-[#d9d9d9] rounded-xl p-4 flex flex-col items-center transition ${
+          status === "BORROWED" && !isInBorrowedCollection ? "blur-[1.5px]" : ""
+        }`}
+        style={{ boxShadow: "5px 5px 4px rgba(0, 0, 0, 0.2)" }}
+      >
+        <img
+          src={cover}
+          alt={title}
+          className="w-full aspect-[3/4] object-cover rounded-md mb-3 outline-1 outline outline-[#331517]"
+        />
+        <p className="font-cotta text-sm md:text-base lg:text-lg text-[#331517] text-center truncate w-full">
+          {title}
         </p>
-      ) : (
-        <span
-          className={`mt-1 px-2 py-0.5 rounded-full text-xs md:text-sm lg:text-base font-neuton ${
-            status === "AVAILABLE"
-              ? "bg-green-100 text-green-600"
-              : "bg-red-100 text-red-600"
-          }`}
-        >
-          {formatStatus(status)}
-        </span>
-      )}
+        <p className="font-cotta text-xs md:text-sm lg:text-base text-[#331517] text-center truncate w-full mb-3">
+          {author}
+        </p>
+        {!isInBorrowedCollection ? (
+          <span
+            className={`px-2 py-0.5 rounded-full text-xs md:text-sm lg:text-base font-neuton ${
+              status === "AVAILABLE"
+                ? "bg-green-100 text-green-600"
+                : "bg-red-100 text-red-600"
+            }`}
+          >
+            {formatStatus(status)}
+          </span>
+        ) : (
+          <p className="font-cotta text-xs md:text-sm lg:text-base text-[#331517] text-center truncate w-full">
+            owned by @{lender}
+          </p>
+        )}
+      </div>
     </div>
   );
-}
+};
 
 const CustomDropdown = ({ value, onChange }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -144,7 +146,7 @@ export default function ProfilePage() {
         title: b.title,
         author: Array.isArray(b.authors) ? b.authors.join(", ") : b.authors,
         status: b.status || "AVAILABLE",  
-        lender: collectionType === "borrowedBooks" ? b.lender?.username : null,
+        lender: collectionType === "borrowedBooks" ? b.ownerUsername : null,
       }));
 
       setBooks(mapped);
@@ -246,7 +248,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Add Book Button - Responsive text sizing */}
-        <button onClick={()=>setShowAddBook(true)} className="bg-[#d9d9d9] px-5 py-2 rounded-full shadow-md hover:shadow-lg transition font-neuton-light text-[#331517] text-lg md:text-xl lg:text-2xl ml-auto mr-7">
+        <button onClick={()=>setShowAddBook(true)} className="bg-[#d9d9d9] px-5 py-2 rounded-full shadow-md hover:shadow-lg transition font-neuton-light text-[#331517] text-lg md:text-xl lg:text-2xl ml-auto mr-7 cursor-pointer hover:bg-[#331517] hover:text-[#d9d9d9]">
 
           + Add Book
         </button>
