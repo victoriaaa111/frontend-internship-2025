@@ -134,19 +134,27 @@ export default function AddBook({ onClose, onAdded }) {
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
             <div className="absolute inset-0 backdrop-blur-sm bg-black/30" onClick={onClose} />
-            <div ref={modalRef} className={`relative z-50 bg-[#D9D9D9] p-8 ${open ? 'pb-10' : ''} rounded-lg shadow-xl w-[90%] max-w-[400px]`}>
-                <button onClick={onClose} className="absolute right-4 top-4 text-[#331517] hover:text-[#331517]/70" aria-label="Close">✕</button>
-                <h3 className="text-center text-2xl font-cotta text-[#331517] mb-4">Add New Book</h3>
+            <div ref={modalRef} className={`relative z-50 bg-[#EEE8DF] p-8 ${open ? 'pb-10' : ''} rounded-lg shadow-xl w-[90%] max-w-[400px]`}>
+                <button onClick={onClose} className="absolute right-4 top-4 text-[#4B3935] hover:text-[#4B3935]/70" aria-label="Close">✕</button>
 
-                {error && <p className="text-red-600 bg-red-100 border border-red-300 rounded px-2 py-1 mb-3 font-neuton">{error}</p>}
-
+                <h3 className="text-center text-2xl font-cotta text-[#4B3935] mb-4">Add New Book</h3>
+                {error && (
+                    <div className="bg-red-50 border text-red-700 px-4 py-3 rounded-lg mb-4 text-center">
+                        <div className="flex items-center justify-center">
+                            <svg className="w-4 h-4 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                            </svg>
+                            <span className="font-fraunces-light text-base">{error}</span>
+                        </div>
+                    </div>
+                )}
                 <form onSubmit={handleSubmit} onKeyDown={handleKeyDown} className="flex flex-col gap-4">
                     <div className="relative">
                         <input
                             type="text"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
-                            className="w-full px-4 pr-12 font-neuton text-[#331517] h-12 border border-[#331517] rounded-md focus:outline-none focus:ring-2 focus:ring-[#331517]/50"
+                            className="w-full px-4 pr-12 font-fraunces text-[#4B3935] h-12 border border-[#4B3935] rounded-md focus:outline-none focus:ring-2 focus:ring-[#4B3935]/50"
                             placeholder="Enter book title"
                             required
                             disabled={isLoading}
@@ -155,10 +163,10 @@ export default function AddBook({ onClose, onAdded }) {
                             type="button"
                             onClick={handleSearch}
                             disabled={isLoading}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#331517] hover:text-[#331517]/70 disabled:opacity-50"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4B3935] hover:text-[#4B3935]/70 disabled:opacity-50"
                         >
                             {isLoading ? (
-                                <div className="animate-spin h-6 w-6 border-2 border-[#331517] border-t-transparent rounded-full"></div>
+                                <div className="animate-spin h-6 w-6 border-2 border-[#4B3935] border-t-transparent rounded-full"></div>
                             ) : (
                                 <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -167,17 +175,17 @@ export default function AddBook({ onClose, onAdded }) {
                         </button>
 
                         {showResults && searchResults.length > 0 && (
-                            <ul className="absolute w-full bg-[#D9D9D9] border border-[#331517] rounded-md mt-1 max-h-60 overflow-y-auto z-50">
+                            <ul className="absolute w-full bg-[#EEE8DF] border border-[#4B3935] rounded-md mt-1 max-h-60 overflow-y-auto z-50">
                                 {searchResults.map((book, index) => (
                                     <li
                                         key={book.googleBookId}
                                         onClick={() => selectBook(book)}
-                                        className={`flex items-center gap-3 p-2 hover:bg-[#331517] hover:text-[#D9D9D9] cursor-pointer ${index !== searchResults.length - 1 ? 'border-b border-[#331517]/20' : ''}`}
+                                        className={`flex items-center gap-3 p-2 hover:shadow-[0_2px_6px_#9C8F7F] transition duration-200 cursor-pointer ${index !== searchResults.length - 1 ? 'border-b border-[#4B3935]/20' : ''}`}
                                     >
                                         <img src={book.imageLink} alt={book.title} className="h-14 w-12 object-cover" onError={handleImageError} />
                                         <div>
-                                            <p className="font-neuton">{book.title}</p>
-                                            <p className="text-sm font-neuton-light">{book.author ? book.author.join(', ') : 'Unknown Author'}</p>
+                                            <p className="font-fraunces">{book.title}</p>
+                                            <p className="text-sm font-fraunces-light">{book.author ? book.author.join(', ') : 'Unknown Author'}</p>
                                         </div>
                                     </li>
                                 ))}
@@ -189,7 +197,7 @@ export default function AddBook({ onClose, onAdded }) {
                         <button
                             type="button"
                             onClick={() => setOpen((o) => !o)}
-                            className="mb-1 w-full px-4 font-neuton text-[#331517] h-12 border border-[#331517] rounded-md bg-[#D9D9D9] flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-[#331517]/50"
+                            className="mb-1 w-full px-4 font-fraunces text-[#4B3935] h-12 border border-[#4B3935] rounded-md bg-[#EEE8DF] flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-[#4B3935]/50"
                             aria-haspopup="listbox"
                             aria-expanded={open}
                         >
@@ -200,14 +208,14 @@ export default function AddBook({ onClose, onAdded }) {
                         </button>
 
                         {open && !showResults && (
-                            <ul role="listbox" className="absolute font-neuton-light left-0 right-0 top-full mt-1 z-[60] bg-[#D9D9D9] border border-[#331517] rounded-md shadow-lg overflow-hidden">
+                            <ul role="listbox" className="absolute font-fraunces-light left-0 right-0 top-full mt-1 z-[60] bg-[#EEE8DF] border border-[#4B3935] rounded-md shadow-lg overflow-hidden">
                                 {['Available', 'Borrowed'].map((opt) => (
                                     <li
                                         key={opt}
                                         role="option"
                                         aria-selected={status === opt}
                                         onClick={() => { setStatus(opt); setOpen(false); }}
-                                        className={`px-4 py-2 cursor-pointer ${status === opt ? 'bg-[#331517] text-[#d9d1c0]' : ''}`}
+                                        className={`px-4 py-2 cursor-pointer ${status === opt ? 'bg-[#4B3935] text-[#EEE8DF]' : ''}`}
                                     >
                                         {opt}
                                     </li>
@@ -219,7 +227,7 @@ export default function AddBook({ onClose, onAdded }) {
                     <button
                         type="submit"
                         disabled={isLoading || open || showResults}
-                        className="text-lg bg-[#331517] font-neuton text-[#D9D9D9] py-1 rounded-md border border-[#331517] transition-colors duration-200 hover:bg-[#D9D9D9] hover:text-[#331517] disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="text-lg bg-[#4B3935] font-neuton text-[#EEE8DF] py-1 rounded-md border border-[#4B3935] transition-colors duration-200 hover:shadow-[0_2px_6px_#9C8F7F]  cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         Add Book
                     </button>
