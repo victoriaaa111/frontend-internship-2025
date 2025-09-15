@@ -164,7 +164,7 @@ export default function Login() {
             <img
                 src="./src/assets/profile.png"
                 alt="Person icon for username"
-                className="absolute translate-y-0.5 left-2 w-5 h-5 z-10 opacity-50"
+                className="absolute left-2 w-5 h-5 z-10 opacity-50"
             />
             <input
                 type="text"
@@ -172,7 +172,7 @@ export default function Login() {
                 value={formData.username}
                 onChange={handleChange}
                 placeholder="Username"
-                className="focus:outline-none focus:ring-2 focus:ring-[#331517]/50 px-2 pl-9 text-base font-neuton text-[#331517] w-full h-12 border border-[#331517] rounded-md lg:text-lg"
+                className="focus:outline-none focus:ring-2 focus:ring-[#331517]/50 px-2 pl-9 text-base font-fraunces text-[#331517] w-full h-12 border border-[#331517] rounded-md lg:text-lg"
                 required
             />
           </div>
@@ -182,7 +182,7 @@ export default function Login() {
           <img
               src="./src/assets/lock.png"
               alt="Lock icon for password"
-              className="absolute translate-y-0.5 left-2 w-5 h-5 z-10 opacity-50"
+              className="absolute left-2 w-5 h-5 z-10 opacity-50"
           />
           <input
               type="password"
@@ -190,7 +190,7 @@ export default function Login() {
               value={formData.password}
               onChange={handleChange}
               placeholder="Password"
-              className="focus:outline-none focus:ring-2 focus:ring-[#331517]/50 px-2 pl-9 text-base font-neuton text-[#331517] w-full h-12 border border-[#331517] rounded-md lg:text-lg"
+              className="focus:outline-none focus:ring-2 focus:ring-[#331517]/50 px-2 pl-9 text-base font-fraunces text-[#331517] w-full h-12 border border-[#331517] rounded-md lg:text-lg"
               required
           />
       </div>
@@ -202,7 +202,7 @@ export default function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="w-1/2 bg-[#331517] text-[#D9D9D9] text-sm sm:text-lg py-2 rounded-md font-neuton mx-auto block mb-4 transition-colors duration-200 hover:bg-[#D9D9D9] hover:text-[#331517] focus:outline-none focus:ring-2 focus:ring-[#331517] hover:outline hover:outline-2 hover:outline-[#331517] cursor-pointer"
+            className="w-1/2 bg-[#331517] text-[#D9D9D9] text-sm sm:text-lg py-2 rounded-md font-fraunces-light mx-auto block mb-4 transition-colors duration-200 hover:bg-[#D9D9D9] hover:text-[#331517] focus:outline-none focus:ring-2 focus:ring-[#331517] hover:outline hover:outline-2 hover:outline-[#331517] cursor-pointer"
           >
             {loading ? "Logging in..." : "Login"}
           </button>
@@ -210,7 +210,7 @@ export default function Login() {
           {/* Divider */}
           <div className="flex items-center my-4">
             <hr className="flex-grow border-[#331517]" />
-            <span className="px-2 text-xs sm:text-sm text-[#331517] font-cotta font-bold">OR</span>
+            <span className="px-2 text-sm text-[#331517] font-neuton md:text-xl">OR</span>
             <hr className="flex-grow border-[#331517]" />
           </div>
 
@@ -219,7 +219,7 @@ export default function Login() {
           <div className="w-full text-center mt-4">
 
             <button onClick={()=>navigate('/signup')}>
-              <span className="text-[#B57E25] font-neuton text-sm sm:text-base cursor-pointer">Create an account</span>
+              <span className="text-[#B57E25] font-fraunces-light text-sm sm:text-base cursor-pointer">Create an account</span>
             </button>
 
           </div>

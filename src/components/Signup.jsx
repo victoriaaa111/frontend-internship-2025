@@ -199,7 +199,7 @@ export default function Signup() {
                                 <img
                                     src="./src/assets/profile.png"
                                     alt="Person icon for username"
-                                    className="absolute translate-y-0.5 left-2 w-5.5 h-5.5 z-10 opacity-50"
+                                    className="absolute left-2 w-5.5 h-5.5 z-10 opacity-50"
                                 />
                                 <input
                                     placeholder="Username"
@@ -207,7 +207,7 @@ export default function Signup() {
                                     name="username"
                                     value={formData.username}
                                     onChange={handleChange}
-                                    className="focus:outline-none focus:ring-2 focus:ring-[#331517]/50 px-2 pl-9 text-base font-neuton text-[#331517] w-full h-12 border border-[#331517] rounded-md lg:text-lg"
+                                    className="focus:outline-none focus:ring-2 focus:ring-[#331517]/50 px-2 pl-9 text-base font-fraunces text-[#331517] w-full h-12 border border-[#331517] rounded-md lg:text-lg"
                                 />
                             </div>
                         </div>
@@ -219,7 +219,7 @@ export default function Signup() {
                                 <img
                                     src="./src/assets/mail.png"
                                     alt="Mail icon for email"
-                                    className="absolute translate-y-0.5 left-2.5 w-4.5 h-4.5 z-10 opacity-60"
+                                    className="absolute left-2.5 w-4.5 h-4.5 z-10 opacity-60"
                                 />
                                 <input
                                     placeholder="Email"
@@ -228,7 +228,7 @@ export default function Signup() {
                                     name="email"
                                     value={formData.email}
                                     onChange={handleChange}
-                                    className="focus:outline-none focus:ring-2 focus:ring-[#331517]/50 px-2 pl-9 text-base font-neuton text-[#331517] w-full h-12 border border-[#331517] rounded-md lg:text-lg"
+                                    className="focus:outline-none focus:ring-2 focus:ring-[#331517]/50 px-2 pl-9 text-base font-fraunces text-[#331517] w-full h-12 border border-[#331517] rounded-md lg:text-lg"
                                 />
                             </div>
                         </div>
@@ -238,7 +238,7 @@ export default function Signup() {
                                 <img
                                     src="./src/assets/lock.png"
                                     alt="Lock icon for password"
-                                    className="absolute translate-y-0.5 left-2 w-5 h-5 z-10 opacity-70"
+                                    className="absolute left-2 w-5 h-5 z-10 opacity-70"
                                 />
                                 <input
                                     placeholder="Password"
@@ -247,12 +247,12 @@ export default function Signup() {
                                     name="password"
                                     value={formData.password}
                                     onChange={handleChange}
-                                    className="focus:outline-none focus:ring-2 focus:ring-[#331517]/50 px-2 pl-9 text-base font-neuton text-[#331517] w-full h-12 border border-[#331517] rounded-md lg:text-lg"
+                                    className="focus:outline-none focus:ring-2 focus:ring-[#331517]/50 px-2 pl-9 text-base font-fraunces text-[#331517] w-full h-12 border border-[#331517] rounded-md lg:text-lg"
                                 />
                             </div>
                         </div>
                     </div>
-                    <button type="submit" className="hover:bg-[#D9D9D9] hover:text-[#331517] border border-[#331517] max-w-45 w-full bg-[#331517] font-neuton-light text-[#D9D9D9] rounded-md mt-4 text-base py-2
+                    <button type="submit" className="hover:bg-[#D9D9D9] hover:text-[#331517] border border-[#331517] max-w-45 w-full bg-[#331517] font-fraunces-light text-[#D9D9D9] rounded-md mt-4 text-base py-2
                 md:max-w-[228px] md:text-xl md:mt-6 cursor-pointer transition-colors duration-200">
                         Create Account
                     </button>
@@ -265,7 +265,7 @@ export default function Signup() {
                         <OAuthButton type="Sign Up"/>
 
 
-                    <button onClick={()=>navigate('/login')} className="font-neuton-light text-sm mt-2 md:text-lg md:mb-8 cursor-pointer hover:text-[#331517] transition-colors duration-200">Sign in to your account</button>
+                    <button onClick={()=>navigate('/login')} className="font-fraunces-light text-sm mt-2 md:text-lg md:mb-8 cursor-pointer hover:text-[#331517] transition-colors duration-200">Sign in to your account</button>
                 </form>
             </div>
 
