@@ -18,7 +18,7 @@
     font-family: 'Erotique-Bold';
     src: url('./assets/fonts/ErotiqueAlternateTrial-Bold.ttf') format('truetype');
     font-weight: 700;
-    font-style: bold;
+    font-style: normal;
 }
 
 @font-face {
@@ -32,14 +32,14 @@
     font-family: 'Neuton-Light';
     src: url('./assets/fonts/Neuton-Light.ttf') format('truetype');
     font-weight: 300;
-    font-style: light;
+    font-style: normal;
 }
 
 @font-face {
     font-family: 'Fraunces-Light';
     src: url('./assets/fonts/Fraunces-Light.ttf') format('truetype');
     font-weight: 300;
-    font-style: light;
+    font-style: normal;
 }
 
 @font-face {

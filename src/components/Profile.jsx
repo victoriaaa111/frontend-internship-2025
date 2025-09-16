@@ -11,7 +11,7 @@ const CustomDropdown = ({ value, onChange }) => {
       <div className="relative inline-block text-left">
         <button
             onClick={() => setIsOpen(!isOpen)}
-            className="hover:shadow-[0_4px_4px_#9C8F7F]  relative inline-flex w-48 sm:w-56 md:w-64 lg:w-72 justify-center items-center rounded-2xl bg-[#EEE8DF] px-5 py-2 font-fraunces-light text-lg md:text-xl lg:text-2xl text-[#4B3935] shadow-[0_2px_3px_#9C8F7F] hover:bg-[#4B3935] hover:text-[#EEE8DF] transition cursor-pointer"
+            className="hover:shadow-[0_4px_4px_#9C8F7F]  relative inline-flex w-48 sm:w-56 md:w-64 lg:w-72 justify-center items-center rounded-2xl bg-[#EEE8DF] px-5 py-2 font-fraunces-light text-lg md:text-xl lg:text-2xl text-[#4B3935] shadow-[0_2px_3px_#9C8F7F]  transition cursor-pointer"
         >
           <svg
               className={`absolute right-4 w-5 h-5 ${isOpen ? "transform rotate-180 transition duration-300" : ""}`}

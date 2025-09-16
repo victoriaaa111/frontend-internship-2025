@@ -42,9 +42,7 @@ export default function Signup() {
                 method: "POST",
                 body: formData,
             });
-            if (response.__unauthorized) {
-                navigate("/login");
-            }
+
             const data = await response.json().catch(() => ({}));
             if (!response.ok) throw new Error(data?.message || "Registration failed");
 
@@ -86,9 +84,7 @@ export default function Signup() {
                 method: "POST",
                 body: { sessionId, code: verificationCode },
             });
-            if (res.__unauthorized) {
-                navigate("/login");
-            }
+
             const data = await res.json().catch(() => ({}));
             if (!res.ok) throw new Error(data?.message || "Invalid verification code");
 
@@ -281,7 +277,7 @@ export default function Signup() {
                         <OAuthButton type="Sign Up"/>
 
 
-                    <button onClick={()=>navigate('/login')} className="hover:text-[#9C8F7F] text-[#4B3935] transition duration-200 font-fraunces-light text-sm mt-2 md:text-lg md:mb-8 cursor-pointer">Sign in to your account</button>
+                    <button type="button" onClick={()=>navigate('/login')} className="hover:text-[#9C8F7F] text-[#4B3935] transition duration-200 font-fraunces-light text-sm mt-2 md:text-lg md:mb-8 cursor-pointer">Sign in to your account</button>
                 </form>
             </div>
 

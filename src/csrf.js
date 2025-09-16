@@ -86,17 +86,13 @@ export const csrfFetch = async (url, options = {}) => {
                 response = await fetch(url, finalOptions);
 
                 if (response.status === 401) {
-                    window.location.href = '/login'; // Redirect to login if still unauthorized
                     return { __unauthorized: true };
                 }
             } else {
-                window.location.href = '/login'; // Redirect to login if refresh fails
                 return { __unauthorized: true };
             }
         } catch (err) {
             console.error('Token refresh failed:', err);
-            window.location.href = '/login';
-
             return { __unauthorized: true };
         }
     }

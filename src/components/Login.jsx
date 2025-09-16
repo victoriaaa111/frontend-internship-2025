@@ -48,9 +48,8 @@ export default function Login() {
         method: "POST",
         body: formData,
       });
-      if (response.__unauthorized) {
-        navigate("/login");
-      }
+
+
 
       if (!response.ok) {
         let errorMessage;
@@ -89,7 +88,7 @@ export default function Login() {
       setError("");
     } catch (err) {
       setError(err.message);
-      // Clear error after 3.5 seconds
+
       setTimeout(() => {
         setError("");
       }, 4500);
@@ -110,9 +109,7 @@ export default function Login() {
         method: "POST",
         body: { sessionId, code: verificationCode },
       });
-      if (res.__unauthorized) {
-        navigate("/login");
-      }
+
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data?.message || "Invalid verification code");
 
@@ -238,7 +235,7 @@ export default function Login() {
           {/* Create an account */}
           <div className="w-full text-center mt-4">
 
-            <button onClick={()=>navigate('/signup')}>
+            <button type="button" onClick={()=>navigate('/signup')}>
               <span className="hover:text-[#9C8F7F] transition duration-200 text-[#4B3935] font-fraunces-light text-sm sm:text-base cursor-pointer">Create an account</span>
             </button>
 
