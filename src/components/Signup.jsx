@@ -12,6 +12,30 @@ export default function Signup() {
         password: ''
     })
 
+    const validateEmail = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email) && email.length <= 254;
+    };
+
+    const validatePassword = (password) => {
+        // Check for minimum length and complexity
+        const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,128}$/;
+        return passwordRegex.test(password);
+    };
+
+    const validateUsername = (username) => {
+        // Allow only alphanumeric and safe characters
+        const usernameRegex = /^[a-zA-Z0-9_-]+$/;
+        return usernameRegex.test(username) && username.length >= 5 && username.length <= 30;
+    };
+
+    const sanitizeInput = (input) => {
+        return input
+            .replace(/[<>]/g, '') // Remove potential HTML tags
+            .trim() // Remove whitespace
+            .substring(0, 255); // Limit length
+    };
+
     const [sessionId, setSessionId] = useState('');
     const [showVerification, setShowVerification] = useState(false);
     const [verificationCode, setVerificationCode] = useState('');
@@ -36,11 +60,33 @@ export default function Signup() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+        const username = sanitizeInput(formData.username);
+        const email = sanitizeInput(formData.email);
+        const password = formData.password;
+        // Validate inputs
+        if (!validateUsername(username)) {
+            setError('Username must be 5-30 characters and contain only letters, numbers, _ or -');
+            return;
+        }
+
+        if (!validateEmail(email)) {
+            setError('Please enter a valid email address');
+            return;
+        }
+
+        if (!validatePassword(password)) {
+            setError('Password must be at least 8 characters with one uppercase letter and one number');
+            return;
+        }
 
         try {
+            const sanitizedData = new FormData();
+            sanitizedData.append('username', username);
+            sanitizedData.append('email', email);
+            sanitizedData.append('password', password);
             const response = await csrfFetch("http://localhost:8080/api/v1/auth/register", {
                 method: "POST",
-                body: formData,
+                body: sanitizedData,
             });
 
             const data = await response.json().catch(() => ({}));
@@ -65,7 +111,8 @@ export default function Signup() {
             setVerificationCode('');
             console.log('Signup successful');
         } catch (err) {
-            setError(err.message);
+            const safeErrorMessage = err.message ? sanitizeInput(err.message) : 'Signup failed';
+            setError(safeErrorMessage);
             setTimeout(() => {
                 setError("");
             }, 4500)
@@ -216,6 +263,7 @@ export default function Signup() {
                                 <input
                                     placeholder="Username"
                                     required
+                                    pattern="[a-zA-Z0-9_\-]+"
                                     name="username"
                                     value={formData.username}
                                     onChange={handleChange}
@@ -240,6 +288,8 @@ export default function Signup() {
                                     name="email"
                                     value={formData.email}
                                     onChange={handleChange}
+                                    minLength="8"
+                                    maxLength="128"
                                     className="focus:outline-none focus:ring-2 focus:ring-[#4B3935]/50 px-2 pl-9 text-base font-fraunces text-[#4B3935] w-full h-12 border border-[#4B3935] rounded-md lg:text-lg"
                                 />
                             </div>
@@ -257,6 +307,8 @@ export default function Signup() {
                                     type="password"
                                     required
                                     name="password"
+                                    minLength="8"
+                                    maxLength="128"
                                     value={formData.password}
                                     onChange={handleChange}
                                     className="focus:outline-none focus:ring-2 focus:ring-[#4B3935]/50 px-2 pl-9 text-base font-fraunces text-[#4B3935] w-full h-12 border border-[#4B3935] rounded-md lg:text-lg"
