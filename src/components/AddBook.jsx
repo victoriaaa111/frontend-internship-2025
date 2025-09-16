@@ -7,6 +7,24 @@ const GOOGLE_SEARCH_URL = "http://localhost:8080/api/book/search/google?q=";
 const CREATE_BOOK_URL  = "http://localhost:8080/api/book";
 
 export default function AddBook({ onClose, onAdded }) {
+
+    const sanitizeInput = (input) => {
+        if (typeof input !== 'string') return '';
+        return input
+            .replace(/[<>]/g, '') // Remove < and > characters
+            .replace(/javascript:/gi, '') // Remove javascript: protocol
+            .replace(/on\w+=/gi, '') // Remove event handlers like onclick=
+            .trim();
+    };
+
+// Add validation functions
+    const validateTitle = (title) => {
+        return title &&
+            title.length >= 1 &&
+            title.length <= 200 &&
+            /^[a-zA-Z0-9\s\-',.:;!?()&]+$/.test(title);
+    };
+
     const navigate = useNavigate();
     useEffect(() => { initCsrf("http://localhost:8080"); }, []);
 
@@ -33,12 +51,20 @@ export default function AddBook({ onClose, onAdded }) {
             return;
         }
 
+        const sanitizedTitle = sanitizeInput(title);
+
+        // Validate sanitized input
+        if (!validateTitle(sanitizedTitle)) {
+            setError('Book title contains invalid characters or is too long');
+            return;
+        }
+
         setIsLoading(true);
         setError('');
 
         try {
             const payload = {
-                googleBookId: selectedBook.googleBookId, // from your search API
+                googleBookId: sanitizeInput(selectedBook.googleBookId), // from your search API
                 status: status.toUpperCase(),            // Swagger expects "AVAILABLE"/"BORROWED"
             };
 
@@ -63,7 +89,8 @@ export default function AddBook({ onClose, onAdded }) {
             onAdded?.(created);
             onClose();
         } catch (err) {
-            setError(err.message || 'Failed to add book');
+            const safeErrorMessage = sanitizeInput(err.message || 'Failed to add book');
+            setError(safeErrorMessage);
         } finally {
             setIsLoading(false);
         }
@@ -153,6 +180,7 @@ export default function AddBook({ onClose, onAdded }) {
                         <input
                             type="text"
                             value={title}
+                            maxLength="200"
                             onChange={(e) => setTitle(e.target.value)}
                             className="w-full px-4 pr-12 font-fraunces text-[#4B3935] h-12 border border-[#4B3935] rounded-md focus:outline-none focus:ring-2 focus:ring-[#4B3935]/50"
                             placeholder="Enter book title"
