@@ -24,6 +24,24 @@ export default function Login() {
 
   const navigate = useNavigate();
 
+  const validatePassword = (password) => {
+    // Check for minimum length and complexity
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,128}$/;
+    return passwordRegex.test(password);
+  };
+
+  const validateUsername = (username) => {
+    // Allow only alphanumeric and safe characters
+    const usernameRegex = /^[a-zA-Z0-9_-]+$/;
+    return usernameRegex.test(username) && username.length >= 5 && username.length <= 30;
+  };
+  const sanitizeInput = (input) => {
+    return input
+        .replace(/[<>]/g, '') // Remove potential HTML tags
+        .trim() // Remove whitespace
+        .substring(0, 255); // Limit length
+  };
+
   useEffect(() => {
     initCsrf("http://localhost:8080");
   }, []);
@@ -43,12 +61,29 @@ export default function Login() {
     setShowVerification(false);
     setAttemptsLeft(MAX_ATTEMPTS);
 
+    const username = sanitizeInput(formData.username);
+    const password = formData.password;
+
+    if (!validateUsername(username)) {
+      setError('Username must be 5-30 characters and contain only letters, numbers, _ or -');
+      setLoading(false);
+      return;
+    }
+
+    if (!validatePassword(password)) {
+      setError('Password must be at least 8 characters with one uppercase letter and one number');
+      setLoading(false);
+      return;
+    }
+
     try {
+      const sanitizedFormData = new FormData();
+      sanitizedFormData.append('username', username);
+      sanitizedFormData.append('password', password);
       const response = await csrfFetch("http://localhost:8080/api/v1/auth/login", {
         method: "POST",
-        body: formData,
+        body: sanitizedFormData,
       });
-
 
 
       if (!response.ok) {
@@ -87,7 +122,8 @@ export default function Login() {
       setShowVerification(true);
       setError("");
     } catch (err) {
-      setError(err.message);
+      const safeErrorMessage = err.message ? sanitizeInput(err.message) : 'Login failed';
+      setError(safeErrorMessage);
 
       setTimeout(() => {
         setError("");
@@ -191,6 +227,9 @@ export default function Login() {
                 value={formData.username}
                 onChange={handleChange}
                 placeholder="Username"
+                pattern="[a-zA-Z0-9_\-]+"
+                minLength="5"
+                maxLength="30"
                 className="focus:outline-none focus:ring-2 focus:ring-[#4B3935]/50 px-2 pl-9 text-base font-fraunces text-[#4B3935] w-full h-12 border border-[#4B3935] rounded-md lg:text-lg"
                 required
             />
@@ -206,6 +245,8 @@ export default function Login() {
           <input
               type="password"
               name="password"
+              minLength="8"
+              maxLength="128"
               value={formData.password}
               onChange={handleChange}
               placeholder="Password"
