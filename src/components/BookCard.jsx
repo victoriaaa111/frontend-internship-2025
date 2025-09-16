@@ -39,7 +39,8 @@ export default function BookCard({ cover, title, author, status, lender, onDelet
                 <p className="font-cotta text-xs md:text-sm lg:text-base text-[#2C365A] text-center truncate w-full mb-3">
                     {author}
                 </p>
-                {!isInBorrowedCollection ? (
+
+                {!isInBorrowedCollection && status ? (
                     <span
                         className={`px-3 py-1 rounded-full text-xs md:text-sm lg:text-base font-neuton ${
                             status === "AVAILABLE"
@@ -50,9 +51,13 @@ export default function BookCard({ cover, title, author, status, lender, onDelet
             {formatStatus(status)}
           </span>
                 ) : (
-                    <p className="font-cotta text-xs md:text-sm lg:text-base text-[#4B3935] text-center truncate w-full">
-                        owned by @{lender}
-                    </p>
+                    (
+                        lender && (
+                        <p className="font-cotta text-xs md:text-sm lg:text-base text-[#4B3935] text-center truncate w-full">
+                            owned by @{lender}
+                        </p>
+                    )
+                    )
                 )}
             </div>
         </div>

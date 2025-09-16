@@ -80,13 +80,14 @@ export default function Signup() {
         }
 
         try {
-            const sanitizedData = new FormData();
-            sanitizedData.append('username', username);
-            sanitizedData.append('email', email);
-            sanitizedData.append('password', password);
+
             const response = await csrfFetch("http://localhost:8080/api/v1/auth/register", {
                 method: "POST",
-                body: sanitizedData,
+                body: JSON.stringify({
+                username,
+                email,
+                password
+            })
             });
 
             const data = await response.json().catch(() => ({}));

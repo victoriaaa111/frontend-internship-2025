@@ -101,7 +101,7 @@ export default function ProfilePage() {
     try {
       const url =
           collectionType === "myCollection"
-              ? "http://localhost:8080/api/book"
+              ? "http://localhost:8080/api/user/books"
               : "http://localhost:8080/api/book/borrowed";
 
       const response = await csrfFetch(url);
