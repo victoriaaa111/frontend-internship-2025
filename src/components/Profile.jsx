@@ -11,10 +11,10 @@ const CustomDropdown = ({ value, onChange }) => {
       <div className="relative inline-block text-left">
         <button
             onClick={() => setIsOpen(!isOpen)}
-            className="relative inline-flex w-48 sm:w-56 md:w-64 lg:w-72 justify-center items-center rounded-2xl bg-[#d9d9d9] px-5 py-2 font-neuton-light text-lg md:text-xl lg:text-2xl text-[#331517] shadow-md hover:shadow-lg hover:bg-[#331517] hover:text-[#d9d9d9] transition cursor-pointer"
+            className="hover:shadow-[0_4px_4px_#9C8F7F]  relative inline-flex w-48 sm:w-56 md:w-64 lg:w-72 justify-center items-center rounded-2xl bg-[#EEE8DF] px-5 py-2 font-fraunces-light text-lg md:text-xl lg:text-2xl text-[#4B3935] shadow-[0_2px_3px_#9C8F7F]  transition cursor-pointer"
         >
           <svg
-              className={`absolute right-4 w-5 h-5 ${isOpen ? "transform rotate-180" : ""}`}
+              className={`absolute right-4 w-5 h-5 ${isOpen ? "transform rotate-180 transition duration-300" : ""}`}
               viewBox="0 0 20 20"
               fill="currentColor"
               aria-hidden="true"
@@ -31,15 +31,15 @@ const CustomDropdown = ({ value, onChange }) => {
         </button>
 
         {isOpen && (
-            <div className="absolute left-0 mt-2 w-48 sm:w-56 md:w-64 lg:w-72 rounded-2xl bg-[#d9d9d9] shadow-md focus:outline-none z-50 overflow-hidden">
+            <div className="absolute left-0 mt-2 w-48 sm:w-56 md:w-64 lg:w-72 rounded-2xl bg-[#EEE8DF] shadow-md focus:outline-none z-50 overflow-hidden">
               <div className="py-1">
                 <button
                     onClick={() => {
                       onChange("myCollection");
                       setIsOpen(false);
                     }}
-                    className={`block w-full px-4 py-2 text-center font-neuton-light text-lg md:text-xl lg:text-2xl transition rounded-2xl mx-auto -my-1 cursor-pointer ${
-                        value === "myCollection" ? "bg-[#331517] text-[#d9d9d9]" : "text-[#331517]"
+                    className={`block w-full px-4 py-2 text-center font-fraunces-light text-lg md:text-xl lg:text-2xl transition rounded-2xl mx-auto -my-1 cursor-pointer ${
+                        value === "myCollection" ? "bg-[#4B3935] text-[#EEE8DF]" : "text-[#4B3935]"
                     }`}
                 >
                   My Collection
@@ -49,8 +49,8 @@ const CustomDropdown = ({ value, onChange }) => {
                       onChange("borrowedBooks");
                       setIsOpen(false);
                     }}
-                    className={`block w-full px-4 py-2 text-center font-neuton-light text-lg md:text-xl lg:text-2xl transition rounded-2xl mx-auto -my-1 cursor-pointer ${
-                        value === "borrowedBooks" ? "bg-[#331517] text-[#d9d9d9]" : "text-[#331517]"
+                    className={`block w-full px-4 py-2 text-center font-fraunces-light text-lg md:text-xl lg:text-2xl transition rounded-2xl mx-auto -my-1 cursor-pointer ${
+                        value === "borrowedBooks" ? "bg-[#4B3935] text-[#EEE8DF]" : "text-[#4B3935]"
                     }`}
                 >
                   Borrowed Books
@@ -220,7 +220,7 @@ export default function ProfilePage() {
   }, []);
 
   return (
-      <div className="min-h-screen bg-[#d9d1c0] mx-auto relative font-sans overflow-y-auto">
+      <div className="min-h-screen bg-[#F6F2ED] mx-auto relative font-sans overflow-y-auto">
         {/* Top Bar */}
         <div className="flex justify-between items-center px-4 py-2">
           {/* Logo */}
@@ -231,7 +231,7 @@ export default function ProfilePage() {
           />
 
           {/* Navigation */}
-          <div className="flex space-x-4 text-[#331517] text-xl md:text-2xl lg:text-2xl font-neuton-light pr-10">
+          <div className="flex space-x-4 text-[#4B3935] text-md md:text-lg lg:text-xl font-fraunces-light pr-10">
             <button className="hover:underline cursor-pointer">Home</button>
             <button className="underline cursor-pointer">Profile</button>
           </div>
@@ -239,16 +239,20 @@ export default function ProfilePage() {
 
         {/* Flash Message */}
         {flash.message && (
-            <div className="flex justify-center mt-3 mb-2">
-              <div
-                  className={`border rounded-lg px-4 py-2 font-neuton inline-block ${
-                      flash.type === "error"
-                          ? "bg-red-100 text-red-800 border-red-300"
-                          : "bg-green-100 text-green-800 border-green-300"
-                  }`}
-              >
-                {flash.message}
+            <div className="flex justify-center px-4 mb-4">
+            <div className={`px-4 py-3 rounded-lg mb-4 text-center inline-block
+            ${
+                flash.type === "error"
+                    ? "bg-red-50 border text-red-700"
+                    : "bg-green-50 text-green-700 border"
+            }`}>
+              <div className="flex items-center justify-center">
+                <svg className="w-4 h-4 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+                <span className="font-fraunces-light text-base">{flash.message}</span>
               </div>
+            </div>
             </div>
         )}
 
@@ -256,13 +260,12 @@ export default function ProfilePage() {
         <div className="flex justify-between items-center px-6 mt-8 flex-wrap gap-4 ml-7">
           {/* Username + Friends */}
           <div
-              className="rounded-lg px-4 py-3 bg-[#d9d9d9] text-center outline-1 outline outline-[#331517] shadow-md"
-              style={{ boxShadow: "5px 5px 4px rgba(0, 0, 0, 0.1)" }}
+              className="rounded-lg px-4 py-3 bg-[#EEE8DF] text-center shadow-[0_2px_3px_#9C8F7F]"
           >
-            <p className="font-neuton text-base md:text-lg lg:text-xl text-[#331517]">
+            <p className="font-fraunces-light text-base md:text-lg lg:text-xl text-[#4B3935]">
               @{username || "Loading..."}
             </p>
-            <p className="font-neuton text-sm md:text-base lg:text-lg text-[#b57e25]">
+            <p className="font-fraunces text-sm md:text-base lg:text-lg text-[#2C365A]">
               1111 friends
             </p>
           </div>
@@ -275,7 +278,7 @@ export default function ProfilePage() {
           {/* Add Book Button - Responsive text sizing */}
           <button
               onClick={() => setShowAddBook(true)}
-              className="bg-[#d9d9d9] px-5 py-2 rounded-full shadow-md hover:shadow-lg transition font-neuton-light text-[#331517] text-lg md:text-xl lg:text-2xl ml-auto mr-7"
+              className="bg-[#EEE8DF] px-5 py-2 rounded-full shadow-[0_2px_3px_#9C8F7F] hover:shadow-[0_4px_4px_#9C8F7F] transition font-fraunces-light text-[#4B3935] text-lg lg:text-xl ml-auto mr-7"
           >
             + Add Book
           </button>
@@ -284,11 +287,11 @@ export default function ProfilePage() {
 
         {loading ? (
             <div className="flex justify-center items-center mt-20">
-              <div className="animate-spin h-6 w-6 border-2 border-[#331517] border-t-transparent rounded-full"></div>
+              <div className="animate-spin h-6 w-6 border-2 border-[#4B3935] border-t-transparent rounded-full"></div>
             </div>
         ) : books.length === 0 ? (
             <div className="flex justify-center items-center mt-20">
-              <p className="text-[#331517] font-neuton text-xl">No books found</p>
+              <p className="text-[#4B3935] font-fraunces text-xl">No books found</p>
             </div>
         ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 px-5 mt-6 w-full">
@@ -312,21 +315,21 @@ export default function ProfilePage() {
         {confirmDeleteId && (
             <div className="fixed inset-0 z-50 flex items-center justify-center">
               <div className="absolute inset-0 backdrop-blur-sm bg-black/30" onClick={cancelDelete} />
-              <div className="relative z-50 bg-[#D9D9D9] p-6 rounded-xl shadow-xl w-[90%] max-w-[380px]">
-                <h3 className="font-neuton text-xl text-[#331517] mb-3">Delete book?</h3>
-                <p className="font-neuton text-[#331517] mb-5">
+              <div className="relative z-50 bg-[#EEE8DF] p-6 rounded-xl shadow-xl w-[90%] max-w-[380px]">
+                <h3 className="font-fraunces text-xl text-[#4B3935] mb-3">Delete book?</h3>
+                <p className="font-fraunces text-[#4B3935] mb-5">
                   This action cannot be undone.
                 </p>
                 <div className="flex gap-3 justify-end">
                   <button
                       onClick={cancelDelete}
-                      className="px-4 py-2 rounded-full bg-[#d9d9d9] outline outline-1 outline-[#331517] text-[#331517] hover:bg-[#e6e6e6] transition"
+                      className="font-fraunces lg:text-lg px-4 py-2 rounded-full bg-[#F6F2ED] outline outline-[#4B3935] text-[#4B3935] hover:shadow-[0_2px_6px_#9C8F7F] transition duration-200 cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                       onClick={confirmDelete}
-                      className="px-4 py-2 rounded-full bg-[#331517] text-[#d9d9d9] hover:opacity-90 transition disabled:opacity-50"
+                      className="font-fraunces-light px-4 py-2 rounded-full bg-[#4B3935] text-[#F6F2ED] hover:shadow-[0_2px_6px_#9C8F7F] transition duration-200 cursor-pointer disabled:opacity-50"
                       disabled={deleting}
                   >
                     {deleting ? "Deleting..." : "Delete"}

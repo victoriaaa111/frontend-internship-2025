@@ -42,9 +42,7 @@ export default function Signup() {
                 method: "POST",
                 body: formData,
             });
-            if (response.__unauthorized) {
-                navigate("/login");
-            }
+
             const data = await response.json().catch(() => ({}));
             if (!response.ok) throw new Error(data?.message || "Registration failed");
 
@@ -68,6 +66,9 @@ export default function Signup() {
             console.log('Signup successful');
         } catch (err) {
             setError(err.message);
+            setTimeout(() => {
+                setError("");
+            }, 4500)
         }
     };
 
@@ -83,9 +84,7 @@ export default function Signup() {
                 method: "POST",
                 body: { sessionId, code: verificationCode },
             });
-            if (res.__unauthorized) {
-                navigate("/login");
-            }
+
             const data = await res.json().catch(() => ({}));
             if (!res.ok) throw new Error(data?.message || "Invalid verification code");
 
@@ -125,22 +124,29 @@ export default function Signup() {
             {showVerification && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center">
                     <div className="absolute inset-0 backdrop-blur-sm bg-black/30" />
-                    <div className="relative z-50 bg-[#D9D9D9] p-8 rounded-lg shadow-xl w-[90%] max-w-[400px]">
-                        <h3 className="text-2xl font-cotta text-[#331517] mb-4">Verify Your Email</h3>
-                        <p className="font-neuton text-[#331517] mb-2">Please enter the verification code sent to your email.</p>
+                    <div className="relative z-50 bg-[#D9D9D9] p-8 rounded-lg shadow-xl w-[90%] max-w-[450px]">
+                        {/* Error */}
                         {error && (
-                            <p className="text-red-600 bg-red-100 border border-red-300 rounded px-2 py-1 mb-3 font-neuton">
-                                {error}
-                            </p>
+                            <div className="bg-red-50 border text-red-700 px-4 py-3 rounded-lg mb-4 text-center">
+                                <div className="flex items-center justify-center">
+                                    <svg className="w-4 h-4 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                    </svg>
+                                    <span className="font-fraunces-light text-base">{error}</span>
+                                </div>
+                            </div>
                         )}
-                        <form onSubmit={handleVerification} className="flex flex-col gap-4">
+                        <h3 className="text-2xl font-cotta text-[#4B3935] mb-4">Verify Your Email</h3>
+                        <p className="font-fraunces text-base text-[#4B3935] mb-2">Please enter the verification code sent to your email.</p>
+
+                        <form onSubmit={handleVerification} className="flex flex-col gap-4 ">
                             <input
                                 type="text"
                                 inputMode="numeric"
                                 pattern="[0-9]*"
                                 value={verificationCode}
                                 onChange={(e) => setVerificationCode(e.target.value)}
-                                className="px-4 font-neuton text-[#331517] h-12 border border-[#331517] rounded-md focus:outline-none focus:ring-2 focus:ring-[#331517]/50"
+                                className="px-4 font-fraunces text-[#4B3935] h-12 border border-[#4B3935] rounded-md focus:outline-none focus:ring-2 focus:ring-[#331517]/50"
                                 placeholder="Enter verification code"
                                 required
                                 disabled={verifying || attemptsLeft <= 0}
@@ -148,12 +154,12 @@ export default function Signup() {
                             <button
                                 type="submit"
                                 disabled={verifying || attemptsLeft <= 0}
-                                className={`bg-[#331517] text-[#D9D9D9] py-3 rounded-md border border-[#331517] transition-colors duration-200
-                            ${verifying || attemptsLeft <= 0 ? 'opacity-60 cursor-not-allowed' : 'hover:bg-[#D9D9D9] hover:text-[#331517]'}`}
+                                className={`bg-[#4B3935] text-[#D9D9D9] py-2 rounded-md border border-[#4B3935] transition-colors duration-200 font-fraunces-light 
+                            ${verifying || attemptsLeft <= 0 ? 'opacity-60 cursor-not-allowed' : 'hover:shadow-[0_2px_6px_#9C8F7F] transition duration-200 cursor-pointer'}`}
                             >
                                 {verifying ? 'Verifying…' : 'Verify'}
                             </button>
-                            <p className="text-sm text-[#331517] font-neuton text-center">
+                            <p className="text-sm text-[#4B3935] font-fraunces text-center">
                                 Attempts left: {attemptsLeft}/{MAX_ATTEMPTS}
                             </p>
                         </form>
@@ -161,76 +167,117 @@ export default function Signup() {
                 </div>
             )}
 
-            <div className="bg-[#D9D1C0] min-h-screen flex flex-col justify-center items-center lg:flex-row">
+            <div className="bg-[#F6F2ED] min-h-screen flex flex-col justify-center items-center lg:flex-row">
             {/*LEFT SIDE WITH IMAGE */}
             <div
                 className="min-h-screen hidden lg:flex w-1/2 bg-cover bg-center flex-col justify-center h-full p-12"
                 style={{ backgroundImage: `url(${InfoImage})` }}
             >
-                <h2 className="text-5xl font-erotique-bold text-[#D9D1C0] mb-4 border-b border-[#D9D1C0] pb-2 drop-shadow-[0_4px_3px_rgba(51,21,23,0.4)]">
+                <h2 className="text-5xl font-erotique-bold text-[#DAD1C6] mb-4 border-b border-[#EEE8DF] pb-2 drop-shadow-[0_4px_3px_rgba(51,21,23,0.4)]">
                     Share Your Library
                 </h2>
-                <p className="text-3xl font-cotta text-[#D9D1C0] max-w-[700px] drop-shadow-[0_4px_3px_rgba(51,21,23,0.4)]" >
+                <p className="text-3xl font-cotta text-[#DAD1C6] max-w-[700px] drop-shadow-[0_4px_3px_rgba(51,21,23,0.4)]" >
                     Save money, reduce clutter, and give your books new journeys through your community.
                 </p>
             </div>
 
             {/*RIGHT SIDE WITH FORM */}
-            <div className=" w-full flex flex-col items-center gap-6 px-2 lg:w-1/2  text-[#B57E25]">
+            <div className=" w-full flex flex-col items-center gap-6 px-2 lg:w-1/2 ">
                 <h1 className="font-erotique-bold text-4xl mx-2
-            md:text-6xl
+            md:text-6xl text-[#2C365A]
             ">BorrowBook</h1>
                 <form onSubmit={handleSubmit}
-                      style={{
-                    boxShadow: "5px 5px 4px rgba(0, 0, 0, 0.2)",
-                }}
-                      className="bg-[#D9D9D9] rounded-4xl w-[90%] max-w-[298px] flex flex-col justify-center items-center px-5 py-6
-            md:max-w-[616px] md:w-[80%]
+                      className="shadow-[0_2px_3px_#9C8F7F] bg-[#EEE8DF] rounded-4xl w-[90%] max-w-[298px] flex flex-col justify-center items-center px-5 py-6
+            md:max-w-[500px] md:w-[80%]
              ">
-                    {error && <p className="text-red-500 text-base mb-4 font-neuton bg-red-100 px-2 py-1 rounded-md drop-shadow-md
-                 ">{error}</p>}
-                    <h2 className="text-2xl font-cotta text-[#331517] mb-4
+                    {/* Error */}
+                    {error && !showVerification && (
+                        <div className="bg-red-50 border text-red-700 px-4 py-3 rounded-lg mb-4 text-center">
+                            <div className="flex items-center justify-center">
+                                <svg className="w-4 h-4 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                </svg>
+                                <span className="font-fraunces-light text-base">{error}</span>
+                            </div>
+                        </div>
+                    )}
+                    <h2 className="text-2xl font-cotta text-[#4B3935] mb-4
                 md:text-3xl md:mt-3
                 ">Create Account</h2>
                     <div className="w-full flex flex-col justify-center items-center md:mt-2">
-                        <div className="w-full md:max-w-[443px]">
-                            <label className="font-neuton-light text-[#331517] text-base
-                        md:text-xl
-                        ">Username</label>
-                            <input required name="username" value={formData.username} onChange={handleChange} className="px-2 text-base font-neuton text-[#331517] w-full h-10 border border-[#331517] rounded-md
-                            lg:text-lg"/>
+
+                        <div className="w-full md:max-w-[400px] mt-4 relative">
+                            <div className="relative flex items-center">
+                                <img
+                                    src="./src/assets/profile.png"
+                                    alt="Person icon for username"
+                                    className="absolute left-2 w-5.5 h-5.5 z-10 opacity-50"
+                                />
+                                <input
+                                    placeholder="Username"
+                                    required
+                                    name="username"
+                                    value={formData.username}
+                                    onChange={handleChange}
+                                    className="focus:outline-none focus:ring-2 focus:ring-[#4B3935]/50 px-2 pl-9 text-base font-fraunces text-[#4B3935] w-full h-12 border border-[#4B3935] rounded-md lg:text-lg"
+                                />
+                            </div>
                         </div>
 
-                        <div className="w-full md:max-w-[443px] mt-4">
-                            <label className="font-neuton-light text-[#331517] text-base
-                        md:text-xl
-                        ">Email</label>
-                            <input required type="email" name="email" value={formData.email} onChange={handleChange} className="px-2 text-base font-neuton text-[#331517] w-full h-10 border border-[#331517] rounded-md
-                            lg:text-lg"/>
+
+
+                        <div className="w-full md:max-w-[400px] mt-4 relative">
+                            <div className="relative flex items-center">
+                                <img
+                                    src="./src/assets/mail.png"
+                                    alt="Mail icon for email"
+                                    className="absolute left-2.5 w-4.5 h-4.5 z-10 opacity-60"
+                                />
+                                <input
+                                    placeholder="Email"
+                                    required
+                                    type="email"
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    className="focus:outline-none focus:ring-2 focus:ring-[#4B3935]/50 px-2 pl-9 text-base font-fraunces text-[#4B3935] w-full h-12 border border-[#4B3935] rounded-md lg:text-lg"
+                                />
+                            </div>
                         </div>
 
-                        <div className="w-full md:max-w-[443px] mt-4">
-                            <label className="font-neuton-light text-[#331517] text-base
-                        md:text-xl
-                        ">Password</label>
-                            <input type="password" required name="password" value={formData.password} onChange={handleChange} className="px-2 text-base font-neuton text-[#331517] w-full h-10 border border-[#331517] rounded-md
-                            lg:text-lg"/>
+                        <div className="w-full md:max-w-[400px] mt-4 relative">
+                            <div className="relative flex items-center">
+                                <img
+                                    src="./src/assets/lock.png"
+                                    alt="Lock icon for password"
+                                    className="absolute left-2 w-5 h-5 z-10 opacity-70"
+                                />
+                                <input
+                                    placeholder="Password"
+                                    type="password"
+                                    required
+                                    name="password"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    className="focus:outline-none focus:ring-2 focus:ring-[#4B3935]/50 px-2 pl-9 text-base font-fraunces text-[#4B3935] w-full h-12 border border-[#4B3935] rounded-md lg:text-lg"
+                                />
+                            </div>
                         </div>
                     </div>
-                    <button type="submit" className="hover:bg-[#D9D9D9] hover:text-[#331517] border border-[#331517] max-w-45 w-full bg-[#331517] font-neuton-light text-[#D9D9D9] rounded-md mt-4 text-base py-2
-                md:max-w-[228px] md:text-xl md:mt-6 cursor-pointer transition-colors duration-200">
+                    <button type="submit" className="max-w-45 w-full bg-[#4B3935] font-fraunces-light text-[#F6F2ED] rounded-md mt-4 text-base py-2
+                md:max-w-[228px] md:text-xl md:mt-6 cursor-pointer hover:shadow-[0_2px_6px_#9C8F7F] transition duration-200">
                         Create Account
                     </button>
-                    <div className="flex items-center my-4 w-full md:w-[443px] lg:w-[350px]">
-                        <hr className="flex-grow border-[#331517]" />
-                        <span className="px-2 text-sm text-[#331517] font-neuton md:text-xl">OR</span>
-                        <hr className="flex-grow border-[#331517]" />
+                    <div className="flex items-center my-4 w-full md:w-[400px] lg:w-[350px]">
+                        <hr className="flex-grow border-[#4B3935]" />
+                        <span className="px-2 text-sm text-[#4B3935] font-neuton md:text-xl">OR</span>
+                        <hr className="flex-grow border-[#4B3935]" />
                     </div>
 
                         <OAuthButton type="Sign Up"/>
 
 
-                    <button onClick={()=>navigate('/login')} className="font-neuton-light text-sm mt-2 md:text-lg md:mb-8 cursor-pointer hover:text-[#331517] transition-colors duration-200">Sign in to your account</button>
+                    <button type="button" onClick={()=>navigate('/login')} className="hover:text-[#9C8F7F] text-[#4B3935] transition duration-200 font-fraunces-light text-sm mt-2 md:text-lg md:mb-8 cursor-pointer">Sign in to your account</button>
                 </form>
             </div>
 

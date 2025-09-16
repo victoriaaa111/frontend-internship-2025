@@ -48,21 +48,28 @@ export default function Login() {
         method: "POST",
         body: formData,
       });
-      if (response.__unauthorized) {
-        navigate("/login");
-      }
+
+
 
       if (!response.ok) {
+        let errorMessage;
         switch (response.status) {
           case 400:
-            throw new Error("Please check your information and try again");
+            errorMessage = "Invalid input. Please check your username and password format and try again.";
+            break;
           case 401:
-            throw new Error("Invalid username or password");
+            errorMessage = "Login failed. Your username or password is incorrect. Please try again.";
+            break;
+          case 429:
+            errorMessage = "Too many login attempts. Please wait a few minutes before trying again.";
+            break;
           case 500:
-            throw new Error("Something went wrong on our end. Please try again later");
+            errorMessage = "Server error occurred. Please try again in a few moments.";
+            break;
           default:
-            throw new Error("Unable to login. Please try again");
+            errorMessage = "Login failed. Please check your connection and try again.";
         }
+        throw new Error(errorMessage);
       }
 
       const data = await response.json();
@@ -81,6 +88,10 @@ export default function Login() {
       setError("");
     } catch (err) {
       setError(err.message);
+
+      setTimeout(() => {
+        setError("");
+      }, 4500);
     } finally {
       setLoading(false);
     }
@@ -98,9 +109,7 @@ export default function Login() {
         method: "POST",
         body: { sessionId, code: verificationCode },
       });
-      if (res.__unauthorized) {
-        navigate("/login");
-      }
+
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data?.message || "Invalid verification code");
 
@@ -129,133 +138,156 @@ export default function Login() {
   };
 
   return (
-    <div className="bg-[#D9D1C0] h-screen w-screen overflow-hidden flex flex-col lg:flex-row fixed top-0 left-0">
+    <div className="bg-[#F6F2ED] h-screen w-screen overflow-hidden flex flex-col lg:flex-row fixed top-0 left-0">
       {/* LEFT IMAGE SECTION */}
       <div
         className="hidden lg:flex w-1/2 h-full bg-cover bg-center flex-col justify-center p-12"
         style={{ backgroundImage: "url('frontend.png')" }}
       >
-        <h2 className="text-4xl xl:text-5xl font-erotique-bold text-[#D9D1C0] mb-4 border-b border-[#D9D1C0] pb-2 drop-shadow-[0_4px_3px_rgba(51,21,23,0.4)]">
+        <h2 className="text-4xl xl:text-5xl font-erotique-bold text-[#DAD1C6] mb-4 border-b border-[#EEE8DF] pb-2 drop-shadow-[0_4px_3px_rgba(51,21,23,0.4)]">
           Share Your Library
         </h2>
-        <p className="text-lg xl:text-2xl font-cotta text-[#D9D1C0] drop-shadow-[0_4px_3px_rgba(51,21,23,0.4)] max-w-md">
+        <p className="text-3xl font-cotta text-[#DAD1C6] max-w-[700px] drop-shadow-[0_4px_3px_rgba(51,21,23,0.4)]">
           Save money, reduce clutter, and give your books new journeys through your community.
         </p>
       </div>
 
       {/* RIGHT LOGIN SECTION */}
       <div className="flex flex-col items-center justify-center w-full lg:w-1/2 h-full px-6 sm:px-12">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-erotique-bold text-[#B57E25] mb-6">BorrowBook</h1>
+        <h1 className="font-erotique-bold text-4xl mx-2
+            md:text-6xl text-[#2C365A] mb-6">BorrowBook</h1>
+
 
         {/* Login Card */}
         <form
-          className="bg-[#d9d9d9] w-full max-w-sm sm:max-w-md rounded-4xl p-6 sm:p-8"
-          style={{
-        boxShadow: "5px 5px 4px rgba(0, 0, 0, 0.2)",
-      }}
+          className="bg-[#EEE8DF] w-full max-w-sm sm:max-w-md rounded-4xl p-6 sm:p-8 shadow-[0_2px_3px_#9C8F7F]"
           onSubmit={handleLogin}
         >
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-cotta font-bold text-[#331517] text-center mb-6">
+          {/* Error */}
+          {error && !showVerification && (
+              <div className="bg-red-50 border text-red-700 px-4 py-3 rounded-lg mb-4 text-center">
+                <div className="flex items-center justify-center">
+                  <svg className="w-4 h-4 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                  <span className="font-fraunces-light text-base">{error}</span>
+                </div>
+              </div>
+          )}
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-cotta font-bold text-[#4B3935] text-center mb-6">
             User Login
           </h2>
 
           {/* Username */}
-          <label className="block text-sm sm:text-base text-[#331517] mb-1 font-neuton">Username</label>
-          <input
-            type="text"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            className="w-full border border-[#331517] rounded-md px-3 py-2 mb-4 focus:outline-none font-neuton text-sm sm:text-base"
-            required
-          />
+          <div className="relative flex items-center text-[#4B3935] mb-4">
+            <img
+                src="./src/assets/profile.png"
+                alt="Person icon for username"
+                className="absolute left-2 w-5 h-5 z-10 opacity-50"
+            />
+            <input
+                type="text"
+                name="username"
+                value={formData.username}
+                onChange={handleChange}
+                placeholder="Username"
+                className="focus:outline-none focus:ring-2 focus:ring-[#4B3935]/50 px-2 pl-9 text-base font-fraunces text-[#4B3935] w-full h-12 border border-[#4B3935] rounded-md lg:text-lg"
+                required
+            />
+          </div>
 
           {/* Password */}
-          <label className="block text-sm sm:text-base text-[#331517] mb-1 font-neuton">Password</label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            className="w-full border border-[#331517] rounded-md px-3 py-2 mb-6 focus:outline-none font-neuton text-sm sm:text-base"
-            required
+          <div className="relative flex items-center text-[#4B3935] mb-4">
+          <img
+              src="./src/assets/lock.png"
+              alt="Lock icon for password"
+              className="absolute left-2 w-5 h-5 z-10 opacity-50"
           />
+          <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Password"
+              className="focus:outline-none focus:ring-2 focus:ring-[#4B3935]/50 px-2 pl-9 text-base font-fraunces text-[#4B3935] w-full h-12 border border-[#4B3935] rounded-md lg:text-lg"
+              required
+          />
+      </div>
 
-          {/* Error */}
-          {error && !showVerification && <div className="text-red-600 text-sm mb-2 text-center">{error}</div>}
 
           {/* Login button */}
           <button
             type="submit"
             disabled={loading}
-            className="w-1/2 bg-[#331517] text-[#D9D9D9] text-sm sm:text-lg py-2 rounded-md font-neuton mx-auto block mb-4 transition-colors duration-200 hover:bg-[#D9D9D9] hover:text-[#331517] focus:outline-none focus:ring-2 focus:ring-[#331517] hover:outline hover:outline-2 hover:outline-[#331517] cursor-pointer"
+            className="hover:shadow-[0_2px_6px_#9C8F7F] transition duration-200 cursor-pointer w-1/2 bg-[#4B3935] text-[#F6F2ED] text-sm sm:text-lg py-2 rounded-md font-fraunces-light mx-auto block mb-4"
           >
             {loading ? "Logging in..." : "Login"}
           </button>
 
           {/* Divider */}
           <div className="flex items-center my-4">
-            <hr className="flex-grow border-[#331517]" />
-            <span className="px-2 text-xs sm:text-sm text-[#331517] font-cotta font-bold">OR</span>
-            <hr className="flex-grow border-[#331517]" />
+            <hr className="flex-grow border-[#4B3935]" />
+            <span className="px-2 text-sm text-[#4B3935] font-neuton md:text-xl">OR</span>
+            <hr className="flex-grow border-[#4B3935]" />
           </div>
 
           <OAuthButton type="Login"/>
           {/* Create an account */}
           <div className="w-full text-center mt-4">
 
-            <button onClick={()=>navigate('/signup')}>
-              <span className="text-[#B57E25] font-neuton text-sm sm:text-base cursor-pointer">Create an account</span>
+            <button type="button" onClick={()=>navigate('/signup')}>
+              <span className="hover:text-[#9C8F7F] transition duration-200 text-[#4B3935] font-fraunces-light text-sm sm:text-base cursor-pointer">Create an account</span>
             </button>
 
           </div>
         </form>
       </div>
-
-      {/* Verification Pop-up */}
       {showVerification && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div className="absolute inset-0 backdrop-blur-sm bg-black/30" />
-          <div className="relative z-50 bg-[#D9D9D9] p-8 rounded-lg shadow-xl w-[90%] max-w-[400px]">
-            <h3 className="text-2xl font-cotta text-[#331517] mb-4">Verify Your Email</h3>
-            <p className="font-neuton text-[#331517] mb-2">
-              Please enter the verification code sent to your email.
-            </p>
-            {error && (
-              <p className="text-red-600 bg-red-100 border border-red-300 rounded px-2 py-1 mb-3 font-neuton">
-                {error}
-              </p>
-            )}
-            <form onSubmit={handleVerification} className="flex flex-col gap-4">
-              <input
-                type="text"
-                inputMode="numeric"
-                pattern="[0-9]*"
-                value={verificationCode}
-                onChange={(e) => setVerificationCode(e.target.value)}
-                className="px-4 font-neuton text-[#331517] h-12 border border-[#331517] rounded-md focus:outline-none focus:ring-2 focus:ring-[#331517]/50"
-                placeholder="Enter verification code"
-                required
-                disabled={verifying || attemptsLeft <= 0}
-              />
-              <button
-                type="submit"
-                disabled={verifying || attemptsLeft <= 0}
-                className={`bg-[#331517] text-[#D9D9D9] py-3 rounded-md border border-[#331517] transition-colors duration-200 ${
-                  verifying || attemptsLeft <= 0
-                    ? "opacity-60 cursor-not-allowed"
-                    : "hover:bg-[#D9D9D9] hover:text-[#331517]"
-                }`}
-              >
-                {verifying ? "Verifying…" : "Verify"}
-              </button>
-              <p className="text-sm text-[#331517] font-neuton text-center">
-                Attempts left: {attemptsLeft}/{MAX_ATTEMPTS}
-              </p>
-            </form>
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            <div className="absolute inset-0 backdrop-blur-sm bg-black/30" />
+            <div className="relative z-50 bg-[#D9D9D9] p-8 rounded-lg shadow-xl w-[90%] max-w-[450px]">
+              {/* Error */}
+              {error && (
+                  <div className="bg-red-50 border text-red-700 px-4 py-3 rounded-lg mb-4 text-center">
+                    <div className="flex items-center justify-center">
+                      <svg className="w-4 h-4 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                      <span className="font-fraunces-light text-base">{error}</span>
+                    </div>
+                  </div>
+              )}
+              <h3 className="text-2xl font-cotta text-[#4B3935] mb-4">Verify Your Email</h3>
+              <p className="font-fraunces text-base text-[#4B3935] mb-2">Please enter the verification code sent to your email.</p>
+
+              <form onSubmit={handleVerification} className="flex flex-col gap-4 ">
+                <input
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    value={verificationCode}
+                    onChange={(e) => setVerificationCode(e.target.value)}
+                    className="px-4 font-fraunces text-[#4B3935] h-12 border border-[#4B3935] rounded-md focus:outline-none focus:ring-2 focus:ring-[#331517]/50"
+                    placeholder="Enter verification code"
+                    required
+                    disabled={verifying || attemptsLeft <= 0}
+                />
+                <button
+                    type="submit"
+                    disabled={verifying || attemptsLeft <= 0}
+                    className={`bg-[#4B3935] text-[#D9D9D9] py-2 rounded-md border border-[#4B3935] transition-colors duration-200 font-fraunces-light 
+                            ${verifying || attemptsLeft <= 0 ? 'opacity-60 cursor-not-allowed' : 'hover:shadow-[0_2px_6px_#9C8F7F] transition duration-200 cursor-pointer'}`}
+                >
+                  {verifying ? 'Verifying…' : 'Verify'}
+                </button>
+                <p className="text-sm text-[#4B3935] font-fraunces text-center">
+                  Attempts left: {attemptsLeft}/{MAX_ATTEMPTS}
+                </p>
+              </form>
+            </div>
           </div>
-        </div>
       )}
+
     </div>
   );
 }
