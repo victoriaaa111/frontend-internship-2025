@@ -99,11 +99,11 @@ export default function OtherProfile() {
 
             <div className="flex flex-col px-3 sm:px-7 md:px-10 mb-4 mt-8 gap-4 lg:mx-10">
                 {/* Profile Section */}
-                <div className="rounded-lg px-4 py-3 bg-[#EEE8DF] text-center shadow-[0_2px_3px_#9C8F7F] w-fit">
-                    <p className="font-fraunces-light text-base md:text-lg lg:text-xl text-[#4B3935]">
+                <div className="rounded-lg px-4 py-3 bg-[#2C365A] text-center shadow-[0_2px_5px_#2C365A] w-fit">
+                    <p className="font-fraunces-light text-base md:text-lg lg:text-xl text-[#F6F2ED]">
                         @{resolvedUsername|| "Loading..."}
                     </p>
-                    <p className="font-fraunces text-sm md:text-base lg:text-lg text-[#2C365A]">
+                    <p className="font-fraunces-light text-sm md:text-base lg:text-lg text-[#EEE8DF]">
                         1111 friends
                     </p>
                 </div>
@@ -119,7 +119,7 @@ export default function OtherProfile() {
                             <p className="text-[#4B3935] font-fraunces text-base sm:text-md md:text-lg lg:text-xl">No books found</p>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 py-8 w-full">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 py-8 2xl:gap-15 w-full">
                             {books.map((book) => (
                                 <BookCard
                                     key={book.key}

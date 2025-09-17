@@ -31,7 +31,7 @@ export default function BookCard({ cover, title, author, status, lender, onDelet
                 <img
                     src={cover}
                     alt={title}
-                    className="w-full aspect-[3/4] object-contain rounded-md mt-2 mb-3 bg-[#EEE8DF]"
+                    className="w-full aspect-[3/4] object-contain mt-2 mb-3 bg-[#EEE8DF]"
                     loading="lazy"
                 />
                 <p className="font-cotta text-sm md:text-base lg:text-lg text-[#4B3935] text-center truncate w-full">
@@ -60,6 +60,15 @@ export default function BookCard({ cover, title, author, status, lender, onDelet
                     )
                     )
                 )}
+                {!status && !lender && !isInBorrowedCollection && (
+                        <button className=" w-full bg-[#2C365A] font-fraunces-light text-[#F6F2ED] rounded-lg mt-1 text-xs md:text-base py-2
+                 cursor-pointer hover:shadow-[0_2px_6px_#9C8F7F] transition duration-200">
+                            Borrow Book
+                        </button>
+
+                )
+
+                }
             </div>
         </div>
     );
