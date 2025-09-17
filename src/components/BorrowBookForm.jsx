@@ -80,7 +80,7 @@ export default function BorrowBookForm({onClose, bookTitle, bookOwner, bookId}) 
             <div className="absolute inset-0 backdrop-blur-sm bg-black/30" onClick={() => onClose(false)} />
             <div className="relative z-50 bg-[#EEE8DF] p-6 rounded-xl shadow-xl w-[90%] max-w-[400px]">
                 <h3 className="font-cotta text-xl text-[#4B3935] mb-1">Borrow Book Request</h3>
-                <p className="font-fraunces-light text-[#4B3935] mb-4 text-sm">Request to borrow "{bookTitle}" from @{bookOwner}</p>
+                <p className="font-fraunces-light text-[#4B3935] mb-4 text-sm">Request to borrow <span className="text-[#2C365A]">"{bookTitle}"</span> from <span className="text-[#2C365A]">@{bookOwner}</span></p>
 
                 {error && (
                     <div className="text-center bg-red-50 text-red-700 p-3 rounded-lg font-fraunces-light mb-4 text-sm">
@@ -98,7 +98,7 @@ export default function BorrowBookForm({onClose, bookTitle, bookOwner, bookId}) 
                             onChange={handleChange}
                             min={today}
                             required
-                            className="w-full p-2 border border-gray-300 rounded-lg font-fraunces-light text-[#4B3935] bg-[#F6F2ED] focus:outline-none focus:ring-2 focus:ring-[#2C365A]"
+                            className="w-full p-2 border border-gray-300 rounded-lg font-fraunces-light text-[#4B3935] bg-[#F6F2ED] focus:outline-none focus:ring-2 focus:ring-[#331517]/50"
                         />
                     </div>
 
@@ -110,7 +110,7 @@ export default function BorrowBookForm({onClose, bookTitle, bookOwner, bookId}) 
                             value={formData.meetingTime}
                             onChange={handleChange}
                             required
-                            className="w-full p-2 border border-gray-300 rounded-lg font-fraunces-light text-[#4B3935] bg-[#F6F2ED] focus:outline-none focus:ring-2 focus:ring-[#2C365A]"
+                            className="w-full p-2 border border-gray-300 rounded-lg font-fraunces-light text-[#4B3935] bg-[#F6F2ED] focus:outline-none focus:ring-2 focus:ring-[#331517]/50"
                         />
                     </div>
 
@@ -125,7 +125,7 @@ export default function BorrowBookForm({onClose, bookTitle, bookOwner, bookId}) 
                             required
                             minLength="3"
                             maxLength="128"
-                            className="w-full p-2 border border-gray-300 rounded-lg font-fraunces-light text-[#4B3935] bg-[#F6F2ED] focus:outline-none focus:ring-2 focus:ring-[#2C365A]"
+                            className="w-full p-2 border border-gray-300 rounded-lg font-fraunces-light text-[#4B3935] bg-[#F6F2ED] focus:outline-none focus:ring-2 focus:ring-[#331517]/50"
                         />
                     </div>
 
