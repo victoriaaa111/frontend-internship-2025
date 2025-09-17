@@ -31,7 +31,8 @@ export default function BookCard({ cover, title, author, status, lender, onDelet
                 <img
                     src={cover}
                     alt={title}
-                    className="w-full aspect-[3/4] object-cover rounded-md mt-2 mb-3 "
+                    className="w-full aspect-[3/4] object-contain rounded-md mt-2 mb-3 bg-[#EEE8DF]"
+                    loading="lazy"
                 />
                 <p className="font-cotta text-sm md:text-base lg:text-lg text-[#4B3935] text-center truncate w-full">
                     {title}
