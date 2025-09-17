@@ -1,12 +1,23 @@
+import { useState } from "react";
+import BorrowBookForm from "./BorrowBookForm.jsx";
 
-export default function BookCard({ cover, title, author, status, lender, onDelete, bookId, deleting }) {
+export default function BookCard({ cover, title, author, status, lender, onDelete, bookId, deleting, resolvedUsername, onBorrowSuccess }) {
     const isInBorrowedCollection = Boolean(lender);
 
     const formatStatus = (status) => {
         return status?.charAt(0).toUpperCase() + status?.slice(1).toLowerCase();
     };
 
+    const [showBorrowForm, setShowBorrowForm] = useState(false);
+
+    const handleBorrowFormClose = (success) => {
+        setShowBorrowForm(false);
+        if (success && onBorrowSuccess) {
+            onBorrowSuccess(title);
+        }
+    };
     return (
+    <>
         <div className="relative w-full h-full flex justify-center">
             <div
                 className={`shadow-[0_2px_3px_#9C8F7F] w-full aspect-[3/5] bg-[#EEE8DF] rounded-xl p-4 flex flex-col items-center transition ${
@@ -62,15 +73,25 @@ export default function BookCard({ cover, title, author, status, lender, onDelet
                 )}
                 {!status && !lender && !isInBorrowedCollection && (
                         <button className=" w-full bg-[#2C365A] font-fraunces-light text-[#F6F2ED] rounded-lg mt-1 text-xs md:text-base py-2
-                 cursor-pointer hover:shadow-[0_2px_6px_#9C8F7F] transition duration-200">
+                 cursor-pointer hover:shadow-[0_2px_6px_#9C8F7F] transition duration-200"
+                        onClick={() => {
+                            setShowBorrowForm(true);
+                        }}
+                        >
                             Borrow Book
                         </button>
-
-                )
-
-                }
+                    )}
             </div>
         </div>
+                {showBorrowForm && (
+                    <BorrowBookForm
+                    onClose={handleBorrowFormClose}
+                bookTitle={title}
+                bookOwner={resolvedUsername}
+                bookId={bookId}
+            />
+            )}
+    </>
     );
 };
 

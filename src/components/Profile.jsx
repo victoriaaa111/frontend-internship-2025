@@ -167,7 +167,7 @@ export default function ProfilePage() {
 
       const bookToDelete = books.find((b) => b.userBookId === userBookId);
 
-      const res = await csrfFetch(`http://localhost:8080/api/book/${userBookId}`, {
+      const res = await csrfFetch(`http://localhost:8080/api/user/${userBookId}`, {
         method: "DELETE",
       });
 

@@ -60,6 +60,11 @@ export default function OtherProfile() {
     }, [fetchBooks]);
 
 
+    const handleBorrowSuccess = useCallback((bookTitle) => {
+        setFlash({ message: `Borrow request sent successfully for ${bookTitle}`, type: "success" });
+        setTimeout(() => setFlash({ message: "", type: "" }), 4500);
+    },[]);
+
     return (
         <div className="min-h-screen bg-[#F6F2ED] mx-auto relative font-sans overflow-y-auto">
             {/* Top Bar */}
@@ -126,6 +131,8 @@ export default function OtherProfile() {
                                     cover={book.cover}
                                     title={book.title}
                                     author={book.author}
+                                    resolvedUsername={resolvedUsername}
+                                    onBorrowSuccess={handleBorrowSuccess}
                                 />
                             ))}
                         </div>
