@@ -1,6 +1,12 @@
 const CSRF_COOKIE = 'XSRF-TOKEN';
 const CSRF_HEADER = 'X-XSRF-TOKEN';
 
+let isAuthenticated = true;
+
+export const setAuthenticationState = (authenticated) => {
+    isAuthenticated = authenticated;
+};
+
 export const getCsrfTokenFromCookie = () => {
     try {
         const match = document.cookie.match(new RegExp('(?:^|; )' + CSRF_COOKIE + '=([^;]*)'));
@@ -28,6 +34,9 @@ export const initCsrf = async (baseUrl = 'http://localhost:8080') => {
 };
 
 export const csrfFetch = async (url, options = {}) => {
+    if (!isAuthenticated) {
+        return { __unauthorized: true };
+    }
     const { headers = {}, body, credentials, ...rest } = options;
 
     // Get CSRF token
@@ -88,13 +97,16 @@ export const csrfFetch = async (url, options = {}) => {
                 response = await fetch(url, finalOptions);
 
                 if (response.status === 401 || response.status === 403) {
+                    setAuthenticationState(false); // Mark as unauthenticated
                     return { __unauthorized: true };
                 }
             } else {
-                return { __unauthorized: true};
+                setAuthenticationState(false); // Mark as unauthenticated
+                return { __unauthorized: true };
             }
         } catch (err) {
             console.error('Token refresh failed:', err);
+            setAuthenticationState(false); // Mark as unauthenticated
             return { __unauthorized: true };
         }
     }
