@@ -1,11 +1,23 @@
 import InfoImage from '../assets/frontend.png';
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {csrfFetch } from "../csrf.js";
 
 import OAuthButton from "./OAuthButton.jsx";
 
 export default function Signup() {
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const checkAuth = async () => {
+            const response = await csrfFetch("http://localhost:8080/api/user/me");
+            if(response.ok){
+                navigate("/profile");
+            }
+        }
+        checkAuth()
+    }, [navigate]);
+
     const [formData, setFormData] = useState({
         username: '',
         email: '',
@@ -39,7 +51,7 @@ export default function Signup() {
     const [sessionId, setSessionId] = useState('');
     const [showVerification, setShowVerification] = useState(false);
     const [verificationCode, setVerificationCode] = useState('');
-    const navigate = useNavigate();
+
 
     const MAX_ATTEMPTS = 5;
     const [attemptsLeft, setAttemptsLeft] = useState(MAX_ATTEMPTS);
