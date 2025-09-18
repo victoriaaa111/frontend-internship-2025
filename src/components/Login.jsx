@@ -77,12 +77,11 @@ export default function Login() {
     }
 
     try {
-      const sanitizedFormData = new FormData();
-      sanitizedFormData.append('username', username);
-      sanitizedFormData.append('password', password);
       const response = await csrfFetch("http://localhost:8080/api/v1/auth/login", {
         method: "POST",
-        body: sanitizedFormData,
+        body: JSON.stringify(
+            { username, password }
+        ),
       });
 
 

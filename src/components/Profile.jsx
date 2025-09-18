@@ -101,7 +101,7 @@ export default function ProfilePage() {
     try {
       const url =
           collectionType === "myCollection"
-              ? "http://localhost:8080/api/book"
+              ? "http://localhost:8080/api/user/books"
               : "http://localhost:8080/api/book/borrowed";
 
       const response = await csrfFetch(url);
@@ -167,7 +167,7 @@ export default function ProfilePage() {
 
       const bookToDelete = books.find((b) => b.userBookId === userBookId);
 
-      const res = await csrfFetch(`http://localhost:8080/api/book/${userBookId}`, {
+      const res = await csrfFetch(`http://localhost:8080/api/user/${userBookId}`, {
         method: "DELETE",
       });
 
@@ -294,7 +294,7 @@ export default function ProfilePage() {
               <p className="text-[#4B3935] font-fraunces text-xl">No books found</p>
             </div>
         ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 px-5 mt-6 w-full">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 py-8 2xl:gap-15 px-13 mt-6 w-full">
               {books.map((book, index) => (
                   <BookCard
                       key={book.userBookId ? `${collectionType}-${book.userBookId}` : `${collectionType}-${index}`}
