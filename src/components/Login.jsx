@@ -153,7 +153,7 @@ export default function Login() {
       </div>
 
       {/* RIGHT LOGIN SECTION */}
-      <div className="flex flex-col items-center justify-center w-full lg:w-1/2 h-full px-6 sm:px-12">
+      <div className="flex flex-col items-center justify-center w-full lg:w-1/2 h-full px-6 sm:px-12 lg:shadow-[inset_0_0_40px_rgba(61,56,50,0.5)]">
         <h1 className="font-erotique-bold text-4xl mx-2
             md:text-6xl text-[#2C365A] mb-6">BorrowBook</h1>
 

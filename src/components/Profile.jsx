@@ -3,6 +3,7 @@ import AddBook from "./AddBook.jsx";
 import { csrfFetch, initCsrf } from "../csrf.js";
 import { useNavigate } from "react-router-dom";
 import BookCard from "./BookCard.jsx";
+import { Link } from "react-router-dom";
 
 const CustomDropdown = ({ value, onChange }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -101,8 +102,8 @@ export default function ProfilePage() {
     try {
       const url =
           collectionType === "myCollection"
-              ? "http://localhost:8080/api/book"
-              : "http://localhost:8080/api/book/borrowed";
+              ? "http://localhost:8080/api/user/books"
+              : "http://localhost:8080/api/user/borrowed";
 
       const response = await csrfFetch(url);
       if (!response.ok) throw new Error("Failed to fetch books");
@@ -167,7 +168,7 @@ export default function ProfilePage() {
 
       const bookToDelete = books.find((b) => b.userBookId === userBookId);
 
-      const res = await csrfFetch(`http://localhost:8080/api/book/${userBookId}`, {
+      const res = await csrfFetch(`http://localhost:8080/api/user/${userBookId}`, {
         method: "DELETE",
       });
 
@@ -225,15 +226,15 @@ export default function ProfilePage() {
         <div className="flex justify-between items-center px-4 py-2">
           {/* Logo */}
           <img
-              src="src/assets/BB-Profile.png"
+              src="src/assets/BB-blue1.png"
               alt="logo"
-              className="w-12 h-12 object-contain md:w-15 md:h-15 lg:w-20 lg:h-20"
+              className="w-12 h-12 object-contain md:w-16 md:h-16 lg:w-18 lg:h-18"
           />
 
           {/* Navigation */}
-          <div className="flex space-x-4 text-[#4B3935] text-md md:text-lg lg:text-xl font-fraunces-light pr-10">
-            <button className="hover:underline cursor-pointer">Home</button>
-            <button className="underline cursor-pointer">Profile</button>
+          <div className="flex space-x-4 text-[#4B3935] text-md md:text-lg lg:text-xl font-fraunces-light pr-5">
+            <Link to="/home" className="hover:underline cursor-pointer">Home</Link>
+            <Link to="/profile" className="underline cursor-pointer">Profile</Link>
           </div>
         </div>
 
@@ -278,7 +279,7 @@ export default function ProfilePage() {
           {/* Add Book Button - Responsive text sizing */}
           <button
               onClick={() => setShowAddBook(true)}
-              className="bg-[#EEE8DF] px-5 py-2 rounded-full shadow-[0_2px_3px_#9C8F7F] hover:shadow-[0_4px_4px_#9C8F7F] transition font-fraunces-light text-[#4B3935] text-lg lg:text-xl ml-auto mr-7"
+              className="bg-[#EEE8DF] px-5 py-2 rounded-full shadow-[0_2px_3px_#9C8F7F] hover:shadow-[0_4px_4px_#9C8F7F] transition font-fraunces-light text-[#4B3935] text-lg lg:text-xl ml-auto mr-7 cursor-pointer"
           >
             + Add Book
           </button>
@@ -294,7 +295,7 @@ export default function ProfilePage() {
               <p className="text-[#4B3935] font-fraunces text-xl">No books found</p>
             </div>
         ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 px-5 mt-6 w-full">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 px-5 mt-6 w-full pb-8">
               {books.map((book, index) => (
                   <BookCard
                       key={book.userBookId ? `${collectionType}-${book.userBookId}` : `${collectionType}-${index}`}

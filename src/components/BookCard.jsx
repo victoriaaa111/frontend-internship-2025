@@ -1,6 +1,6 @@
-
 export default function BookCard({ cover, title, author, status, lender, onDelete, bookId, deleting }) {
     const isInBorrowedCollection = Boolean(lender);
+    const shouldBlurContent = status === "BORROWED" && !isInBorrowedCollection;
 
     const formatStatus = (status) => {
         return status?.charAt(0).toUpperCase() + status?.slice(1).toLowerCase();
@@ -8,11 +8,7 @@ export default function BookCard({ cover, title, author, status, lender, onDelet
 
     return (
         <div className="relative w-full h-full flex justify-center">
-            <div
-                className={`shadow-[0_2px_3px_#9C8F7F] w-full aspect-[3/5] bg-[#EEE8DF] rounded-xl p-4 flex flex-col items-center transition ${
-                    status === "BORROWED" && !isInBorrowedCollection ? "blur-[1.5px]" : ""
-                }`}
-            >
+            <div className="shadow-[0_2px_3px_#9C8F7F] w-full aspect-[3/5] bg-[#EEE8DF] rounded-xl p-4 flex flex-col items-center transition">
                 {!isInBorrowedCollection && bookId && bookId !== null && (
                     <button
                         onClick={(e) => {
@@ -28,17 +24,23 @@ export default function BookCard({ cover, title, author, status, lender, onDelet
                         {deleting ? "⟳" : "✕"}
                     </button>
                 )}
-                <img
-                    src={cover}
-                    alt={title}
-                    className="w-full aspect-[3/4] object-cover rounded-md mt-2 mb-3 "
-                />
-                <p className="font-cotta text-sm md:text-base lg:text-lg text-[#4B3935] text-center truncate w-full">
-                    {title}
-                </p>
-                <p className="font-cotta text-xs md:text-sm lg:text-base text-[#2C365A] text-center truncate w-full mb-3">
-                    {author}
-                </p>
+                
+                {/* Book cover and info with conditional blur */}
+                <div className={`flex flex-col items-center w-full ${shouldBlurContent ? "blur-[1.5px]" : ""}`}>
+                    <img
+                        src={cover}
+                        alt={title}
+                        className="w-full aspect-[3/4] object-cover rounded-md mt-2 mb-3"
+                    />
+                    <p className="font-cotta text-sm md:text-base lg:text-lg text-[#4B3935] text-center truncate w-full">
+                        {title}
+                    </p>
+                    <p className="font-cotta text-xs md:text-sm lg:text-base text-[#2C365A] text-center truncate w-full mb-3">
+                        {author}
+                    </p>
+                </div>
+
+                {/* Status/lender info - never blurred */}
                 {!isInBorrowedCollection ? (
                     <span
                         className={`px-3 py-1 rounded-full text-xs md:text-sm lg:text-base font-neuton ${
@@ -47,8 +49,8 @@ export default function BookCard({ cover, title, author, status, lender, onDelet
                                 : "bg-red-50 text-red-700"
                         }`}
                     >
-            {formatStatus(status)}
-          </span>
+                        {formatStatus(status)}
+                    </span>
                 ) : (
                     <p className="font-cotta text-xs md:text-sm lg:text-base text-[#4B3935] text-center truncate w-full">
                         owned by @{lender}
@@ -58,4 +60,3 @@ export default function BookCard({ cover, title, author, status, lender, onDelet
         </div>
     );
 };
-
