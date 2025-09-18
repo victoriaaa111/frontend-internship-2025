@@ -591,7 +591,7 @@ const fetchNotifications = async (page = 1, size = 3) => {
                         <button
                             onClick={() => setIsInboxOpen(!isInboxOpen)}
                             className="relative focus:outline-none cursor-pointer hover:opacity-80 transition-opacity">
-                            <span className="text-[#4B3935] font-fraunces-light text-md md:text-lg lg:text-xl">
+                            <span className="text-[#4B3935] font-fraunces-light text-md md:text-lg lg:text-xl hover:underline-offset-4 underline">
                                 Inbox
                             </span>
                             {notifications.length > 0 && (
@@ -678,10 +678,10 @@ const fetchNotifications = async (page = 1, size = 3) => {
                     </div>
 
                     {/* Links */}
-                    <Link to="/home" className="underline cursor-pointer hover:opacity-80 transition-opacity">
+                    <Link to="/home" className="underline cursor-pointer hover:opacity-80 transition-opacity hover:underline-offset-4 underline">
                         Home
                     </Link>
-                    <Link to="/profile" className="hover:underline cursor-pointer hover:opacity-80 transition-opacity">
+                    <Link to="/profile" className="hover:underline cursor-pointer hover:opacity-80 transition-opacity hover:underline-offset-4 underline">
                         Profile
                     </Link>
                 </div>
