@@ -605,8 +605,9 @@ const fetchNotifications = async (page = 1, size = 3) => {
                         {isInboxOpen && (
                         <div
                             className="
-                            absolute right-0 mt-2 
-                            w-64 sm:w-72 md:w-80 lg:w-96 
+                            absolute mt-2 
+                            -left-20 sm:-left-0 md:-left-30 lg:-left-40
+                            w-64 sm:w-70 md:w-80 lg:w-96 
                             bg-[#EEE8DF] rounded-xl shadow-lg z-50 
                             max-h-80 sm:max-h-96 
                             overflow-y-auto
