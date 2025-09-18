@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import AddBook from "./AddBook.jsx";
-import { csrfFetch, initCsrf } from "../csrf.js";
+import { csrfFetch} from "../csrf.js";
 import { useNavigate } from "react-router-dom";
 import BookCard from "./BookCard.jsx";
 
@@ -63,9 +63,7 @@ const CustomDropdown = ({ value, onChange }) => {
 };
 
 export default function ProfilePage() {
-  useEffect(() => {
-    initCsrf("http://localhost:8080");
-  }, []);
+
 
   const navigate = useNavigate();
 

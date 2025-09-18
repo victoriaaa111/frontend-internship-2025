@@ -1,7 +1,7 @@
 import InfoImage from '../assets/frontend.png';
-import {useState, useEffect} from "react";
+import {useState} from "react";
 import {useNavigate} from "react-router-dom";
-import { initCsrf, csrfFetch } from "../csrf.js";
+import {csrfFetch } from "../csrf.js";
 
 import OAuthButton from "./OAuthButton.jsx";
 
@@ -46,10 +46,6 @@ export default function Signup() {
     const [verifying, setVerifying] = useState(false);
 
     const [error, setError] = useState('');
-
-    useEffect(() => {
-        initCsrf("http://localhost:8080");
-    }, []);
 
     const handleChange = (e) => {
         setFormData(

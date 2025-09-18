@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { initCsrf, csrfFetch } from "../csrf.js";
+import {useState } from "react";
+import {csrfFetch } from "../csrf.js";
 import { useNavigate } from "react-router-dom";
 import OAuthButton from "./OAuthButton.jsx";
 
@@ -41,10 +41,6 @@ export default function Login() {
         .trim() // Remove whitespace
         .substring(0, 255); // Limit length
   };
-
-  useEffect(() => {
-    initCsrf("http://localhost:8080");
-  }, []);
 
   const handleChange = (e) => {
     setFormData({
