@@ -1,5 +1,6 @@
 import { useState } from "react";
 import BorrowBookForm from "./BorrowBookForm.jsx";
+import bookPlaceholder from '../assets/book.png';
 
 export default function BookCard({ cover, title, author, status, lender, onDelete, bookId, deleting, resolvedUsername, onBorrowSuccess }) {
     const isInBorrowedCollection = Boolean(lender);
@@ -40,7 +41,7 @@ export default function BookCard({ cover, title, author, status, lender, onDelet
                     </button>
                 )}
                 <img
-                    src={cover}
+                    src={cover || bookPlaceholder}
                     alt={title}
                     className="w-full aspect-[3/4] object-contain mt-2 mb-3 bg-[#EEE8DF]"
                     loading="lazy"

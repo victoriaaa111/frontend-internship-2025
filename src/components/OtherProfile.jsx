@@ -36,6 +36,7 @@ export default function OtherProfile() {
 
             const mapped = data.map((b, index) => ({
                 key: index,
+                userBookId: b.userBookId,
                 cover: b.imageLink,
                 title: b.title,
                 author: Array.isArray(b.authors) ? b.authors.join(", ") : b.authors,
@@ -128,6 +129,7 @@ export default function OtherProfile() {
                             {books.map((book) => (
                                 <BookCard
                                     key={book.key}
+                                    bookId={book.userBookId}
                                     cover={book.cover}
                                     title={book.title}
                                     author={book.author}

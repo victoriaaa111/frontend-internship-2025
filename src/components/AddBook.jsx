@@ -21,8 +21,7 @@ export default function AddBook({ onClose, onAdded }) {
     const validateTitle = (title) => {
         return title &&
             title.length >= 1 &&
-            title.length <= 200 &&
-            /^[a-zA-Z0-9\s\-',.:;!?()&]+$/.test(title);
+            title.length <= 200
     };
 
     const navigate = useNavigate();

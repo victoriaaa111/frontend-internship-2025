@@ -1,11 +1,16 @@
 import React, {useState} from "react";
 import {csrfFetch} from "../csrf.js";
+import {useNavigate} from "react-router-dom";
 
 export default function BorrowBookForm({onClose, bookTitle, bookOwner, bookId}) {
+
+    const navigate = useNavigate();
+
     const [formData, setFormData] = useState({
         meetingDate: "",
         meetingTime: "",
-        location: ""
+        location: "",
+        dueDate: ""
     });
 
 
@@ -40,14 +45,12 @@ export default function BorrowBookForm({onClose, bookTitle, bookOwner, bookId}) 
             const meetingDateTime = new Date(`${formData.meetingDate}T${formData.meetingTime}`);
 
             const requestData = {
-                username: bookOwner,
-                bookId: bookId,
-                created_at: new Date().toISOString(),
-                meetingTime: meetingDateTime.toISOString(),
-                location: formData.location
+                meeting_time: meetingDateTime.toISOString(),
+                location: formData.location,
+                due_date: formData.dueDate,
             }
 
-            const response = await csrfFetch('http://localhost:8080/api/book/borrow',{
+            const response = await csrfFetch(`http://localhost:8080/api/borrow/request/${bookId}`,{
                 method: 'POST',
                 body: JSON.stringify(requestData)
             })
@@ -73,14 +76,30 @@ export default function BorrowBookForm({onClose, bookTitle, bookOwner, bookId}) 
     }
 
     const today = new Date().toISOString().split('T')[0];
-
+    let tomorrow = new Date();
+    if (formData.meetingDate) {
+        const meetingDate = new Date(formData.meetingDate);
+        tomorrow = new Date(meetingDate);
+        tomorrow.setDate(meetingDate.getDate() + 1);
+    } else {
+        tomorrow.setDate(tomorrow.getDate() + 1);
+    }
+    tomorrow = tomorrow.toISOString().split('T')[0];
 
     return(
         <div className="fixed inset-0 z-50 flex items-center justify-center">
             <div className="absolute inset-0 backdrop-blur-sm bg-black/30" onClick={() => onClose(false)} />
             <div className="relative z-50 bg-[#EEE8DF] p-6 rounded-xl shadow-xl w-[90%] max-w-[400px]">
                 <h3 className="font-cotta text-xl text-[#4B3935] mb-1">Borrow Book Request</h3>
-                <p className="font-fraunces-light text-[#4B3935] mb-4 text-sm">Request to borrow <span className="text-[#2C365A]">"{bookTitle}"</span> from <span className="text-[#2C365A]">@{bookOwner}</span></p>
+                <p className="font-fraunces-light text-[#4B3935] mb-4 text-sm">Request to borrow "{bookTitle}" from
+                    {'\u00A0'}
+                    <button onClick={()=>{
+                        navigate(`/user/${bookOwner}`);
+                         onClose(false)
+                    }
+                    }>
+                    <span className="text-[#2C365A] underline decoration-[#9C8F7F]/40 underline-offset-2">@{bookOwner}</span>
+                </button></p>
 
                 {error && (
                     <div className="text-center bg-red-50 text-red-700 p-3 rounded-lg font-fraunces-light mb-4 text-sm">
@@ -125,6 +144,19 @@ export default function BorrowBookForm({onClose, bookTitle, bookOwner, bookId}) 
                             required
                             minLength="3"
                             maxLength="128"
+                            className="w-full p-2 border border-gray-300 rounded-lg font-fraunces-light text-[#4B3935] bg-[#F6F2ED] focus:outline-none focus:ring-2 focus:ring-[#331517]/50"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block font-fraunces text-[#4B3935] mb-1">Due Date</label>
+                        <input
+                            type="date"
+                            name="dueDate"
+                            value={formData.dueDate}
+                            onChange={handleChange}
+                            min={tomorrow}
+                            required
                             className="w-full p-2 border border-gray-300 rounded-lg font-fraunces-light text-[#4B3935] bg-[#F6F2ED] focus:outline-none focus:ring-2 focus:ring-[#331517]/50"
                         />
                     </div>
