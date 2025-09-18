@@ -45,9 +45,9 @@ export default function BorrowBookForm({onClose, bookTitle, bookOwner, bookId}) 
             const meetingDateTime = new Date(`${formData.meetingDate}T${formData.meetingTime}`);
 
             const requestData = {
-                meeting_time: meetingDateTime.toISOString(),
+                meetingTime: meetingDateTime.toISOString(),
                 location: formData.location,
-                due_date: formData.dueDate,
+                dueDate: formData.dueDate,
             }
 
             const response = await csrfFetch(`http://localhost:8080/api/borrow/request/${bookId}`,{

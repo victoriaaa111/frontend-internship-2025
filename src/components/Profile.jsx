@@ -287,29 +287,31 @@ export default function ProfilePage() {
         </div>
 
         {loading ? (
-            <div className="flex justify-center items-center mt-20">
-              <div className="animate-spin h-6 w-6 border-2 border-[#4B3935] border-t-transparent rounded-full"></div>
-            </div>
-        ) : books.length === 0 ? (
-            <div className="flex justify-center items-center mt-20">
-              <p className="text-[#4B3935] font-fraunces text-xl">No books found</p>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 py-8 2xl:gap-15 px-13 mt-6 w-full">
-              {books.map((book, index) => (
-                  <BookCard
-                      key={book.userBookId ? `${collectionType}-${book.userBookId}` : `${collectionType}-${index}`}
-                      cover={book.cover}
-                      title={book.title}
-                      author={book.author}
-                      status={book.status}
-                      lender={book.lender}
-                      bookId={book.userBookId}
-                      onDelete={requestDelete}
-                      deleting={deleting}
-                  />
-              ))}
-            </div>
-        )}
+  <div className="flex justify-center items-center mt-20">
+    <div className="animate-spin h-6 w-6 border-2 border-[#4B3935] border-t-transparent rounded-full"></div>
+  </div>
+) : books.length === 0 ? (
+  <div className="flex justify-center items-center mt-20">
+    <p className="text-[#4B3935] font-fraunces text-xl">No books found</p>
+  </div>
+) : (
+  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 py-8 2xl:gap-15 px-13 mt-6 w-full">
+    {books.map((book, index) => (
+      <BookCard
+        key={book.userBookId ? `${collectionType}-${book.userBookId}` : `${collectionType}-${index}`}
+        cover={book.cover}
+        title={book.title}
+        author={book.author}
+        status={book.status}
+        lender={book.lender}
+        bookId={book.userBookId}
+        onDelete={requestDelete}
+        deleting={deleting}
+      />
+    ))}
+  </div>
+)}
+
 
         {/* Delete Confirmation Modal */}
         {confirmDeleteId && (

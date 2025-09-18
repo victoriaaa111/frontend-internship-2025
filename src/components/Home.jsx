@@ -579,9 +579,9 @@ const fetchNotifications = async (page = 1, size = 3) => {
             <div className="flex justify-between items-center px-4 py-2">
                 {/* Logo */}
                 <img
-                    src="src/assets/BB-blue.png"
+                    src="src/assets/BB-blue1.png"
                     alt="logo"
-                    className="w-12 h-12 object-contain md:w-16 md:h-16 lg:w-20 lg:h-20"
+                    className="w-12 h-12 object-contain md:w-16 md:h-16 lg:w-18 lg:h-18"
                 />
 
                 {/* Navigation */}
