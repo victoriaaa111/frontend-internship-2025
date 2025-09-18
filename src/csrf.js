@@ -65,7 +65,7 @@ export const csrfFetch = async (url, options = {}) => {
     let response = await fetch(url, finalOptions);
 
     // Handle 401 Unauthorized
-    if (response.status === 401) {
+    if (response.status === 403 || response.status === 401) {
         try {
             // Try to refresh token
             const refreshResponse = await fetch(
@@ -85,7 +85,7 @@ export const csrfFetch = async (url, options = {}) => {
                 finalOptions.headers[CSRF_HEADER] = newToken;
                 response = await fetch(url, finalOptions);
 
-                if (response.status === 401) {
+                if (response.status === 401 || response.status === 403) {
                     return { __unauthorized: true };
                 }
             } else {
