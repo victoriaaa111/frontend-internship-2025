@@ -21,10 +21,7 @@ export default function Logout({onClose}) {
             })
             if (response.ok || response.status === 401 || response.status === 403) {
                 setAuthenticationState(false);
-                // Logout successful - tokens are cleared
-                onClose && onClose(true);
 
-                // Clear any local state/cookies if needed
                 document.cookie = 'XSRF-TOKEN=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
 
                 // Navigate to login immediately
