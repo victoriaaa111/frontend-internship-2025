@@ -25,7 +25,7 @@ export default function BookCard({ cover, title, author, status, lender, onDelet
                     status === "BORROWED" && !isInBorrowedCollection ? "blur-[1.5px]" : ""
                 }`}
             >
-                {!isInBorrowedCollection && bookId && bookId !== null && (
+                {!isInBorrowedCollection && bookId && true && !resolvedUsername && (
                     <button
                         onClick={(e) => {
                             e.stopPropagation();
@@ -72,7 +72,7 @@ export default function BookCard({ cover, title, author, status, lender, onDelet
                     )
                     )
                 )}
-                {!status && !lender && !isInBorrowedCollection && (
+                {!status && !lender && !isInBorrowedCollection && resolvedUsername && (
                         <button className=" w-full bg-[#2C365A] font-fraunces-light text-[#F6F2ED] rounded-lg mt-1 text-xs md:text-base py-2
                  cursor-pointer hover:shadow-[0_2px_6px_#9C8F7F] transition duration-200"
                         onClick={() => {

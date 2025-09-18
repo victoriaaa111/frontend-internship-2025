@@ -12,10 +12,6 @@ const ProtectedRoute = ({ children }) => {
                 await initCsrf("http://localhost:8080");
                 let response = await csrfFetch("http://localhost:8080/api/user/me");
 
-                if(response.__unauthorized || response.status === 403) {
-                    await new Promise(resolve => setTimeout(resolve, 500));
-                    response = await csrfFetch("http://localhost:8080/api/user/me");
-                }
 
                 if (response.__unauthorized || !response.ok) {
                     setIsAuthenticated(false);

@@ -23,9 +23,6 @@ export const initCsrf = async (baseUrl = 'http://localhost:8080') => {
   if (!response.ok) {
     throw new Error('Failed to initialize CSRF token');
   }
-
-  // Force the browser to save the cookie
-  document.cookie = response.headers.get('set-cookie');
   
   return response;
 };
@@ -82,6 +79,11 @@ export const csrfFetch = async (url, options = {}) => {
             if (refreshResponse.ok) {
                 // Retry original request with new token
                 const newToken = getCsrfTokenFromCookie();
+
+                if (!newToken) {
+                    await initCsrf();
+                }
+
                 finalOptions.headers[CSRF_HEADER] = newToken;
                 response = await fetch(url, finalOptions);
 
@@ -89,7 +91,7 @@ export const csrfFetch = async (url, options = {}) => {
                     return { __unauthorized: true };
                 }
             } else {
-                return { __unauthorized: true };
+                return { __unauthorized: true};
             }
         } catch (err) {
             console.error('Token refresh failed:', err);
