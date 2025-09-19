@@ -3,7 +3,13 @@ import {csrfFetch} from "../csrf.js";
 import {useNavigate} from "react-router-dom";
 
 export default function BorrowBookForm({onClose, bookTitle, bookOwner, bookId}) {
-
+    const sanitizeInput = (value) => {
+        return value
+            .replace(/^\s+|\s+$/, '') // Remove the 'g' flag
+            .replace(/[<>]/g, '')
+            .substring(0, 128);
+    };
+    const [showBorrowForm, setShowBorrowForm] = useState(false);
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
@@ -18,17 +24,14 @@ export default function BorrowBookForm({onClose, bookTitle, bookOwner, bookId}) 
     const [error, setError] = useState("");
 
 
-    const sanitizeInput = (value) => {
-        return value
-            .trim()
-            .replace(/[<>]/g, '')
-            .substring(0, 128);
-    };
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         setError("");
+
+        const sanitizedLocation = sanitizeInput(formData.location);
 
         if (formData.location.length < 3) {
             setError("Location must be at least 3 characters long");
@@ -46,7 +49,7 @@ export default function BorrowBookForm({onClose, bookTitle, bookOwner, bookId}) 
 
             const requestData = {
                 meetingTime: meetingDateTime.toISOString(),
-                location: formData.location,
+                location: sanitizedLocation,
                 dueDate: formData.dueDate,
             }
 
@@ -59,6 +62,7 @@ export default function BorrowBookForm({onClose, bookTitle, bookOwner, bookId}) 
                 throw new Error("Failed to send borrow request");
             }
             onClose(true)
+            setShowBorrowForm(false)
         }catch(err){
             setError(err.message);
         }finally{
@@ -67,8 +71,14 @@ export default function BorrowBookForm({onClose, bookTitle, bookOwner, bookId}) 
     }
 
     const handleChange = (e) => {
-        const sanitizedValue = e.target.name === 'location' ? sanitizeInput(e.target.value) : e.target.value;
+        let sanitizedValue = e.target.value;
 
+        if (e.target.name === 'location') {
+            // Only remove dangerous characters during typing, preserve spaces
+            sanitizedValue = e.target.value
+                .replace(/[<>]/g, '')
+                .substring(0, 128);
+        }
         setFormData({
             ...formData,
             [e.target.name]: sanitizedValue
@@ -87,6 +97,16 @@ export default function BorrowBookForm({onClose, bookTitle, bookOwner, bookId}) 
     tomorrow = tomorrow.toISOString().split('T')[0];
 
     return(
+        <>
+        <button className=" w-full bg-[#2C365A] font-fraunces-light text-[#F6F2ED] rounded-lg mt-1 text-xs md:text-base py-2
+                 cursor-pointer hover:shadow-[0_2px_6px_#9C8F7F] transition duration-200"
+                onClick={() => {
+                    setShowBorrowForm(true);
+                }}
+        >
+            Borrow Book
+        </button>
+    {showBorrowForm &&(
         <div className="fixed inset-0 z-50 flex items-center justify-center">
             <div className="absolute inset-0 backdrop-blur-sm bg-black/30" onClick={() => onClose(false)} />
             <div className="relative z-50 bg-[#EEE8DF] p-6 rounded-xl shadow-xl w-[90%] max-w-[400px]">
@@ -95,11 +115,12 @@ export default function BorrowBookForm({onClose, bookTitle, bookOwner, bookId}) 
                     {'\u00A0'}
                     <button onClick={()=>{
                         navigate(`/user/${bookOwner}`);
-                         onClose(false)
+                        onClose(false)
+                        setShowBorrowForm(false);
                     }
                     }>
-                    <span className="text-[#2C365A] underline decoration-[#9C8F7F]/40 underline-offset-2">@{bookOwner}</span>
-                </button></p>
+                        <span className="text-[#2C365A] underline decoration-[#9C8F7F]/40 underline-offset-2">@{bookOwner}</span>
+                    </button></p>
 
                 {error && (
                     <div className="text-center bg-red-50 text-red-700 p-3 rounded-lg font-fraunces-light mb-4 text-sm">
@@ -164,7 +185,10 @@ export default function BorrowBookForm({onClose, bookTitle, bookOwner, bookId}) 
                     <div className="flex gap-3 justify-end mt-6">
                         <button
                             type="button"
-                            onClick={() => onClose(false)}
+                            onClick={() => {
+                                onClose(false)
+                                setShowBorrowForm(false);
+                            }}
                             disabled={loading}
                             className="font-fraunces px-4 py-2 rounded-lg bg-[#F6F2ED] outline outline-[#4B3935] text-[#4B3935] hover:shadow-[0_2px_6px_#9C8F7F] transition duration-200"
                         >
@@ -182,5 +206,9 @@ export default function BorrowBookForm({onClose, bookTitle, bookOwner, bookId}) 
                 </form>
             </div>
         </div>
+    )
+    }
+        </>
+
     )
 }

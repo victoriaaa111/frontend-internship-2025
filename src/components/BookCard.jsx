@@ -10,10 +10,9 @@ export default function BookCard({ cover, title, author, status, lender, onDelet
         return status?.charAt(0).toUpperCase() + status?.slice(1).toLowerCase();
     };
 
-    const [showBorrowForm, setShowBorrowForm] = useState(false);
 
     const handleBorrowFormClose = (success) => {
-        setShowBorrowForm(false);
+
         if (success && onBorrowSuccess) {
             onBorrowSuccess(title);
         }
@@ -22,7 +21,7 @@ export default function BookCard({ cover, title, author, status, lender, onDelet
     <>
         <div className="relative w-full h-full flex justify-center">
             <div className="shadow-[0_2px_3px_#9C8F7F] w-full aspect-[3/5] bg-[#EEE8DF] rounded-xl p-4 flex flex-col items-center transition">
-                {!isInBorrowedCollection && bookId && bookId !== null && (
+                {!isInBorrowedCollection && bookId && true && !resolvedUsername && (
                     <button
                         onClick={(e) => {
                             e.stopPropagation();
@@ -41,9 +40,10 @@ export default function BookCard({ cover, title, author, status, lender, onDelet
                 {/* Book cover and info with conditional blur */}
                 <div className={`flex flex-col items-center w-full ${shouldBlurContent ? "blur-[1.5px]" : ""}`}>
                     <img
-                        src={cover}
+                        src={cover || bookPlaceholder}
                         alt={title}
-                        className="w-full aspect-[3/4] object-cover rounded-md mt-2 mb-3"
+                        className="w-full aspect-[3/4] object-contain mt-2 mb-3 bg-[#EEE8DF]"
+                        loading="lazy"
                     />
                     <p className="font-cotta text-sm md:text-base lg:text-lg text-[#4B3935] text-center truncate w-full">
                         {title}
@@ -54,7 +54,7 @@ export default function BookCard({ cover, title, author, status, lender, onDelet
                 </div>
 
                 {/* Status/lender info - never blurred */}
-                {!isInBorrowedCollection ? (
+                {!isInBorrowedCollection && !resolvedUsername ? (
                     <span
                         className={`px-3 py-1 rounded-full text-xs md:text-sm lg:text-base font-neuton ${
                             status === "AVAILABLE"
@@ -73,26 +73,17 @@ export default function BookCard({ cover, title, author, status, lender, onDelet
                     )
                     )
                 )}
-                {!status && !lender && !isInBorrowedCollection && (
-                        <button className=" w-full bg-[#2C365A] font-fraunces-light text-[#F6F2ED] rounded-lg mt-1 text-xs md:text-base py-2
-                 cursor-pointer hover:shadow-[0_2px_6px_#9C8F7F] transition duration-200"
-                        onClick={() => {
-                            setShowBorrowForm(true);
-                        }}
-                        >
-                            Borrow Book
-                        </button>
+                {!status && !lender && !isInBorrowedCollection && resolvedUsername && (
+                    <BorrowBookForm
+                        onClose={handleBorrowFormClose}
+                        bookTitle={title}
+                        bookOwner={resolvedUsername}
+                        bookId={bookId}
+                    />
                     )}
             </div>
         </div>
-                {showBorrowForm && (
-                    <BorrowBookForm
-                    onClose={handleBorrowFormClose}
-                bookTitle={title}
-                bookOwner={resolvedUsername}
-                bookId={bookId}
-            />
-            )}
+
     </>
     );
 };
