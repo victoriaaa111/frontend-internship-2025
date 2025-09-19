@@ -115,6 +115,7 @@ const BookResult = ({ book, onBorrowSuccess}) => {
                                 bookTitle={book.title}
                                 bookOwner={book.username}
                                 bookId={book.userBookId}
+                                styleClasses={"bg-[#2C365A] text-[#EEE8DF] px-4 py-2 rounded-full text-sm font-fraunces-light hover:shadow-[0_2px_3px_#9C8F7F] transition cursor-pointer disabled:opacity-50"}
                             />
                         )}
                 </div>

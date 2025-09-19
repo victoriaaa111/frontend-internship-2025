@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {csrfFetch} from "../csrf.js";
 import {useNavigate} from "react-router-dom";
 
-export default function BorrowBookForm({onClose, bookTitle, bookOwner, bookId}) {
+export default function BorrowBookForm({onClose, bookTitle, bookOwner, bookId, styleClasses}) {
     const sanitizeInput = (value) => {
         return value
             .replace(/^\s+|\s+$/, '') // Remove the 'g' flag
@@ -98,8 +98,7 @@ export default function BorrowBookForm({onClose, bookTitle, bookOwner, bookId}) 
 
     return(
         <>
-        <button className=" w-full bg-[#2C365A] font-fraunces-light text-[#F6F2ED] rounded-lg mt-1 text-xs md:text-base py-2
-                 cursor-pointer hover:shadow-[0_2px_6px_#9C8F7F] transition duration-200"
+        <button className={styleClasses}
                 onClick={() => {
                     setShowBorrowForm(true);
                 }}
@@ -108,7 +107,9 @@ export default function BorrowBookForm({onClose, bookTitle, bookOwner, bookId}) 
         </button>
     {showBorrowForm &&(
         <div className="fixed inset-0 z-50 flex items-center justify-center">
-            <div className="absolute inset-0 backdrop-blur-sm bg-black/30" onClick={() => onClose(false)} />
+            <div className="absolute inset-0 backdrop-blur-sm bg-black/30" onClick={() =>{
+                onClose(false)
+                setShowBorrowForm(false);}} />
             <div className="relative z-50 bg-[#EEE8DF] p-6 rounded-xl shadow-xl w-[90%] max-w-[400px]">
                 <h3 className="font-cotta text-xl text-[#4B3935] mb-1">Borrow Book Request</h3>
                 <p className="font-fraunces-light text-[#4B3935] mb-4 text-sm">Request to borrow "{bookTitle}" from
