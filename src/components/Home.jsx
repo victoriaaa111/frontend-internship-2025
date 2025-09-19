@@ -2,6 +2,7 @@ import React, {useState, useCallback} from 'react';
 import { csrfFetch } from '../csrf';
 import BorrowBookForm from "./BorrowBookForm.jsx";
 import Menu from "./Menu.jsx";
+import {useNavigate} from "react-router-dom";
 
 const CustomDropdown = ({ value, onChange, options }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -64,6 +65,7 @@ const CustomDropdown = ({ value, onChange, options }) => {
 
 // Book Result Component
 const BookResult = ({ book, onBorrowSuccess, pending}) => {
+    const navigate = useNavigate();
 
     const handleBorrowFormClose = (success) => {
 
@@ -106,7 +108,7 @@ const BookResult = ({ book, onBorrowSuccess, pending}) => {
                             {book.status}
                         </span>
                         <span className="text-xs text-[#2C365A] font-fraunces-light">
-                            Owned by @{book.username}
+                            Owned by <button className="text-[#2C365A] underline decoration-[#9C8F7F]/40 underline-offset-2" onClick={()=>{navigate(`/user/${book.username}`)}}> @{book.username}</button>
                         </span>
 
                         {pending && (
