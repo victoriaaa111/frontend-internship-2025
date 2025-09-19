@@ -1,13 +1,26 @@
-import { useEffect, useState } from "react";
-import { initCsrf, csrfFetch } from "../csrf.js";
+import {useState } from "react";
+import {csrfFetch } from "../csrf.js";
 import { useNavigate } from "react-router-dom";
 import OAuthButton from "./OAuthButton.jsx";
+import { useEffect } from "react";
 
 const MAX_ATTEMPTS = 5;
 const DEV_FAKE_SESSION = true; // set to false in production
 // const GOOGLE_AUTH_URL = 'http://localhost:8080/oauth2/authorization/google';
 
 export default function Login() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    const checkAuth = async () => {
+      const response = await csrfFetch("http://localhost:8080/api/user/me");
+      if (response.ok) {
+        // User is authenticated, redirect away from login
+        navigate("/profile");
+      }
+    };
+    checkAuth();
+  }, [navigate]);
+
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -22,7 +35,7 @@ export default function Login() {
   const [attemptsLeft, setAttemptsLeft] = useState(MAX_ATTEMPTS);
   const [sessionId, setSessionId] = useState("");
 
-  const navigate = useNavigate();
+
 
   const validatePassword = (password) => {
     // Check for minimum length and complexity
@@ -41,10 +54,6 @@ export default function Login() {
         .trim() // Remove whitespace
         .substring(0, 255); // Limit length
   };
-
-  useEffect(() => {
-    initCsrf("http://localhost:8080");
-  }, []);
 
   const handleChange = (e) => {
     setFormData({

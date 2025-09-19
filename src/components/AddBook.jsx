@@ -1,5 +1,5 @@
-import {useState, useRef, useEffect} from 'react';
-import {csrfFetch, initCsrf} from '../csrf.js';
+import {useState, useRef} from 'react';
+import {csrfFetch} from '../csrf.js';
 import {useNavigate} from "react-router-dom";
 import bookPlaceholder from '../assets/book.png';
 
@@ -25,7 +25,6 @@ export default function AddBook({ onClose, onAdded }) {
     };
 
     const navigate = useNavigate();
-    useEffect(() => { initCsrf("http://localhost:8080"); }, []);
 
     const [error, setError] = useState('');
     const [title, setTitle] = useState('');

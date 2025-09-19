@@ -1,6 +1,12 @@
 const CSRF_COOKIE = 'XSRF-TOKEN';
 const CSRF_HEADER = 'X-XSRF-TOKEN';
 
+let isAuthenticated = true;
+
+export const setAuthenticationState = (authenticated) => {
+    isAuthenticated = authenticated;
+};
+
 export const getCsrfTokenFromCookie = () => {
     try {
         const match = document.cookie.match(new RegExp('(?:^|; )' + CSRF_COOKIE + '=([^;]*)'));
@@ -23,14 +29,14 @@ export const initCsrf = async (baseUrl = 'http://localhost:8080') => {
   if (!response.ok) {
     throw new Error('Failed to initialize CSRF token');
   }
-
-  // Force the browser to save the cookie
-  document.cookie = response.headers.get('set-cookie');
   
   return response;
 };
 
 export const csrfFetch = async (url, options = {}) => {
+    if (!isAuthenticated) {
+        return { __unauthorized: true };
+    }
     const { headers = {}, body, credentials, ...rest } = options;
 
     // Get CSRF token
@@ -65,7 +71,7 @@ export const csrfFetch = async (url, options = {}) => {
     let response = await fetch(url, finalOptions);
 
     // Handle 401 Unauthorized
-    if (response.status === 401) {
+    if (response.status === 403 || response.status === 401) {
         try {
             // Try to refresh token
             const refreshResponse = await fetch(
@@ -82,17 +88,25 @@ export const csrfFetch = async (url, options = {}) => {
             if (refreshResponse.ok) {
                 // Retry original request with new token
                 const newToken = getCsrfTokenFromCookie();
+
+                if (!newToken) {
+                    await initCsrf();
+                }
+
                 finalOptions.headers[CSRF_HEADER] = newToken;
                 response = await fetch(url, finalOptions);
 
-                if (response.status === 401) {
+                if (response.status === 401 || response.status === 403) {
+                    setAuthenticationState(false); // Mark as unauthenticated
                     return { __unauthorized: true };
                 }
             } else {
+                setAuthenticationState(false); // Mark as unauthenticated
                 return { __unauthorized: true };
             }
         } catch (err) {
             console.error('Token refresh failed:', err);
+            setAuthenticationState(false); // Mark as unauthenticated
             return { __unauthorized: true };
         }
     }

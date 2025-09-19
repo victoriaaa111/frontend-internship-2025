@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import AddBook from "./AddBook.jsx";
-import { csrfFetch, initCsrf } from "../csrf.js";
+import { csrfFetch} from "../csrf.js";
 import { useNavigate } from "react-router-dom";
 import BookCard from "./BookCard.jsx";
+import Logout from "./Logout.jsx";
 
 const CustomDropdown = ({ value, onChange }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -63,9 +64,7 @@ const CustomDropdown = ({ value, onChange }) => {
 };
 
 export default function ProfilePage() {
-  useEffect(() => {
-    initCsrf("http://localhost:8080");
-  }, []);
+
 
   const navigate = useNavigate();
 
@@ -76,6 +75,7 @@ export default function ProfilePage() {
   const [flash, setFlash] = useState({ message: "", type: "" });
   const [books, setBooks] = useState([]);
   const [deleting, setDeleting] = useState(false);
+  const [showLogout, setShowLogout] = useState(false);
 
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
 
@@ -219,6 +219,8 @@ export default function ProfilePage() {
     fetchUserData();
   }, []);
 
+  const cancelLogout = () => setShowLogout(false);
+
   return (
       <div className="min-h-screen bg-[#F6F2ED] mx-auto relative font-sans overflow-y-auto">
         {/* Top Bar */}
@@ -259,16 +261,23 @@ export default function ProfilePage() {
         {/* Profile Section */}
         <div className="flex justify-between items-center px-6 mt-8 flex-wrap gap-4 ml-7">
           {/* Username + Friends */}
-          <div
-              className="rounded-lg px-4 py-3 bg-[#EEE8DF] text-center shadow-[0_2px_3px_#9C8F7F]"
-          >
-            <p className="font-fraunces-light text-base md:text-lg lg:text-xl text-[#4B3935]">
-              @{username || "Loading..."}
-            </p>
-            <p className="font-fraunces text-sm md:text-base lg:text-lg text-[#2C365A]">
-              1111 friends
-            </p>
+          <div className="flex flex-col items-center justify-center">
+            <div
+                className="rounded-lg px-4 py-3 bg-[#EEE8DF] text-center shadow-[0_2px_3px_#9C8F7F]"
+            >
+              <p className="font-fraunces-light text-base md:text-lg lg:text-xl text-[#4B3935]">
+                @{username || "Loading..."}
+              </p>
+              <p className="font-fraunces text-sm md:text-base lg:text-lg text-[#2C365A]">
+                1111 friends
+              </p>
+            </div>
+            <div>
+              <button className="mt-3 mx-auto bg-[#2C365A] px-5 py-2 rounded-full shadow-[0_2px_3px_#9C8F7F] hover:shadow-[0_4px_4px_#9C8F7F] transition font-fraunces-light text-[#EEE8DF] text-base lg:text-lg " onClick={()=>setShowLogout(true)}>Log out</button>
+              {showLogout && <Logout onClose={cancelLogout}/>}
+            </div>
           </div>
+
 
           {/* Collection Dropdown */}
           <div className="relative flex-1 flex justify-center">
