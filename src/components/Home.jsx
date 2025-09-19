@@ -63,7 +63,7 @@ const CustomDropdown = ({ value, onChange, options }) => {
 };
 
 // Book Result Component
-const BookResult = ({ book, onBorrowSuccess}) => {
+const BookResult = ({ book, onBorrowSuccess, pending}) => {
 
     const handleBorrowFormClose = (success) => {
 
@@ -74,7 +74,10 @@ const BookResult = ({ book, onBorrowSuccess}) => {
 
 
     return (
-        <div className="bg-[#EEE8DF] rounded-xl p-4 shadow-[0_2px_3px_#9C8F7F] flex gap-4">
+        <div className="relative bg-[#EEE8DF] rounded-xl p-4 shadow-[0_2px_3px_#9C8F7F] flex gap-4">
+            {pending && (
+                <div className="absolute inset-0 bg-black/15 rounded-xl z-20"></div>
+            )}
             <img
                 src={book.imageLink || '/placeholder-book.png'}
                 alt={book.title}
@@ -105,11 +108,17 @@ const BookResult = ({ book, onBorrowSuccess}) => {
                         <span className="text-xs text-[#2C365A] font-fraunces-light">
                             Owned by @{book.username}
                         </span>
+
+                        {pending && (
+                            <span className="inline-block bg-gray-600 text-white px-3 py-1 ml-4 mt-2 rounded-full text-xs font-fraunces font-semibold relative z-30">
+                            Request Pending
+                        </span>
+                        )}
                     </div>
 
 
                 <div className="flex gap-2">
-                    {book.status === 'AVAILABLE' && (
+                    {book.status === 'AVAILABLE' && !pending && (
                             <BorrowBookForm
                                 onClose={handleBorrowFormClose}
                                 bookTitle={book.title}
@@ -292,6 +301,7 @@ export default function Home() {
                                 key={book.userBookId || book.googleBookId || index}
                                 book={book}
                                 onBorrowSuccess={handleBorrowSuccess}
+                                pending={book.pending}
                             />
                         ))}
                     </div>

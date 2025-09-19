@@ -41,7 +41,8 @@ export default function OtherProfile() {
                 cover: b.imageLink,
                 title: b.title,
                 author: Array.isArray(b.authors) ? b.authors.join(", ") : b.authors,
-                status: b.status
+                status: b.status,
+                pending: b.pending
             }));
 
             setBooks(mapped);
@@ -122,6 +123,7 @@ export default function OtherProfile() {
                                     author={book.author}
                                     resolvedUsername={resolvedUsername}
                                     onBorrowSuccess={handleBorrowSuccess}
+                                    pending={book.pending}
                                 />
                             ))}
                         </div>

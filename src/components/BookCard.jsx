@@ -2,7 +2,7 @@ import { useState } from "react";
 import BorrowBookForm from "./BorrowBookForm.jsx";
 import bookPlaceholder from '../assets/book.png';
 
-export default function BookCard({ cover, title, author, status, lender, onDelete, bookId, deleting, resolvedUsername, onBorrowSuccess }) {
+export default function BookCard({ cover, title, author, status, lender, onDelete, bookId, deleting, resolvedUsername, onBorrowSuccess, pending }) {
     const isInBorrowedCollection = Boolean(lender);
     const shouldBlurContent = status === "BORROWED" && !isInBorrowedCollection;
 
@@ -21,6 +21,17 @@ export default function BookCard({ cover, title, author, status, lender, onDelet
     <>
         <div className="relative w-full h-full flex justify-center">
             <div className="shadow-[0_2px_3px_#9C8F7F] w-full aspect-[3/5] bg-[#EEE8DF] rounded-xl p-4 flex flex-col items-center transition">
+
+                {pending && (
+                    <div className="absolute inset-0 bg-black/15 rounded-xl z-20 flex items-center justify-center">
+                        <span className="bg-gray-600 shadow-[0_2px_3px_#EEE8DF] text-white px-3 py-1 rounded-full text-xs md:text-sm lg:font-base font-fraunces font-semibold">
+                            Request Pending
+                        </span>
+                    </div>
+
+
+                )}
+
                 {!isInBorrowedCollection && bookId && true && !resolvedUsername && (
                     <button
                         onClick={(e) => {
@@ -73,7 +84,7 @@ export default function BookCard({ cover, title, author, status, lender, onDelet
                     )
                     )
                 )}
-                {!status && !lender && !isInBorrowedCollection && resolvedUsername && (
+                {!status && !lender && !isInBorrowedCollection && resolvedUsername && !pending && (
                     <BorrowBookForm
                         onClose={handleBorrowFormClose}
                         bookTitle={title}
