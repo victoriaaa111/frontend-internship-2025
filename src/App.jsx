@@ -8,11 +8,14 @@ import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import OtherProfile from "./components/OtherProfile.jsx";
 
 function App() {
-    const currentUser = null;
   return (
     <Router>
       <Routes>
-        <Route path="/home" element={<Home />} />
+        <Route path="/home" element={
+            <ProtectedRoute>
+                <Home />
+            </ProtectedRoute>
+            } />
         <Route path="/login" element={<Login />} />
 
         <Route path="/signup" element={<Signup/>}></Route>

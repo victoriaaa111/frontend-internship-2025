@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import { Link } from 'react-router-dom';
 import { csrfFetch } from '../csrf';
+import BorrowBookForm from "./BorrowBookForm.jsx";
 
 const CustomDropdown = ({ value, onChange, options }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -62,24 +63,15 @@ const CustomDropdown = ({ value, onChange, options }) => {
 };
 
 // Book Result Component
-const BookResult = ({ book, onAddBook, onBorrowBook }) => {
-    const [isAdding, setIsAdding] = useState(false);
-    const [isBorrowing, setIsBorrowing] = useState(false);
+const BookResult = ({ book, onBorrowSuccess}) => {
 
-    // Check if this is a user book (from user search) or Google book
-    const isUserBook = book.hasOwnProperty('userBookId');
+    const handleBorrowFormClose = (success) => {
 
-    const handleAddBook = async () => {
-        setIsAdding(true);
-        await onAddBook(book);
-        setIsAdding(false);
+        if (success && onBorrowSuccess) {
+            onBorrowSuccess(book.title);
+        }
     };
 
-    const handleBorrowBook = async () => {
-        setIsBorrowing(true);
-        await onBorrowBook(book);
-        setIsBorrowing(false);
-    };
 
     return (
         <div className="bg-[#EEE8DF] rounded-xl p-4 shadow-[0_2px_3px_#9C8F7F] flex gap-4">
@@ -102,7 +94,6 @@ const BookResult = ({ book, onAddBook, onBorrowBook }) => {
                 )}
                 
                 {/* Show status and owner info for user books */}
-                {isUserBook && (
                     <div className="mb-3">
                         <span className={`inline-block px-2 py-1 rounded-full text-xs font-fraunces-light mr-2 ${
                             book.status === 'AVAILABLE' 
@@ -115,195 +106,24 @@ const BookResult = ({ book, onAddBook, onBorrowBook }) => {
                             Owned by @{book.username}
                         </span>
                     </div>
-                )}
+
 
                 <div className="flex gap-2">
-                    {isUserBook ? (
-                        // For user books, show borrow button if available
-                        book.status === 'AVAILABLE' && (
-                            <button
-                                onClick={handleBorrowBook}
-                                disabled={isBorrowing}
-                                className="bg-[#2C365A] text-[#EEE8DF] px-4 py-2 rounded-full text-sm font-fraunces-light hover:shadow-[0_2px_3px_#9C8F7F] transition cursor-pointer disabled:opacity-50"
-                            >
-                                {isBorrowing ? 'Borrowing...' : 'Borrow Book'}
-                            </button>
-                        )
-                    ) : (
-                        // For Google books, show add to collection button
-                        <button
-                            onClick={handleAddBook}
-                            disabled={isAdding}
-                            className="bg-[#4B3935] text-[#EEE8DF] px-4 py-2 rounded-full text-sm font-fraunces-light hover:shadow-[0_2px_3px_#9C8F7F] transition cursor-pointer disabled:opacity-50"
-                        >
-                            {isAdding ? 'Adding...' : 'Add to Collection'}
-                        </button>
-                    )}
+                    {book.status === 'AVAILABLE' && (
+                            <BorrowBookForm
+                                onClose={handleBorrowFormClose}
+                                bookTitle={book.title}
+                                bookOwner={book.username}
+                                bookId={book.userBookId}
+                            />
+                        )}
                 </div>
             </div>
         </div>
     );
 };
 
-// Request Modal Component
-const RequestModal = ({ request, isOpen, onClose, onAccept, onReject }) => {
-    if (!isOpen || !request) return null;
 
-    const formatDate = (dateString) => {
-        return new Date(dateString).toLocaleDateString('en-US', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
-    };
-
-    const formatTime = (timeString) => {
-        return new Date(`1970-01-01T${timeString}`).toLocaleTimeString('en-US', {
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true
-        });
-    };
-
-    const formatRequestDate = (dateString) => {
-        return new Date(dateString).toLocaleDateString('en-US', {
-            month: 'short',
-            day: 'numeric',
-            year: 'numeric'
-        }) + ' at ' + new Date(dateString).toLocaleTimeString('en-US', {
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true
-        });
-    };
-
-    return (
-        <>
-            {/* Blur overlay */}
-            <div 
-                className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm z-40"
-                onClick={onClose}
-            />
-            
-            {/* Modal */}
-            <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
-                <div 
-                    className="bg-[#EEE8DF] rounded-2xl shadow-2xl max-w-md w-full mx-4 transform transition-all"
-                    onClick={(e) => e.stopPropagation()}
-                >
-                    {/* Header */}
-                    <div className="p-6 pb-4">
-                        <h2 className="text-xl font-fraunces text-[#4B3935] text-center mb-2">
-                            Borrow Request
-                        </h2>
-                        <div className="text-center">
-                            <span className="font-fraunces text-[#2C365A]">@{request.username}</span>
-                            <span className="font-fraunces-light text-[#2C365A]"> wants to borrow</span>
-                        </div>
-                        <p className="font-fraunces text-[#4B3935] text-center mt-1 text-lg">
-                            "{request.bookTitle}"
-                        </p>
-                    </div>
-
-                    {/* Content */}
-                    <div className="px-6 pb-6">
-                        <div className="space-y-4">
-                            {/* Meeting Details */}
-                            <div className="bg-white bg-opacity-50 rounded-xl p-4">
-                                <h3 className="font-fraunces text-[#4B3935] mb-3 text-center">Meeting Details</h3>
-                                
-                                <div className="space-y-3">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-6 h-6 bg-[#4B3935] rounded-full flex items-center justify-center flex-shrink-0">
-                                            <svg className="w-3 h-3 text-[#EEE8DF]" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
-                                            </svg>
-                                        </div>
-                                        <div>
-                                            <div className="font-fraunces-light text-[#2C365A] text-sm">Meeting Date</div>
-                                            <div className="font-fraunces text-[#4B3935]">{formatDate(request.meetingDate)}</div>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-6 h-6 bg-[#4B3935] rounded-full flex items-center justify-center flex-shrink-0">
-                                            <svg className="w-3 h-3 text-[#EEE8DF]" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-                                            </svg>
-                                        </div>
-                                        <div>
-                                            <div className="font-fraunces-light text-[#2C365A] text-sm">Meeting Time</div>
-                                            <div className="font-fraunces text-[#4B3935]">{formatTime(request.meetingTime)}</div>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-6 h-6 bg-[#4B3935] rounded-full flex items-center justify-center flex-shrink-0">
-                                            <svg className="w-3 h-3 text-[#EEE8DF]" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                                            </svg>
-                                        </div>
-                                        <div>
-                                            <div className="font-fraunces-light text-[#2C365A] text-sm">Location</div>
-                                            <div className="font-fraunces text-[#4B3935]">{request.location}</div>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-6 h-6 bg-[#4B3935] rounded-full flex items-center justify-center flex-shrink-0">
-                                            <svg className="w-3 h-3 text-[#EEE8DF]" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 001.414 1.414l2.293-2.293V14a1 1 0 102 0V8a1 1 0 00-.293-.707z" clipRule="evenodd" />
-                                            </svg>
-                                        </div>
-                                        <div>
-                                            <div className="font-fraunces-light text-[#2C365A] text-sm">Due Date</div>
-                                            <div className="font-fraunces text-[#4B3935]">{formatDate(request.dueDate)}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Request Info */}
-                            <div className="text-center">
-                                <div className="font-fraunces-light text-[#2C365A] text-sm">
-                                    Requested on {formatRequestDate(request.requestedAt)}
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Action Buttons */}
-                        <div className="flex justify-center gap-4 mt-6">
-                            <button
-                                onClick={() => onReject(request.id)}
-                                className="flex items-center justify-center w-12 h-12 bg-red-100 hover:bg-red-200 rounded-full transition cursor-pointer"
-                                title="Reject request"
-                            >
-                                <img
-                                    src="src/assets/cross.png"
-                                    alt="Reject"
-                                    className="w-6 h-6"
-                                />
-                            </button>
-                            
-                            <button
-                                onClick={() => onAccept(request.id)}
-                                className="flex items-center justify-center w-12 h-12 bg-green-100 hover:bg-green-200 rounded-full transition cursor-pointer"
-                                title="Accept request"
-                            >
-                                <img
-                                    src="src/assets/tick.png"
-                                    alt="Accept"
-                                    className="w-6 h-6"
-                                />
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </>
-    );
-};
 
 export default function Home() {
     const [searchType, setSearchType] = useState('title');
@@ -313,13 +133,14 @@ export default function Home() {
     const [isSearching, setIsSearching] = useState(false);
     const [searchError, setSearchError] = useState('');
     const [flash, setFlash] = useState({ message: '', type: '' });
+
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [hasSearched, setHasSearched] = useState(false);
-    const [selectedRequest, setSelectedRequest] = useState(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [_selectedRequest, setSelectedRequest] = useState(null);
     const [notifications, setNotifications] = useState([]);
-    const [isLoadingNotifications, setIsLoadingNotifications] = useState(false);
+    const [_isModalOpen, setIsModalOpen] = useState(false);
+    const [_isLoadingNotifications, setIsLoadingNotifications] = useState(false);
 
     // Fetch incoming borrow requests
 const fetchNotifications = async (page = 1, size = 3) => {
@@ -417,46 +238,6 @@ const fetchNotifications = async (page = 1, size = 3) => {
         }
     };
 
-    const handleAddBookToCollection = async (book) => {
-        try {
-            // This would be for adding Google Books API results to collection
-            // (Not currently used since we're searching user books, but keeping for future use)
-            const response = await csrfFetch('http://localhost:8080/api/book', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include',
-                body: JSON.stringify({
-                    googleBookId: book.googleBookId,
-                    title: book.title,
-                    authors: book.authors,
-                    publisher: book.publisher,
-                    imageLink: book.imageLink
-                })
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to add book');
-            }
-
-            setFlash({
-                message: `"${book.title}" added to your collection!`,
-                type: 'success'
-            });
-            
-            setTimeout(() => setFlash({ message: '', type: '' }), 3000);
-
-        } catch (error) {
-            console.error('Error adding book:', error);
-            setFlash({
-                message: 'Failed to add book to collection',
-                type: 'error'
-            });
-            
-            setTimeout(() => setFlash({ message: '', type: '' }), 3000);
-        }
-    };
 
     const handleNotificationClick = (notification) => {
         setSelectedRequest(notification);
@@ -535,43 +316,12 @@ const fetchNotifications = async (page = 1, size = 3) => {
         }
     };
 
-    const handleBorrowBook = async (book) => {
-        try {
-            const response = await csrfFetch(`http://localhost:8080/api/borrow/request/${book.userBookId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            });
 
-            if (!response.ok) {
-                throw new Error('Failed to borrow book');
-            }
+    const handleBorrowSuccess = useCallback((bookTitle) => {
+        setFlash({ message: `Borrow request sent successfully for ${bookTitle}`, type: "success" });
+        setTimeout(() => setFlash({ message: "", type: "" }), 4500);
+    },[]);
 
-            setFlash({
-                message: `"${book.title}" borrowed successfully!`,
-                type: 'success'
-            });
-            
-            // Update the book status in search results
-            setSearchResults(prev => prev.map(b => 
-                b.userBookId === book.userBookId 
-                    ? { ...b, status: 'BORROWED' }
-                    : b
-            ));
-            
-            setTimeout(() => setFlash({ message: '', type: '' }), 3000);
-
-        } catch (error) {
-            console.error('Error borrowing book:', error);
-            setFlash({
-                message: 'Failed to borrow book',
-                type: 'error'
-            });
-            
-            setTimeout(() => setFlash({ message: '', type: '' }), 3000);
-        }
-    };
 
     return (
         <div className="min-h-screen bg-[#F6F2ED] mx-auto relative font-sans overflow-y-auto">
@@ -769,8 +519,7 @@ const fetchNotifications = async (page = 1, size = 3) => {
                             <BookResult
                                 key={book.userBookId || book.googleBookId || index}
                                 book={book}
-                                onAddBook={handleAddBookToCollection}
-                                onBorrowBook={handleBorrowBook}
+                                onBorrowSuccess={handleBorrowSuccess}
                             />
                         ))}
                     </div>
@@ -881,14 +630,6 @@ const fetchNotifications = async (page = 1, size = 3) => {
             {/* Empty space for future content */}
             <div className="flex-1 mt-8 px-4 pb-8"></div>
 
-            {/* Request Modal */}
-            <RequestModal
-                request={selectedRequest}
-                isOpen={isModalOpen}
-                onClose={handleCloseModal}
-                onAccept={handleAcceptRequest}
-                onReject={handleRejectRequest}
-            />
         </div>
     );
 }
