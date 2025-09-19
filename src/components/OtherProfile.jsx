@@ -2,6 +2,7 @@ import React, {useEffect,useMemo, useState, useCallback} from "react";
 import {csrfFetch, initCsrf} from "../csrf.js";
 import BookCard from "./BookCard.jsx";
 import {useLocation, useParams} from "react-router-dom";
+import Menu from "./Menu.jsx";
 
 export default function OtherProfile() {
     const {username: usernameFromParams} = useParams();
@@ -68,21 +69,7 @@ export default function OtherProfile() {
 
     return (
         <div className="min-h-screen bg-[#F6F2ED] mx-auto relative font-sans overflow-y-auto">
-            {/* Top Bar */}
-            <div className="flex justify-between items-center px-4 py-2">
-                {/* Logo */}
-                <img
-                    src="../src/assets/BB-Profile.png"
-                    alt="logo"
-                    className="w-12 h-12 object-contain md:w-15 md:h-15 lg:w-20 lg:h-20"
-                />
-
-                {/* Navigation */}
-                <div className="flex space-x-4 text-[#4B3935] text-md md:text-lg lg:text-xl font-fraunces-light pr-10">
-                    <button className="hover:underline cursor-pointer">Home</button>
-                    <button className="underline cursor-pointer">Profile</button>
-                </div>
-            </div>
+            <Menu/>
 
             {/* Flash Message */}
             {flash.message && (
