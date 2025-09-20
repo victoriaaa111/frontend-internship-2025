@@ -191,7 +191,7 @@ export default function BorrowBookForm({onClose, bookTitle, bookOwner, bookId, s
                                 setShowBorrowForm(false);
                             }}
                             disabled={loading}
-                            className="font-fraunces px-4 py-2 rounded-lg bg-[#F6F2ED] outline outline-[#4B3935] text-[#4B3935] hover:shadow-[0_2px_6px_#9C8F7F] transition duration-200"
+                            className="font-fraunces px-4 py-2 rounded-lg bg-[#F6F2ED] outline outline-[#4B3935] text-[#4B3935] hover:shadow-[0_2px_6px_#9C8F7F] transition duration-200 cursor-pointer disabled:opacity-50"
                         >
                             Cancel
                         </button>
@@ -199,7 +199,7 @@ export default function BorrowBookForm({onClose, bookTitle, bookOwner, bookId, s
                         <button
                             type="submit"
                             disabled={loading || !formData.meetingDate || !formData.meetingTime || !formData.location}
-                            className="font-fraunces-light px-4 py-2 rounded-lg bg-[#4B3935] text-[#F6F2ED] hover:shadow-[0_2px_6px_#9C8F7F] transition duration-200 disabled:opacity-50"
+                            className="font-fraunces-light px-4 py-2 rounded-lg bg-[#4B3935] text-[#F6F2ED] hover:shadow-[0_2px_6px_#9C8F7F] transition duration-200 disabled:opacity-50 cursor-pointer"
                         >
                             {loading ? "Sending..." : "Send Request"}
                         </button>
