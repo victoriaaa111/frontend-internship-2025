@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {csrfFetch, setAuthenticationState} from "../csrf.js";
+import {csrfFetch} from "../csrf.js";
 import {useNavigate} from "react-router-dom";
 
 export default function Logout({onClose}) {
@@ -20,7 +20,6 @@ export default function Logout({onClose}) {
                 method: "POST"
             })
             if (response.ok || response.status === 401 || response.status === 403) {
-                setAuthenticationState(false);
 
                 document.cookie = 'XSRF-TOKEN=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
 
