@@ -1,5 +1,5 @@
 import React, {useEffect,useMemo, useState, useCallback} from "react";
-import {csrfFetch, initCsrf} from "../csrf.js";
+import {csrfFetch} from "../csrf.js";
 import BookCard from "./BookCard.jsx";
 import {useLocation, useParams, useNavigate} from "react-router-dom";
 import Menu from "./Menu.jsx";
@@ -14,10 +14,6 @@ export default function OtherProfile() {
         const fromState = (location.state && location.state.username) ? String(location.state.username).trim() : '';
         return decodeURIComponent(fromUrl || fromState || "");
     }, [usernameFromParams, location.state]);
-
-    useEffect(() => {
-        initCsrf("http://localhost:8080");
-    }, []);
 
     const [loading, setLoading] = useState(false);
     const [flash, setFlash] = useState({ message: "", type: "" });

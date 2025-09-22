@@ -1,7 +1,7 @@
 // src/components/ProtectedRoute.jsx
 import React, { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
-import { csrfFetch, initCsrf } from '../csrf.js';
+import { csrfFetch} from '../csrf.js';
 
 const ProtectedRoute = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(null); // null = loading
@@ -9,8 +9,8 @@ const ProtectedRoute = ({ children }) => {
     useEffect(() => {
         const checkAuth = async () => {
             try {
-                await initCsrf("http://localhost:8080");
                 const response = await csrfFetch("http://localhost:8080/api/user/me");
+
 
                 if (response.__unauthorized || !response.ok) {
                     setIsAuthenticated(false);

@@ -1,13 +1,18 @@
 import {BrowserRouter as Router, Route, Routes, Navigate} from 'react-router-dom'
 import Signup from './components/Signup'
-import Welcome from './components/Welcome'
 import Profile from './components/Profile'
 import Login from "./components/Login";
 import Home from "./components/Home.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import OtherProfile from "./components/OtherProfile.jsx";
+import {useEffect} from "react";
+import {initCsrf} from "./csrf.js";
 
 function App() {
+    useEffect(() => {
+        initCsrf("http://localhost:8080");
+    }, []);
+
   return (
     <Router>
       <Routes>
@@ -19,8 +24,6 @@ function App() {
         <Route path="/login" element={<Login />} />
 
         <Route path="/signup" element={<Signup/>}></Route>
-
-        <Route path="/welcome" element={<Welcome/>}></Route>
 
         <Route path="/profile" element={
             <ProtectedRoute>
