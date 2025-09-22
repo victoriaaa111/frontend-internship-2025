@@ -1,11 +1,13 @@
 import React, {useEffect,useMemo, useState, useCallback} from "react";
 import {csrfFetch} from "../csrf.js";
 import BookCard from "./BookCard.jsx";
-import {useLocation, useParams} from "react-router-dom";
+import {useLocation, useParams, useNavigate} from "react-router-dom";
+import Menu from "./Menu.jsx";
 
 export default function OtherProfile() {
     const {username: usernameFromParams} = useParams();
     const location = useLocation();
+    const navigate = useNavigate();
 
     const resolvedUsername = useMemo(() =>{
         const fromUrl = usernameFromParams?.trim();
@@ -13,19 +15,47 @@ export default function OtherProfile() {
         return decodeURIComponent(fromUrl || fromState || "");
     }, [usernameFromParams, location.state]);
 
-
     const [loading, setLoading] = useState(false);
     const [flash, setFlash] = useState({ message: "", type: "" });
     const [books, setBooks] = useState([]);
+    const [userNotFound, setUserNotFound] = useState(false);
+
+    const checkIfOwnProfile = useCallback(async () => {
+        if (!resolvedUsername) return false;
+
+        try {
+            const response = await csrfFetch("http://localhost:8080/api/user/me");
+            if (response.ok) {
+                const userData = await response.json();
+                if (userData.username === resolvedUsername) {
+                    navigate("/profile");
+                    return true;
+                }
+            }
+        } catch (error) {
+            console.error("Error checking username:", error);
+        }
+        return false;
+    }, [resolvedUsername, navigate]);
 
     const fetchBooks = useCallback(async () => {
         if (!resolvedUsername) return;
+
+        // Check if viewing own profile first
+        const isOwnProfile = await checkIfOwnProfile();
+        if (isOwnProfile) return;
 
         setLoading(true);
         try {
             const url = `http://localhost:8080/api/user/books/${encodeURIComponent(resolvedUsername)}`;
 
             const response = await csrfFetch(url);
+
+            if (response.status === 400) {
+                setUserNotFound(true);
+                return;
+            }
+
             if (!response.ok) throw new Error("Failed to fetch books");
 
             const data = await response.json();
@@ -36,21 +66,23 @@ export default function OtherProfile() {
                 cover: b.imageLink,
                 title: b.title,
                 author: Array.isArray(b.authors) ? b.authors.join(", ") : b.authors,
-                status: b.status
+                status: b.status,
+                pending: b.pending
             }));
 
             setBooks(mapped);
         } catch {
-            setFlash({
-                message: "Failed to load books",
-                type: "error",
-            });
-            setTimeout(() => setFlash({ message: "", type: "" }), 3000);
+            if (!userNotFound) {
+                setFlash({
+                    message: "Failed to load books",
+                    type: "error",
+                });
+                setTimeout(() => setFlash({message: "", type: ""}), 3000);
+            }
         } finally {
             setLoading(false);
         }
-    }, [resolvedUsername]);
-
+    }, [resolvedUsername, userNotFound, checkIfOwnProfile]);
 
     useEffect(() => {
         fetchBooks();
@@ -62,23 +94,28 @@ export default function OtherProfile() {
         setTimeout(() => setFlash({ message: "", type: "" }), 4500);
     },[]);
 
-    return (
-        <div className="min-h-screen bg-[#F6F2ED] mx-auto relative font-sans overflow-y-auto">
-            {/* Top Bar */}
-            <div className="flex justify-between items-center px-4 py-2">
-                {/* Logo */}
-                <img
-                    src="../src/assets/BB-Profile.png"
-                    alt="logo"
-                    className="w-12 h-12 object-contain md:w-15 md:h-15 lg:w-20 lg:h-20"
-                />
+    if (userNotFound) {
+        return (
+            <div className="min-h-screen bg-[#F6F2ED] mx-auto relative font-sans overflow-y-auto">
+                <Menu/>
+                <div className="flex flex-col items-center justify-center px-4 mt-20">
+                    <div className="text-center">
+                        <h1 className="text-2xl md:text-3xl font-fraunces text-[#4B3935] mb-4">
+                            User Not Found
+                        </h1>
+                        <p className="text-lg font-fraunces-light text-[#2C365A] mb-6">
+                            The profile for @{resolvedUsername} does not exist or is not available.
+                        </p>
 
-                {/* Navigation */}
-                <div className="flex space-x-4 text-[#4B3935] text-md md:text-lg lg:text-xl font-fraunces-light pr-10">
-                    <button className="hover:underline cursor-pointer">Home</button>
-                    <button className="underline cursor-pointer">Profile</button>
+
+                    </div>
                 </div>
             </div>
+        );
+    }
+    return (
+        <div className="min-h-screen bg-[#F6F2ED] mx-auto relative font-sans overflow-y-auto">
+            <Menu/>
 
             {/* Flash Message */}
             {flash.message && (
@@ -131,6 +168,7 @@ export default function OtherProfile() {
                                     author={book.author}
                                     resolvedUsername={resolvedUsername}
                                     onBorrowSuccess={handleBorrowSuccess}
+                                    pending={book.pending}
                                 />
                             ))}
                         </div>

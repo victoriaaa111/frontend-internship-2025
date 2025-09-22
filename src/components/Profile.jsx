@@ -3,7 +3,10 @@ import AddBook from "./AddBook.jsx";
 import { csrfFetch} from "../csrf.js";
 import { useNavigate } from "react-router-dom";
 import BookCard from "./BookCard.jsx";
+
+import Menu from "./Menu.jsx";
 import Logout from "./Logout.jsx";
+
 
 const CustomDropdown = ({ value, onChange }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -102,7 +105,7 @@ export default function ProfilePage() {
       const url =
           collectionType === "myCollection"
               ? "http://localhost:8080/api/user/books"
-              : "http://localhost:8080/api/book/borrowed";
+              : "http://localhost:8080/api/user/borrowed";
 
       const response = await csrfFetch(url);
       if (!response.ok) throw new Error("Failed to fetch books");
@@ -223,21 +226,7 @@ export default function ProfilePage() {
 
   return (
       <div className="min-h-screen bg-[#F6F2ED] mx-auto relative font-sans overflow-y-auto">
-        {/* Top Bar */}
-        <div className="flex justify-between items-center px-4 py-2">
-          {/* Logo */}
-          <img
-              src="src/assets/BB-Profile.png"
-              alt="logo"
-              className="w-12 h-12 object-contain md:w-15 md:h-15 lg:w-20 lg:h-20"
-          />
-
-          {/* Navigation */}
-          <div className="flex space-x-4 text-[#4B3935] text-md md:text-lg lg:text-xl font-fraunces-light pr-10">
-            <button className="hover:underline cursor-pointer">Home</button>
-            <button className="underline cursor-pointer">Profile</button>
-          </div>
-        </div>
+       <Menu/>
 
         {/* Flash Message */}
         {flash.message && (
@@ -287,7 +276,7 @@ export default function ProfilePage() {
           {/* Add Book Button - Responsive text sizing */}
           <button
               onClick={() => setShowAddBook(true)}
-              className="bg-[#EEE8DF] px-5 py-2 rounded-full shadow-[0_2px_3px_#9C8F7F] hover:shadow-[0_4px_4px_#9C8F7F] transition font-fraunces-light text-[#4B3935] text-lg lg:text-xl ml-auto mr-7"
+              className="bg-[#EEE8DF] px-5 py-2 rounded-full shadow-[0_2px_3px_#9C8F7F] hover:shadow-[0_4px_4px_#9C8F7F] transition font-fraunces-light text-[#4B3935] text-lg lg:text-xl ml-auto mr-7 cursor-pointer"
           >
             + Add Book
           </button>
@@ -295,30 +284,31 @@ export default function ProfilePage() {
         </div>
 
         {loading ? (
-            <div className="flex justify-center items-center mt-20">
-              <div className="animate-spin h-6 w-6 border-2 border-[#4B3935] border-t-transparent rounded-full"></div>
-            </div>
-        ) : books.length === 0 ? (
-            <div className="flex justify-center items-center mt-20">
-              <p className="text-[#4B3935] font-fraunces text-xl">No books found</p>
-            </div>
-        ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 py-8 2xl:gap-15 px-13 mt-6 w-full">
-              {books.map((book, index) => (
-                  <BookCard
-                      key={book.userBookId ? `${collectionType}-${book.userBookId}` : `${collectionType}-${index}`}
-                      cover={book.cover}
-                      title={book.title}
-                      author={book.author}
-                      status={book.status}
-                      lender={book.lender}
-                      bookId={book.userBookId}
-                      onDelete={requestDelete}
-                      deleting={deleting}
-                  />
-              ))}
-            </div>
-        )}
+  <div className="flex justify-center items-center mt-20">
+    <div className="animate-spin h-6 w-6 border-2 border-[#4B3935] border-t-transparent rounded-full"></div>
+  </div>
+) : books.length === 0 ? (
+  <div className="flex justify-center items-center mt-20">
+    <p className="text-[#4B3935] font-fraunces text-xl">No books found</p>
+  </div>
+) : (
+  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 py-8 2xl:gap-15 px-13 mt-6 w-full">
+    {books.map((book, index) => (
+      <BookCard
+        key={book.userBookId ? `${collectionType}-${book.userBookId}` : `${collectionType}-${index}`}
+        cover={book.cover}
+        title={book.title}
+        author={book.author}
+        status={book.status}
+        lender={book.lender}
+        bookId={book.userBookId}
+        onDelete={requestDelete}
+        deleting={deleting}
+      />
+    ))}
+  </div>
+)}
+
 
         {/* Delete Confirmation Modal */}
         {confirmDeleteId && (
