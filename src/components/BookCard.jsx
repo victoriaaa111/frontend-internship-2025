@@ -1,10 +1,12 @@
 //import { useState } from "react";
 import BorrowBookForm from "./BorrowBookForm.jsx";
 import bookPlaceholder from '../assets/book.png';
+import {useNavigate} from "react-router-dom";
 
 export default function BookCard({ cover, title, author, status, lender, onDelete, bookId, deleting, resolvedUsername, onBorrowSuccess, pending }) {
     const isInBorrowedCollection = Boolean(lender);
     const shouldBlurContent = status === "BORROWED" && !isInBorrowedCollection;
+    const navigate = useNavigate();
 
     const formatStatus = (status) => {
         return status?.charAt(0).toUpperCase() + status?.slice(1).toLowerCase();
@@ -78,8 +80,8 @@ export default function BookCard({ cover, title, author, status, lender, onDelet
                 ) : (
                     (
                         lender && (
-                        <p className="font-cotta text-xs md:text-sm lg:text-base text-[#4B3935] text-center truncate w-full">
-                            owned by @{lender}
+                        <p className="font-cotta text-xs md:text-sm text-[#4B3935] text-center truncate w-full">
+                            owned by <button className="underline text-[#2C365A] cursor-pointer underline-offset-2 decoration-[#9C8F7F]/40" onClick={()=>navigate(`/user/${lender}`)}>@{lender}</button>
                         </p>
                     )
                     )
