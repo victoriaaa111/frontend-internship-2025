@@ -3,13 +3,15 @@ import React, { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { csrfFetch} from '../csrf.js';
 
+const API_BASE = import.meta.env.VITE_API_BASE;
+
 const ProtectedRoute = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(null); // null = loading
 
     useEffect(() => {
         const checkAuth = async () => {
             try {
-                const response = await csrfFetch("http://localhost:8080/api/user/me");
+                const response = await csrfFetch(`${API_BASE}/api/user/me`);
 
 
                 if (response.__unauthorized || !response.ok) {

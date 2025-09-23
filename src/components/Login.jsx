@@ -6,13 +6,14 @@ import { useEffect } from "react";
 import DOMPurify from 'dompurify';
 const MAX_ATTEMPTS = 5;
 const DEV_FAKE_SESSION = true; // set to false in production
-// const GOOGLE_AUTH_URL = 'http://localhost:8080/oauth2/authorization/google';
+
+const API_BASE = import.meta.env.VITE_API_BASE;
 
 export default function Login() {
   const navigate = useNavigate();
   useEffect(() => {
     const checkAuth = async () => {
-      const response = await csrfFetch("http://localhost:8080/api/user/me");
+      const response = await csrfFetch(`${API_BASE}/api/user/me`);
       if (response.ok) {
         // User is authenticated, redirect away from login
         navigate("/profile");
@@ -85,7 +86,7 @@ export default function Login() {
     }
 
     try {
-      const response = await csrfFetch("http://localhost:8080/api/v1/auth/login", {
+      const response = await csrfFetch(`${API_BASE}/api/v1/auth/login`, {
         method: "POST",
         body: JSON.stringify(
             { username, password }
@@ -148,7 +149,7 @@ export default function Login() {
     setVerifying(true);
 
     try {
-      const res = await csrfFetch("http://localhost:8080/api/v1/auth/verify-code", {
+      const res = await csrfFetch(`${API_BASE}/api/v1/auth/verify-code`, {
         method: "POST",
         body: { sessionId, code: verificationCode },
       });

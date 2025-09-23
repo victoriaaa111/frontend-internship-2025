@@ -5,13 +5,14 @@ import {csrfFetch } from "../csrf.js";
 import DOMPurify from 'dompurify';
 
 import OAuthButton from "./OAuthButton.jsx";
+const API_BASE = import.meta.env.VITE_API_BASE;
 
 export default function Signup() {
     const navigate = useNavigate();
 
     useEffect(() => {
         const checkAuth = async () => {
-            const response = await csrfFetch("http://localhost:8080/api/user/me");
+            const response = await csrfFetch(`${API_BASE}/api/user/me`);
             if(response.ok){
                 navigate("/profile");
             }
@@ -87,7 +88,7 @@ export default function Signup() {
 
         try {
 
-            const response = await csrfFetch("http://localhost:8080/api/v1/auth/register", {
+            const response = await csrfFetch(`${API_BASE}/api/v1/auth/register`, {
                 method: "POST",
                 body: JSON.stringify({
                 username,
@@ -134,7 +135,7 @@ export default function Signup() {
         setVerifying(true);
 
         try {
-            const res = await csrfFetch("http://localhost:8080/api/v1/auth/verify-code", {
+            const res = await csrfFetch(`${API_BASE}/api/v1/auth/verify-code`, {
                 method: "POST",
                 body: { sessionId, code: verificationCode },
             });

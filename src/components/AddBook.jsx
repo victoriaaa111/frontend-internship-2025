@@ -4,8 +4,9 @@ import {useNavigate} from "react-router-dom";
 import bookPlaceholder from '/book.png';
 import DOMPurify from "dompurify";
 
-const GOOGLE_SEARCH_URL = "http://localhost:8080/api/book/search/google?q=";
-const CREATE_BOOK_URL  = "http://localhost:8080/api/book";
+const API_BASE = import.meta.env.VITE_API_BASE;
+const GOOGLE_SEARCH_URL = `${API_BASE}/api/book/search/google?q=`;
+const CREATE_BOOK_URL  = `${API_BASE}/api/book`;
 
 export default function AddBook({ onClose, onAdded }) {
 

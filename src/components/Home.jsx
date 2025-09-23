@@ -4,6 +4,8 @@ import BorrowBookForm from "./BorrowBookForm.jsx";
 import Menu from "./Menu.jsx";
 import {useNavigate} from "react-router-dom";
 
+const API_BASE = import.meta.env.VITE_API_BASE;
+
 const CustomDropdown = ({ value, onChange, options }) => {
     const [isOpen, setIsOpen] = useState(false);
 
@@ -161,7 +163,7 @@ export default function Home() {
         setSearchError('');
 
         try {
-            const response = await csrfFetch(`http://localhost:8080/api/user/search?title=${encodeURIComponent(searchQuery.trim())}&pageIndex=${page}&pageSize=10`);
+            const response = await csrfFetch(`${API_BASE}/api/user/search?title=${encodeURIComponent(searchQuery.trim())}&pageIndex=${page}&pageSize=10`);
             
             if (!response.ok) {
                 throw new Error('Search failed');

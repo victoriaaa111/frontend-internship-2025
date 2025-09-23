@@ -1,4 +1,6 @@
-const GOOGLE_AUTH_URL = 'http://localhost:8080/oauth2/authorization/google';
+const API_BASE = import.meta.env.VITE_API_BASE;
+
+const GOOGLE_AUTH_URL = `${API_BASE}/oauth2/authorization/google`;
 export default function OAuthButton({type}) {
   const handleGoogleLogin = () => {
     // Simply redirect to Google OAuth URL

@@ -1,6 +1,7 @@
 const CSRF_COOKIE = 'XSRF-TOKEN';
 const CSRF_HEADER = 'X-XSRF-TOKEN';
 
+const API_BASE = import.meta.env.VITE_API_BASE;
 
 export const getCsrfTokenFromCookie = () => {
     try {
@@ -11,7 +12,7 @@ export const getCsrfTokenFromCookie = () => {
     }
 };
 
-export const initCsrf = async (baseUrl = 'http://localhost:8080') => {
+export const initCsrf = async (baseUrl = `${API_BASE}`) => {
   const url = `${baseUrl.replace(/\/$/, '')}/api/v1/auth/get`;
   const response = await fetch(url, {
     method: 'GET',
@@ -67,7 +68,7 @@ export const csrfFetch = async (url, options = {}) => {
         try {
             // Try to refresh token
             const refreshResponse = await fetch(
-                'http://localhost:8080/api/v1/auth/refreshtoken',
+                `${API_BASE}/api/v1/auth/refreshtoken`,
                 {
                     method: 'POST',
                     credentials: 'include',

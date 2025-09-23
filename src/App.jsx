@@ -1,4 +1,4 @@
-import {HashRouter as Router, Route, Routes, Navigate} from 'react-router-dom'
+import {BrowserRouter as Router, Route, Routes, Navigate} from 'react-router-dom'
 import Signup from './components/Signup'
 import Profile from './components/Profile'
 import Login from "./components/Login";
@@ -7,10 +7,11 @@ import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import OtherProfile from "./components/OtherProfile.jsx";
 import {useEffect} from "react";
 import {initCsrf} from "./csrf.js";
+const API_BASE = import.meta.env.VITE_API_BASE;
 
 function App() {
     useEffect(() => {
-        initCsrf("http://localhost:8080");
+        initCsrf(`${API_BASE}`);
     }, []);
 
   return (

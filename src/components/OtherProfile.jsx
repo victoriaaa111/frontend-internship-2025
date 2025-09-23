@@ -4,6 +4,9 @@ import BookCard from "./BookCard.jsx";
 import {useLocation, useParams, useNavigate} from "react-router-dom";
 import Menu from "./Menu.jsx";
 
+const API_BASE = import.meta.env.VITE_API_BASE;
+
+
 export default function OtherProfile() {
     const {username: usernameFromParams} = useParams();
     const location = useLocation();
@@ -24,7 +27,7 @@ export default function OtherProfile() {
         if (!resolvedUsername) return false;
 
         try {
-            const response = await csrfFetch("http://localhost:8080/api/user/me");
+            const response = await csrfFetch(`${API_BASE}/api/user/me`);
             if (response.ok) {
                 const userData = await response.json();
                 if (userData.username === resolvedUsername) {
@@ -47,7 +50,7 @@ export default function OtherProfile() {
 
         setLoading(true);
         try {
-            const url = `http://localhost:8080/api/user/books/${encodeURIComponent(resolvedUsername)}`;
+            const url = `${API_BASE}/api/user/books/${encodeURIComponent(resolvedUsername)}`;
 
             const response = await csrfFetch(url);
 

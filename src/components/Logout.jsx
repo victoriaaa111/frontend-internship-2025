@@ -2,7 +2,10 @@ import React, {useState} from "react";
 import {csrfFetch} from "../csrf.js";
 import {useNavigate} from "react-router-dom";
 
+
 export default function Logout({onClose}) {
+    const API_BASE = import.meta.env.VITE_API_BASE;
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const navigate = useNavigate();
@@ -16,7 +19,7 @@ export default function Logout({onClose}) {
         setError("")
 
         try{
-            const response = await csrfFetch("http://localhost:8080/api/v1/auth/logout",{
+            const response = await csrfFetch(`${API_BASE}/api/v1/auth/logout`,{
                 method: "POST"
             })
             if (response.ok || response.status === 401 || response.status === 403) {

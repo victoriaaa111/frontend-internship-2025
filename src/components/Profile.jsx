@@ -7,6 +7,7 @@ import BookCard from "./BookCard.jsx";
 import Menu from "./Menu.jsx";
 import Logout from "./Logout.jsx";
 
+const API_BASE = import.meta.env.VITE_API_BASE;
 
 const CustomDropdown = ({ value, onChange }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -104,8 +105,8 @@ export default function ProfilePage() {
     try {
       const url =
           collectionType === "myCollection"
-              ? "http://localhost:8080/api/user/books"
-              : "http://localhost:8080/api/user/borrowed";
+              ? `${API_BASE}/api/user/books`
+              : `${API_BASE}/api/user/borrowed`;
 
       const response = await csrfFetch(url);
       if (!response.ok) throw new Error("Failed to fetch books");
@@ -170,7 +171,7 @@ export default function ProfilePage() {
 
       const bookToDelete = books.find((b) => b.userBookId === userBookId);
 
-      const res = await csrfFetch(`http://localhost:8080/api/user/${userBookId}`, {
+      const res = await csrfFetch(`${API_BASE}/api/user/${userBookId}`, {
         method: "DELETE",
       });
 
@@ -204,7 +205,7 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await csrfFetch("http://localhost:8080/api/user/me");
+        const response = await csrfFetch(`${API_BASE}/api/user/me`);
 
         if (response.__unauthorized) {
           navigate("/login");

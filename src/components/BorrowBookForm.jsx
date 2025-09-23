@@ -3,6 +3,8 @@ import {csrfFetch} from "../csrf.js";
 import {useNavigate} from "react-router-dom";
 import DOMPurify from "dompurify";
 
+const API_BASE = import.meta.env.VITE_API_BASE;
+
 export default function BorrowBookForm({onClose, bookTitle, bookOwner, bookId, styleClasses}) {
     const sanitizeInput = (input) => {
         return DOMPurify.sanitize(input.trim().substring(0, 255));
@@ -52,7 +54,7 @@ export default function BorrowBookForm({onClose, bookTitle, bookOwner, bookId, s
                 dueDate: formData.dueDate,
             }
 
-            const response = await csrfFetch(`http://localhost:8080/api/borrow/request/${bookId}`,{
+            const response = await csrfFetch(`${API_BASE}/api/borrow/request/${bookId}`,{
                 method: 'POST',
                 body: JSON.stringify(requestData)
             })

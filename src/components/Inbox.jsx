@@ -2,6 +2,8 @@ import React, {useEffect, useState} from "react";
 import {csrfFetch} from "../csrf.js";
 import RequestModal from "./RequestModal.jsx";
 
+const API_BASE = import.meta.env.VITE_API_BASE;
+
 export default function Inbox(){
     const [notifications, setNotifications] = useState([]);
     const [isLoadingNotifications, setIsLoadingNotifications] = useState(false);
@@ -17,7 +19,7 @@ export default function Inbox(){
 
     const handleAcceptRequest = async (requestId) => {
         try {
-            const response = await csrfFetch(`http://localhost:8080/api/borrow/accept/${requestId}`, {
+            const response = await csrfFetch(`${API_BASE}/api/borrow/accept/${requestId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -50,7 +52,7 @@ export default function Inbox(){
 
     const handleRejectRequest = async (requestId) => {
         try {
-            const response = await csrfFetch(`http://localhost:8080/api/borrow/reject/${requestId}`, {
+            const response = await csrfFetch(`${API_BASE}/api/borrow/reject/${requestId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -92,7 +94,7 @@ export default function Inbox(){
         setIsLoadingNotifications(true);
         try {
             const response = await csrfFetch(
-                `http://localhost:8080/api/borrow/incoming?page=${page}&size=${size}`
+                `${API_BASE}/api/borrow/incoming?page=${page}&size=${size}`
             );
 
             if (!response.ok) {
