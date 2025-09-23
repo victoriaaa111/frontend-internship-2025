@@ -1,14 +1,13 @@
 import React, {useState} from "react";
 import {csrfFetch} from "../csrf.js";
 import {useNavigate} from "react-router-dom";
+import DOMPurify from "dompurify";
 
 export default function BorrowBookForm({onClose, bookTitle, bookOwner, bookId, styleClasses}) {
-    const sanitizeInput = (value) => {
-        return value
-            .replace(/^\s+|\s+$/, '') // Remove the 'g' flag
-            .replace(/[<>]/g, '')
-            .substring(0, 128);
+    const sanitizeInput = (input) => {
+        return DOMPurify.sanitize(input.trim().substring(0, 255));
     };
+
     const [showBorrowForm, setShowBorrowForm] = useState(false);
     const navigate = useNavigate();
 

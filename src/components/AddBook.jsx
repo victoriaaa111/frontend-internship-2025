@@ -2,6 +2,7 @@ import {useState, useRef} from 'react';
 import {csrfFetch} from '../csrf.js';
 import {useNavigate} from "react-router-dom";
 import bookPlaceholder from '../assets/book.png';
+import DOMPurify from "dompurify";
 
 const GOOGLE_SEARCH_URL = "http://localhost:8080/api/book/search/google?q=";
 const CREATE_BOOK_URL  = "http://localhost:8080/api/book";
@@ -9,13 +10,9 @@ const CREATE_BOOK_URL  = "http://localhost:8080/api/book";
 export default function AddBook({ onClose, onAdded }) {
 
     const sanitizeInput = (input) => {
-        if (typeof input !== 'string') return '';
-        return input
-            .replace(/[<>]/g, '') // Remove < and > characters
-            .replace(/javascript:/gi, '') // Remove javascript: protocol
-            .replace(/on\w+=/gi, '') // Remove event handlers like onclick=
-            .trim();
+        return DOMPurify.sanitize(input.trim().substring(0, 255));
     };
+
 
 // Add validation functions
     const validateTitle = (title) => {

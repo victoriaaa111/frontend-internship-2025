@@ -2,6 +2,7 @@ import InfoImage from '../assets/frontend.png';
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {csrfFetch } from "../csrf.js";
+import DOMPurify from 'dompurify';
 
 import OAuthButton from "./OAuthButton.jsx";
 
@@ -42,10 +43,7 @@ export default function Signup() {
     };
 
     const sanitizeInput = (input) => {
-        return input
-            .replace(/[<>]/g, '') // Remove potential HTML tags
-            .trim() // Remove whitespace
-            .substring(0, 255); // Limit length
+        return DOMPurify.sanitize(input.trim().substring(0, 255));
     };
 
     const [sessionId, setSessionId] = useState('');

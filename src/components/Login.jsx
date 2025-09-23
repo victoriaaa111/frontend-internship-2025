@@ -3,7 +3,7 @@ import {csrfFetch } from "../csrf.js";
 import { useNavigate } from "react-router-dom";
 import OAuthButton from "./OAuthButton.jsx";
 import { useEffect } from "react";
-
+import DOMPurify from 'dompurify';
 const MAX_ATTEMPTS = 5;
 const DEV_FAKE_SESSION = true; // set to false in production
 // const GOOGLE_AUTH_URL = 'http://localhost:8080/oauth2/authorization/google';
@@ -20,6 +20,11 @@ export default function Login() {
     };
     checkAuth();
   }, [navigate]);
+
+  const sanitizeInput = (input) => {
+    return DOMPurify.sanitize(input.trim().substring(0, 255));
+  };
+
 
   const [formData, setFormData] = useState({
     username: "",
@@ -47,12 +52,6 @@ export default function Login() {
     // Allow only alphanumeric and safe characters
     const usernameRegex = /^[a-zA-Z0-9_-]+$/;
     return usernameRegex.test(username) && username.length >= 5 && username.length <= 30;
-  };
-  const sanitizeInput = (input) => {
-    return input
-        .replace(/[<>]/g, '') // Remove potential HTML tags
-        .trim() // Remove whitespace
-        .substring(0, 255); // Limit length
   };
 
   const handleChange = (e) => {
