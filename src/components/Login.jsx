@@ -185,7 +185,7 @@ export default function Login() {
       {/* LEFT IMAGE SECTION */}
       <div
         className="hidden lg:flex w-1/2 h-full bg-cover bg-center flex-col justify-center p-12"
-        style={{ backgroundImage: "url('frontend.png')" }}
+        style={{ backgroundImage: "url('/frontend.png')" }}
       >
         <h2 className="text-4xl xl:text-5xl font-erotique-bold text-[#DAD1C6] mb-4 border-b border-[#EEE8DF] pb-2 drop-shadow-[0_4px_3px_rgba(51,21,23,0.4)]">
           Share Your Library
@@ -224,7 +224,7 @@ export default function Login() {
           {/* Username */}
           <div className="relative flex items-center text-[#4B3935] mb-4">
             <img
-                src="./src/assets/profile.png"
+                src="/profile.png"
                 alt="Person icon for username"
                 className="absolute left-2 w-5 h-5 z-10 opacity-50"
             />
@@ -245,7 +245,7 @@ export default function Login() {
           {/* Password */}
           <div className="relative flex items-center text-[#4B3935] mb-4">
           <img
-              src="./src/assets/lock.png"
+              src="/lock.png"
               alt="Lock icon for password"
               className="absolute left-2 w-5 h-5 z-10 opacity-50"
           />
