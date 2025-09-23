@@ -1,6 +1,5 @@
 //import { useState } from "react";
 import BorrowBookForm from "./BorrowBookForm.jsx";
-import bookPlaceholder from '/book.png';
 import {useNavigate} from "react-router-dom";
 
 export default function BookCard({ cover, title, author, status, lender, onDelete, bookId, deleting, resolvedUsername, onBorrowSuccess, pending }) {
@@ -53,7 +52,7 @@ export default function BookCard({ cover, title, author, status, lender, onDelet
                 {/* Book cover and info with conditional blur */}
                 <div className={`flex flex-col items-center w-full ${shouldBlurContent ? "blur-[1.5px]" : ""}`}>
                     <img
-                        src={cover || bookPlaceholder}
+                        src={cover || '/book.png'}
                         alt={title}
                         className="w-full aspect-[3/4] object-contain mt-2 mb-3 bg-[#EEE8DF]"
                         loading="lazy"
