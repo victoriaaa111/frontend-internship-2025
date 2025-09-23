@@ -1,11 +1,10 @@
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom'
+import {HashRouter as Router, Route, Routes, Navigate} from 'react-router-dom'
 import Signup from './components/Signup'
 import Profile from './components/Profile'
 import Login from "./components/Login";
 import Home from "./components/Home.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import OtherProfile from "./components/OtherProfile.jsx";
-import NotFound from "./components/NotFound.jsx";
 import {useEffect} from "react";
 import {initCsrf} from "./csrf.js";
 
@@ -15,7 +14,7 @@ function App() {
     }, []);
 
   return (
-    <Router basename={import.meta.env.BASE_URL}>
+    <Router>
       <Routes>
           <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/home" element={
@@ -37,9 +36,6 @@ function App() {
                   <OtherProfile />
               </ProtectedRoute>}>
           </Route>
-
-          {/* Catch-all route for unknown paths inside the SPA */}
-          <Route path="*" element={<NotFound />} />
       </Routes>
 
     </Router>

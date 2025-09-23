@@ -9,7 +9,5 @@ export default defineConfig({
   server:{
     port:3000,
   },
-  // Set base to your GitHub repository name when deploying to GitHub Pages.
-  // Example: base: '/frontend-internship-2025/'
-  base: '/frontend-internship-2025/'
+  base: '/'
 })
