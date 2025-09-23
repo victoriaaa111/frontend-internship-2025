@@ -1,5 +1,4 @@
 const API_BASE = import.meta.env.VITE_API_BASE || 'https://borrow-book-backend.onrender.com';
-console.log('API_BASE:', API_BASE); // Remove this after debugging
 
 const GOOGLE_AUTH_URL = `${API_BASE}/oauth2/authorization/google`;
 export default function OAuthButton({type}) {
