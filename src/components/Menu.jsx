@@ -18,7 +18,7 @@ export default function Menu(){
                     }`}
                 >
                     <img
-                        src="../src/assets/BB-blue1.png"
+                        src="/BB-blue1.png"
                         alt="logo"
                         className="w-12 h-12 object-contain md:w-16 md:h-16 lg:w-18 lg:h-18"
                     />

@@ -1,4 +1,4 @@
-import InfoImage from '../assets/frontend.png';
+import InfoImage from '/frontend.png';
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {csrfFetch } from "../csrf.js";
@@ -263,7 +263,7 @@ export default function Signup() {
                         <div className="w-full md:max-w-[400px] mt-4 relative">
                             <div className="relative flex items-center">
                                 <img
-                                    src="./src/assets/profile.png"
+                                    src="/profile.png"
                                     alt="Person icon for username"
                                     className="absolute left-2 w-5.5 h-5.5 z-10 opacity-50"
                                 />
@@ -284,7 +284,7 @@ export default function Signup() {
                         <div className="w-full md:max-w-[400px] mt-4 relative">
                             <div className="relative flex items-center">
                                 <img
-                                    src="./src/assets/mail.png"
+                                    src="/mail.png"
                                     alt="Mail icon for email"
                                     className="absolute left-2.5 w-4.5 h-4.5 z-10 opacity-60"
                                 />
@@ -305,7 +305,7 @@ export default function Signup() {
                         <div className="w-full md:max-w-[400px] mt-4 relative">
                             <div className="relative flex items-center">
                                 <img
-                                    src="./src/assets/lock.png"
+                                    src="/lock.png"
                                     alt="Lock icon for password"
                                     className="absolute left-2 w-5 h-5 z-10 opacity-70"
                                 />

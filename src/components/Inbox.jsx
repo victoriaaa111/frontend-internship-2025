@@ -220,7 +220,7 @@ export default function Inbox(){
                                                         title="Accept request"
                                                     >
                                                         <img
-                                                            src="../src/assets/tick.png"
+                                                            src="/tick.png"
                                                             alt="Accept"
                                                             className="w-5 h-5"
                                                         />
@@ -234,7 +234,7 @@ export default function Inbox(){
                                                         title="Reject request"
                                                     >
                                                         <img
-                                                            src="../src/assets/cross.png"
+                                                            src="/cross.png"
                                                             alt="Reject"
                                                             className="w-5 h-5"
                                                         />

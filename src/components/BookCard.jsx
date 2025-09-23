@@ -1,6 +1,6 @@
 //import { useState } from "react";
 import BorrowBookForm from "./BorrowBookForm.jsx";
-import bookPlaceholder from '../assets/book.png';
+import bookPlaceholder from '/book.png';
 import {useNavigate} from "react-router-dom";
 
 export default function BookCard({ cover, title, author, status, lender, onDelete, bookId, deleting, resolvedUsername, onBorrowSuccess, pending }) {

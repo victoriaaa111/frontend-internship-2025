@@ -1,7 +1,7 @@
 import {useState, useRef} from 'react';
 import {csrfFetch} from '../csrf.js';
 import {useNavigate} from "react-router-dom";
-import bookPlaceholder from '../assets/book.png';
+import bookPlaceholder from '/book.png';
 import DOMPurify from "dompurify";
 
 const GOOGLE_SEARCH_URL = "http://localhost:8080/api/book/search/google?q=";

@@ -134,7 +134,7 @@ const RequestModal = ({ request, isOpen, onClose, onAccept, onReject }) => {
                                 title="Accept request"
                             >
                                 <img
-                                    src="../src/assets/tick.png"
+                                    src="/tick.png"
                                     alt="Accept"
                                     className="w-7 h-7"
                                 />
@@ -146,7 +146,7 @@ const RequestModal = ({ request, isOpen, onClose, onAccept, onReject }) => {
                                 title="Reject request"
                             >
                                 <img
-                                    src="../src/assets/cross.png"
+                                    src="/cross.png"
                                     alt="Reject"
                                     className="w-7 h-7"
                                 />
