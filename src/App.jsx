@@ -16,6 +16,7 @@ function App() {
   return (
     <Router>
       <Routes>
+          <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/home" element={
             <ProtectedRoute>
                 <Home />
