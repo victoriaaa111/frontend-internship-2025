@@ -65,36 +65,35 @@ export default function BookCard({ cover, title, author, status, lender, onDelet
                     </p>
                 </div>
 
-                {/* Status/lender info - never blurred */}
-                {!isInBorrowedCollection && !resolvedUsername ? (
-                    <span
-                        className={`px-3 py-1 rounded-full text-xs md:text-sm lg:text-base font-neuton ${
-                            status === "AVAILABLE"
-                                ? "bg-green-50 text-green-700"
-                                : "bg-red-50 text-red-700"
-                        }`}
-                    >
-                        {formatStatus(status)}
-                    </span>
-                ) : (
-                    (
+                {/* Bottom block pinned to card bottom */}
+                <div className="mt-auto w-full flex flex-col items-center gap-2">
+                    {!isInBorrowedCollection && !resolvedUsername ? (
+                        <span
+                            className={`px-3 py-1 rounded-full text-xs md:text-sm lg:text-base font-neuton ${
+                                status === "AVAILABLE" ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"
+                            }`}
+                        >
+      {formatStatus(status)}
+    </span>
+                    ) : (
                         lender && (
-                        <p className="font-cotta text-xs md:text-sm text-[#4B3935] text-center truncate w-full">
-                            owned by <button className="underline text-[#2C365A] cursor-pointer underline-offset-2 decoration-[#9C8F7F]/40" onClick={()=>navigate(`/user/${lender}`)}>@{lender}</button>
-                        </p>
-                    )
-                    )
-                )}
-                {!status && !lender && !isInBorrowedCollection && resolvedUsername && !pending && (
-                    <BorrowBookForm
-                        onClose={handleBorrowFormClose}
-                        bookTitle={title}
-                        bookOwner={resolvedUsername}
-                        bookId={bookId}
-                        styleClasses={" w-full bg-[#2C365A] font-fraunces-light text-[#F6F2ED] rounded-lg mt-1 text-xs md:text-base py-2 cursor-pointer hover:shadow-[0_2px_6px_#9C8F7F] transition duration-200"}
-                    />
-
+                            <p className="font-cotta text-xs md:text-sm text-[#4B3935] text-center truncate w-full">
+                                owned by <button className="underline text-[#2C365A] underline-offset-2 decoration-[#9C8F7F]/40" onClick={()=>navigate(`/user/${lender}`)}>@{lender}</button>
+                            </p>
+                        )
                     )}
+
+                    {!status && !lender && !isInBorrowedCollection && resolvedUsername && !pending && (
+                        <BorrowBookForm
+                            onClose={handleBorrowFormClose}
+                            bookTitle={title}
+                            bookOwner={resolvedUsername}
+                            bookId={bookId}
+                            styleClasses="w-full bg-[#2C365A] font-fraunces-light text-[#F6F2ED] rounded-lg text-xs md:text-base py-2 cursor-pointer hover:shadow-[0_2px_6px_#9C8F7F] transition duration-200"
+                        />
+                    )}
+                </div>
+
             </div>
         </div>
 
