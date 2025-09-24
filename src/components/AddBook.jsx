@@ -187,7 +187,7 @@ export default function AddBook({ onClose, onAdded }) {
                             type="button"
                             onClick={handleSearch}
                             disabled={isLoading}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4B3935] hover:text-[#4B3935]/70 disabled:opacity-50"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4B3935] hover:text-[#4B3935]/70 disabled:opacity-50 cursor-pointer"
                         >
                             {isLoading ? (
                                 <div className="animate-spin h-6 w-6 border-2 border-[#4B3935] border-t-transparent rounded-full"></div>
@@ -221,7 +221,7 @@ export default function AddBook({ onClose, onAdded }) {
                         <button
                             type="button"
                             onClick={() => setOpen((o) => !o)}
-                            className="mb-1 w-full px-4 font-fraunces text-[#4B3935] h-12 border border-[#4B3935] rounded-md bg-[#EEE8DF] flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-[#4B3935]/50"
+                            className="mb-1 w-full px-4 font-fraunces text-[#4B3935] h-12 border border-[#4B3935] rounded-md bg-[#EEE8DF] flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-[#4B3935]/50 cursor-pointer"
                             aria-haspopup="listbox"
                             aria-expanded={open}
                         >
