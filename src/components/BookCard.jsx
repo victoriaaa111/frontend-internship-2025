@@ -21,7 +21,7 @@ export default function BookCard({ cover, title, author, status, lender, onDelet
     return (
     <>
         <div className="relative w-full h-full flex justify-center">
-            <div className="shadow-[0_2px_3px_#9C8F7F] w-full aspect-[3/5] bg-[#EEE8DF] rounded-xl p-4 flex flex-col items-center transition">
+            <div className="shadow-[0_2px_3px_#9C8F7F] w-full aspect-[3/5.2] bg-[#EEE8DF] rounded-xl p-2 flex flex-col items-center transition">
 
                 {pending && (
                     <div className="absolute inset-0 bg-black/15 rounded-xl z-20 flex items-center justify-center">
@@ -54,13 +54,13 @@ export default function BookCard({ cover, title, author, status, lender, onDelet
                     <img
                         src={cover || '/book.png'}
                         alt={title}
-                        className="w-full aspect-[3/4] object-contain mt-2 mb-3 bg-[#EEE8DF]"
+                        className="w-full aspect-[3/4] object-contain mt-4 mb-3 bg-[#EEE8DF]"
                         loading="lazy"
                     />
-                    <p className="font-cotta text-sm md:text-base lg:text-lg text-[#4B3935] text-center truncate w-full">
+                    <p className="font-cotta text-sm md:text-base lg:text-lg text-[#4B3935] text-center w-full line-clamp-2 leading-tight">
                         {title}
                     </p>
-                    <p className="font-cotta text-xs md:text-sm lg:text-base text-[#2C365A] text-center truncate w-full mb-3">
+                    <p className="font-cotta text-xs md:text-sm lg:text-base text-[#2C365A] text-center w-full mb-3 line-clamp-2 leading-tight">
                         {author}
                     </p>
                 </div>

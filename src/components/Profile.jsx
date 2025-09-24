@@ -19,11 +19,12 @@ const CustomDropdown = ({ value, onChange }) => {
             className="
     hover:shadow-[0_4px_4px_#9C8F7F]
     relative inline-flex
-    w-35 sm:w-40 md:w-64 lg:w-72
+    w-35 sm:w-40 md:w-48 lg:w-64
     justify-center items-center
     rounded-2xl bg-[#EEE8DF] px-5 pr-9 py-2
     font-fraunces-light
-    text-xs sm:text-base md:text-xl lg:text-2xl
+    text-xs sm:text-base
+    md:text-base lg:text-xl xl:text-xl
     text-[#4B3935]
     shadow-[0_2px_3px_#9C8F7F]
     transition cursor-pointer
@@ -41,7 +42,8 @@ const CustomDropdown = ({ value, onChange }) => {
                 clipRule="evenodd"
             />
           </svg>
-          <span className="mx-auto text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl">
+          <span className="mx-auto text-xs sm:text-base
+    md:text-base lg:text-xl xl:text-xl">
     {value === "myCollection" ? "My Collection" : "Borrowed Books"}
   </span>
         </button>
@@ -61,7 +63,8 @@ const CustomDropdown = ({ value, onChange }) => {
                       onChange("myCollection");
                       setIsOpen(false);
                     }}
-                    className={`block w-full px-2 py-2 text-center font-fraunces-light text-xs md:text-lg lg:text-xl xl:text-2xl transition rounded-2xl mx-auto -my-1 cursor-pointer ${
+                    className={`block w-full px-2 py-2 text-center font-fraunces-light text-xs sm:text-base
+    md:text-base lg:text-xl xl:text-xl transition rounded-2xl mx-auto -my-1 cursor-pointer ${
                         value === "myCollection" ? "bg-[#4B3935] text-[#EEE8DF]" : "text-[#4B3935]"
                     }`}
                 >
@@ -72,7 +75,8 @@ const CustomDropdown = ({ value, onChange }) => {
                       onChange("borrowedBooks");
                       setIsOpen(false);
                     }}
-                    className={`block w-full px-4 py-2 text-center font-fraunces-light text-xs md:text-lg lg:text-xl xl:text-2xl transition rounded-2xl mx-auto -my-1 cursor-pointer ${
+                    className={`block w-full px-4 py-2 text-center font-fraunces-light text-xs sm:text-base
+    md:text-base lg:text-xl xl:text-xl transition rounded-2xl mx-auto -my-1 cursor-pointer ${
                         value === "borrowedBooks" ? "bg-[#4B3935] text-[#EEE8DF]" : "text-[#4B3935]"
                     }`}
                 >
@@ -300,7 +304,7 @@ export default function ProfilePage() {
                   <div>
                     <button
                         onClick={() => setShowAddBook(true)}
-                        className="bg-[#EEE8DF] px-5 py-2 rounded-full shadow-[0_2px_3px_#9C8F7F] hover:shadow-[0_4px_4px_#9C8F7F] transition font-fraunces-light text-[#4B3935] text-sm md:text-base lg:text-xl cursor-pointer"
+                        className="bg-[#EEE8DF] px-5 py-2 rounded-full shadow-[0_2px_3px_#9C8F7F] hover:shadow-[0_4px_4px_#9C8F7F] transition font-fraunces-light text-[#4B3935] text-xs md:text-base lg:text-xl cursor-pointer"
                     >
                       + Add Book
                     </button>
