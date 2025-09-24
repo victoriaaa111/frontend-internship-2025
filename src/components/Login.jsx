@@ -116,7 +116,6 @@ export default function Login() {
       }
 
       const data = await response.json();
-      console.log("Login response:", data);
 
       const receivedSession =
         data.sessionId ??
