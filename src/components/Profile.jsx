@@ -295,15 +295,18 @@ export default function ProfilePage() {
               <div className="w-full flex justify-end">
                 <CustomDropdown value={collectionType} onChange={setCollectionType} />
               </div>
-
               {/* Add Book (bottom right) */}
-              <button
-                  onClick={() => setShowAddBook(true)}
-                  className="bg-[#EEE8DF] px-5 py-2 rounded-full shadow-[0_2px_3px_#9C8F7F] hover:shadow-[0_4px_4px_#9C8F7F] transition font-fraunces-light text-[#4B3935] text-sm md:text-base lg:text-xl cursor-pointer"
-              >
-                + Add Book
-              </button>
-              {showAddBook && <AddBook onClose={() => setShowAddBook(false)} onAdded={handleAdded} />}
+              {collectionType === "myCollection" && (
+                  <div>
+                    <button
+                        onClick={() => setShowAddBook(true)}
+                        className="bg-[#EEE8DF] px-5 py-2 rounded-full shadow-[0_2px_3px_#9C8F7F] hover:shadow-[0_4px_4px_#9C8F7F] transition font-fraunces-light text-[#4B3935] text-sm md:text-base lg:text-xl cursor-pointer"
+                    >
+                      + Add Book
+                    </button>
+                    {showAddBook && <AddBook onClose={() => setShowAddBook(false)} onAdded={handleAdded} />}
+                  </div>
+              )}
             </div>
           </div>
         </div>
