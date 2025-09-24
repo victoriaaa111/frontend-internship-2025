@@ -16,7 +16,18 @@ const CustomDropdown = ({ value, onChange }) => {
       <div className="relative inline-block text-left">
         <button
             onClick={() => setIsOpen(!isOpen)}
-            className="hover:shadow-[0_4px_4px_#9C8F7F]  relative inline-flex w-48 sm:w-56 md:w-64 lg:w-72 justify-center items-center rounded-2xl bg-[#EEE8DF] px-5 py-2 font-fraunces-light text-lg md:text-xl lg:text-2xl text-[#4B3935] shadow-[0_2px_3px_#9C8F7F]  transition cursor-pointer"
+            className="
+    hover:shadow-[0_4px_4px_#9C8F7F]
+    relative inline-flex
+    w-35 sm:w-40 md:w-64 lg:w-72
+    justify-center items-center
+    rounded-2xl bg-[#EEE8DF] px-5 pr-9 py-2
+    font-fraunces-light
+    text-xs sm:text-base md:text-xl lg:text-2xl
+    text-[#4B3935]
+    shadow-[0_2px_3px_#9C8F7F]
+    transition cursor-pointer
+  "
         >
           <svg
               className={`absolute right-4 w-5 h-5 ${isOpen ? "transform rotate-180 transition duration-300" : ""}`}
@@ -30,20 +41,27 @@ const CustomDropdown = ({ value, onChange }) => {
                 clipRule="evenodd"
             />
           </svg>
-          <span className="mx-auto">
-          {value === "myCollection" ? "My Collection" : "Borrowed Books"}
-        </span>
+          <span className="mx-auto text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl">
+    {value === "myCollection" ? "My Collection" : "Borrowed Books"}
+  </span>
         </button>
 
+
         {isOpen && (
-            <div className="absolute left-0 mt-2 w-48 sm:w-56 md:w-64 lg:w-72 rounded-2xl bg-[#EEE8DF] shadow-md focus:outline-none z-50 overflow-hidden">
-              <div className="py-1">
+                  <div
+                      className="
+      absolute left-0 mt-1
+      w-35 sm:w-40 md:w-64 lg:w-72   /* match button widths */
+      rounded-2xl bg-[#EEE8DF] shadow-md
+      focus:outline-none z-20 overflow-hidden
+    ">
+                    <div className="py-1">
                 <button
                     onClick={() => {
                       onChange("myCollection");
                       setIsOpen(false);
                     }}
-                    className={`block w-full px-4 py-2 text-center font-fraunces-light text-lg md:text-xl lg:text-2xl transition rounded-2xl mx-auto -my-1 cursor-pointer ${
+                    className={`block w-full px-2 py-2 text-center font-fraunces-light text-xs md:text-lg lg:text-xl xl:text-2xl transition rounded-2xl mx-auto -my-1 cursor-pointer ${
                         value === "myCollection" ? "bg-[#4B3935] text-[#EEE8DF]" : "text-[#4B3935]"
                     }`}
                 >
@@ -54,7 +72,7 @@ const CustomDropdown = ({ value, onChange }) => {
                       onChange("borrowedBooks");
                       setIsOpen(false);
                     }}
-                    className={`block w-full px-4 py-2 text-center font-fraunces-light text-lg md:text-xl lg:text-2xl transition rounded-2xl mx-auto -my-1 cursor-pointer ${
+                    className={`block w-full px-4 py-2 text-center font-fraunces-light text-xs md:text-lg lg:text-xl xl:text-2xl transition rounded-2xl mx-auto -my-1 cursor-pointer ${
                         value === "borrowedBooks" ? "bg-[#4B3935] text-[#EEE8DF]" : "text-[#4B3935]"
                     }`}
                 >
@@ -119,7 +137,7 @@ export default function ProfilePage() {
         cover: b.imageLink,
         title: b.title,
         author: Array.isArray(b.authors) ? b.authors.join(", ") : b.authors,
-        status: b.status || "AVAILABLE",  
+        status: b.status || "AVAILABLE",
         lender: collectionType === "borrowedBooks" ? b.ownerUsername : null,
       }));
 
@@ -249,40 +267,50 @@ export default function ProfilePage() {
         )}
 
         {/* Profile Section */}
-        <div className="flex justify-between items-center px-6 mt-8 flex-wrap gap-4 ml-7">
-          {/* Username + Friends */}
-          <div className="flex flex-col items-center justify-center">
-            <div
-                className="rounded-lg px-4 py-3 bg-[#EEE8DF] text-center shadow-[0_2px_3px_#9C8F7F]"
-            >
-              <p className="font-fraunces-light text-base md:text-lg lg:text-xl text-[#4B3935]">
-                @{username || "Loading..."}
-              </p>
-              <p className="font-fraunces text-sm md:text-base lg:text-lg text-[#2C365A]">
-                1111 friends
-              </p>
+        <div className="w-full px-2 sm:px-4 md:px-6 lg:px-8 xl:px-12 mt-8">
+          <div className="grid grid-cols-2 items-start gap-x-4 gap-y-3">
+            {/* LEFT column (flush left) */}
+            <div className="justify-self-start flex flex-col items-start space-y-3 min-w-0">
+              <div className="rounded-lg px-4 py-3 bg-[#EEE8DF] text-center shadow-[0_2px_3px_#9C8F7F]">
+                <p className="font-fraunces-light text-base md:text-lg lg:text-xl text-[#4B3935]">
+                  @{username || "Loading..."}
+                </p>
+                <p className="font-fraunces text-sm md:text-base lg:text-lg text-[#2C365A]">
+                  1111 friends
+                </p>
+              </div>
+
+              <button
+                  className="bg-[#2C365A] px-5 py-2 rounded-full shadow-[0_2px_3px_#9C8F7F] hover:shadow-[0_4px_4px_#9C8F7F] transition font-fraunces-light text-[#EEE8DF] text-base lg:text-lg"
+                  onClick={() => setShowLogout(true)}
+              >
+                Log out
+              </button>
+              {showLogout && <Logout onClose={cancelLogout} />}
             </div>
-            <div>
-              <button className="mt-3 mx-auto bg-[#2C365A] px-5 py-2 rounded-full shadow-[0_2px_3px_#9C8F7F] hover:shadow-[0_4px_4px_#9C8F7F] transition font-fraunces-light text-[#EEE8DF] text-base lg:text-lg " onClick={()=>setShowLogout(true)}>Log out</button>
-              {showLogout && <Logout onClose={cancelLogout}/>}
+
+            {/* RIGHT column (flush right) */}
+            <div className="justify-self-end flex flex-col items-end space-y-3">
+              {/* My Collection (top right) */}
+              <div className="w-full flex justify-end">
+                <CustomDropdown value={collectionType} onChange={setCollectionType} />
+              </div>
+              {/* Add Book (bottom right) */}
+              {collectionType === "myCollection" && (
+                  <div>
+                    <button
+                        onClick={() => setShowAddBook(true)}
+                        className="bg-[#EEE8DF] px-5 py-2 rounded-full shadow-[0_2px_3px_#9C8F7F] hover:shadow-[0_4px_4px_#9C8F7F] transition font-fraunces-light text-[#4B3935] text-sm md:text-base lg:text-xl cursor-pointer"
+                    >
+                      + Add Book
+                    </button>
+                    {showAddBook && <AddBook onClose={() => setShowAddBook(false)} onAdded={handleAdded} />}
+                  </div>
+              )}
             </div>
           </div>
-
-
-          {/* Collection Dropdown */}
-          <div className="relative flex-1 flex justify-center">
-            <CustomDropdown value={collectionType} onChange={setCollectionType} />
-          </div>
-
-          {/* Add Book Button - Responsive text sizing */}
-          <button
-              onClick={() => setShowAddBook(true)}
-              className="bg-[#EEE8DF] px-5 py-2 rounded-full shadow-[0_2px_3px_#9C8F7F] hover:shadow-[0_4px_4px_#9C8F7F] transition font-fraunces-light text-[#4B3935] text-lg lg:text-xl ml-auto mr-7 cursor-pointer"
-          >
-            + Add Book
-          </button>
-          {showAddBook && <AddBook onClose={() => setShowAddBook(false)} onAdded={handleAdded} />}
         </div>
+
 
         {loading ? (
   <div className="flex justify-center items-center mt-20">
@@ -293,7 +321,8 @@ export default function ProfilePage() {
     <p className="text-[#4B3935] font-fraunces text-xl">No books found</p>
   </div>
 ) : (
-  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 py-8 2xl:gap-15 px-13 mt-6 w-full">
+  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 py-8 2xl:gap-15
+   md:px-6 lg:px-8 xl:px-12 px-4 mt-6 w-full">
     {books.map((book, index) => (
       <BookCard
         key={book.userBookId ? `${collectionType}-${book.userBookId}` : `${collectionType}-${index}`}
