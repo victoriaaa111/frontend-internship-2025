@@ -285,7 +285,7 @@ export default function ProfilePage() {
               </div>
 
               <button
-                  className="bg-[#2C365A] px-5 py-2 rounded-full shadow-[0_2px_3px_#9C8F7F] hover:shadow-[0_4px_4px_#9C8F7F] transition font-fraunces-light text-[#EEE8DF] text-base lg:text-lg"
+                  className="bg-[#2C365A] px-5 py-2 rounded-full shadow-[0_2px_3px_#9C8F7F] hover:shadow-[0_4px_4px_#9C8F7F] transition font-fraunces-light text-[#EEE8DF] text-base lg:text-lg cursor-pointer"
                   onClick={() => setShowLogout(true)}
               >
                 Log out
