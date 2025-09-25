@@ -21,17 +21,14 @@ const RequestModal = ({ request, isOpen, onClose, onAccept, onReject }) => {
     };
 
     const formatRequestDate = (dateString) => {
-        // Parse the timestamp and treat it as GMT+3 (since backend adds +3 hours)
         const date = new Date(dateString);
         
-        // Subtract 3 hours to get back to UTC, then display in user's local timezone
-        const utcTime = new Date(date.getTime() - (3 * 60 * 60 * 1000));
-        
-        return utcTime.toLocaleDateString('en-US', {
+        // Don't add any hours - use the timestamp as-is from backend
+        return date.toLocaleDateString('en-US', {
             month: 'short',
             day: 'numeric',
             year: 'numeric'
-        }) + ' at ' + utcTime.toLocaleTimeString('en-US', {
+        }) + ' at ' + date.toLocaleTimeString('en-US', {
             hour: 'numeric',
             minute: '2-digit',
             hour12: true
