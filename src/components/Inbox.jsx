@@ -4,13 +4,17 @@ import RequestModal from "./RequestModal.jsx";
 
 const API_BASE = import.meta.env.VITE_API_BASE;
 
-export default function Inbox(){
+export default function Inbox({notificationTrigger}) {
     const [notifications, setNotifications] = useState([]);
     const [isLoadingNotifications, setIsLoadingNotifications] = useState(false);
     const [selectedRequest, setSelectedRequest] = useState(null);
     const [flash, setFlash] = useState({ message: "", type: "" });
     const [isInboxOpen, setIsInboxOpen] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    useEffect(() => {
+        fetchNotifications();
+    }, [notificationTrigger]);
 
     const handleCloseModal = () => {
         setIsModalOpen(false);

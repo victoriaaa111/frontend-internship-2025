@@ -2,7 +2,7 @@ import {Link, useLocation} from "react-router-dom";
 import Inbox from "./Inbox.jsx";
 
 
-export default function Menu(){
+export default function Menu({notificationTrigger}) {
     const location = useLocation();
     return(
         <>
@@ -28,7 +28,7 @@ export default function Menu(){
                 {/* Navigation */}
                 <div className="flex space-x-4 text-[#4B3935] text-md md:text-lg lg:text-xl font-fraunces-light pr-4 sm:pr-8 lg:pr-10 relative">
                     {/* Inbox */}
-                    <Inbox/>
+                    <Inbox notificationTrigger={notificationTrigger}/>
 
                     {/* Links */}
                     <Link
