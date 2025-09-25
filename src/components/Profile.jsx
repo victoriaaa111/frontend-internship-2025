@@ -53,7 +53,7 @@ const CustomDropdown = ({ value, onChange }) => {
                   <div
                       className="
       absolute left-0 mt-1
-      w-35 sm:w-40 md:w-64 lg:w-72   /* match button widths */
+      w-35 sm:w-40 md:w-48 lg:w-64
       rounded-2xl bg-[#EEE8DF] shadow-md
       focus:outline-none z-20 overflow-hidden
     ">
