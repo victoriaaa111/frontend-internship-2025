@@ -77,7 +77,7 @@ export default function BookCard({ cover, title, author, status, lender, onDelet
     </span>
                     ) : (
                         lender && (
-                            <p className="font-cotta text-xs md:text-sm text-[#4B3935] text-center truncate w-full">
+                            <p className="font-cotta text-xs md:text-sm text-[#4B3935] text-center w-full line-clamp-2 leading-tight">
                                 owned by <button className="underline text-[#2C365A] underline-offset-2 decoration-[#9C8F7F]/40" onClick={()=>navigate(`/user/${lender}`)}>@{lender}</button>
                             </p>
                         )

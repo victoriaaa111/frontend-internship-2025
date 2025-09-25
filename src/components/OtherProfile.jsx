@@ -7,7 +7,7 @@ import Menu from "./Menu.jsx";
 const API_BASE = import.meta.env.VITE_API_BASE;
 
 
-export default function OtherProfile({onNotificationUpdate, notificationTrigger}) {
+export default function OtherProfile() {
     const {username: usernameFromParams} = useParams();
     const location = useLocation();
     const navigate = useNavigate();
@@ -101,9 +101,6 @@ export default function OtherProfile({onNotificationUpdate, notificationTrigger}
             )
         );
 
-        if(onNotificationUpdate){
-            onNotificationUpdate();
-        }
         setFlash({ message: `Borrow request sent successfully for ${bookTitle}`, type: "success" });
         setTimeout(() => setFlash({ message: "", type: "" }), 4500);
     },[]);
@@ -111,7 +108,7 @@ export default function OtherProfile({onNotificationUpdate, notificationTrigger}
     if (userNotFound) {
         return (
             <div className="min-h-screen bg-[#F6F2ED] mx-auto relative font-sans overflow-y-auto">
-                <Menu notificationTrigger={notificationTrigger}/>
+                <Menu />
                 <div className="flex flex-col items-center justify-center px-4 mt-20">
                     <div className="text-center">
                         <h1 className="text-2xl md:text-3xl font-fraunces text-[#4B3935] mb-4">

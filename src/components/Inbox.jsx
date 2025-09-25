@@ -4,7 +4,7 @@ import RequestModal from "./RequestModal.jsx";
 
 const API_BASE = import.meta.env.VITE_API_BASE;
 
-export default function Inbox({notificationTrigger}) {
+export default function Inbox() {
     const [notifications, setNotifications] = useState([]);
     const [isLoadingNotifications, setIsLoadingNotifications] = useState(false);
     const [selectedRequest, setSelectedRequest] = useState(null);
@@ -12,9 +12,6 @@ export default function Inbox({notificationTrigger}) {
     const [isInboxOpen, setIsInboxOpen] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    useEffect(() => {
-        fetchNotifications();
-    }, [notificationTrigger]);
 
     const handleCloseModal = () => {
         setIsModalOpen(false);
@@ -130,9 +127,14 @@ export default function Inbox({notificationTrigger}) {
         }
     };
 
-    // Fetch notifications on component mount
     useEffect(() => {
         fetchNotifications();
+
+        const interval = setInterval(() => {
+            fetchNotifications();
+        }, 30000); // Check every 30 seconds
+
+        return () => clearInterval(interval);
     }, []);
 
     return(
