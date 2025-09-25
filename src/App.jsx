@@ -5,8 +5,7 @@ import Login from "./components/Login";
 import Home from "./components/Home.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import OtherProfile from "./components/OtherProfile.jsx";
-import {useEffect, useState} from "react";
-import {useCallback} from "react";
+import {useEffect} from "react";
 import {initCsrf} from "./csrf.js";
 const API_BASE = import.meta.env.VITE_API_BASE;
 
@@ -15,11 +14,6 @@ function App() {
         initCsrf(`${API_BASE}`);
     }, []);
 
-    const [notificationTrigger, setNotificationTrigger] = useState(0);
-
-    const handleNotificationUpdate = useCallback(() => {
-        setNotificationTrigger(prev => prev + 1);
-    }, []);
 
   return (
     <Router>
@@ -41,7 +35,7 @@ function App() {
 
           <Route path="/user/:username" element={
               <ProtectedRoute>
-                  <OtherProfile onNotificationUpdate={handleNotificationUpdate} notificationTrigger={notificationTrigger} />
+                  <OtherProfile />
               </ProtectedRoute>}>
           </Route>
       </Routes>
