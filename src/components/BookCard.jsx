@@ -12,10 +12,10 @@ export default function BookCard({ cover, title, author, status, lender, onDelet
     };
 
 
-    const handleBorrowFormClose = (success) => {
+    const handleBorrowFormClose = (success, bookId) => {
 
         if (success && onBorrowSuccess) {
-            onBorrowSuccess(title);
+            onBorrowSuccess(title, bookId);
         }
     };
     return (

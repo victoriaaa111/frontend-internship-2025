@@ -92,7 +92,14 @@ export default function OtherProfile() {
     }, [fetchBooks]);
 
 
-    const handleBorrowSuccess = useCallback((bookTitle) => {
+    const handleBorrowSuccess = useCallback((bookTitle,bookId) => {
+        setBooks(prevBooks =>
+            prevBooks.map(book =>
+                book.userBookId === bookId
+                    ? { ...book, pending: true }
+                    : book
+            )
+        );
         setFlash({ message: `Borrow request sent successfully for ${bookTitle}`, type: "success" });
         setTimeout(() => setFlash({ message: "", type: "" }), 4500);
     },[]);

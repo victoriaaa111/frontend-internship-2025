@@ -62,7 +62,7 @@ export default function BorrowBookForm({onClose, bookTitle, bookOwner, bookId, s
             if(!response.ok){
                 throw new Error("Failed to send borrow request");
             }
-            onClose(true)
+            onClose(true, bookId)
             setShowBorrowForm(false)
         }catch(err){
             setError(err.message);
