@@ -5,6 +5,7 @@ import Login from "./components/Login";
 import Home from "./components/Home.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import OtherProfile from "./components/OtherProfile.jsx";
+import AdminPanel from "./components/AdminPanel.jsx";
 import {useEffect} from "react";
 import {initCsrf} from "./csrf.js";
 const API_BASE = import.meta.env.VITE_API_BASE;
@@ -37,6 +38,12 @@ function App() {
               <ProtectedRoute>
                   <OtherProfile />
               </ProtectedRoute>}>
+          </Route>
+          <Route path="/admin/requests" element={
+              <ProtectedRoute>
+              <AdminPanel />
+                </ProtectedRoute>
+          }>
           </Route>
       </Routes>
 
