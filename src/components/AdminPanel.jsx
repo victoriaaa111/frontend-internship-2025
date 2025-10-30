@@ -99,6 +99,48 @@ export default function AdminPanel() {
 
     const navigate = useNavigate();
 
+    const acceptRequest = async (e, requestId) => {
+        e.preventDefault();
+        setActionLoading(requestId);
+        setError('');
+
+        try{
+            const response = await csrfFetch(`${API_BASE}/api/admin/borrow-requests/accept/${requestId}`,{
+                method: 'POST'
+            });
+            if(!response.ok){
+                throw new Error('Failed to accept request');
+            }
+            await fetchRequests();
+            setSelectedRequest(null);
+        } catch (err) {
+            setError(err.message || 'Failed to accept request');
+        } finally {
+            setActionLoading(null);
+        }
+    }
+
+    const rejectRequest = async (e, requestId) => {
+        e.preventDefault();
+        setActionLoading(requestId);
+        setError('');
+
+        try{
+            const response = await csrfFetch(`${API_BASE}/api/admin/borrow-requests/reject/${requestId}`,{
+                method: 'POST'
+            });
+            if(!response.ok){
+                throw new Error('Failed to reject request');
+            }
+            await fetchRequests();
+            setSelectedRequest(null);
+        } catch (err) {
+            setError(err.message || 'Failed to reject request');
+        } finally {
+            setActionLoading(null);
+        }
+    }
+
     const fetchRequests = useCallback(async () => {
         setLoading(true);
         setError('');
@@ -146,36 +188,7 @@ export default function AdminPanel() {
         setCurrentPage(1);
     }, [statusFilter]);
 
-    const handleStatusUpdate = async (requestId, newStatus) => {
-        setActionLoading(requestId);
-        setError('');
 
-        try {
-            const response = await csrfFetch(
-                `${API_BASE}/api/admin/borrow-requests/${requestId}`,
-                {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ status: newStatus })
-                }
-            );
-
-            if (!response.ok) {
-                throw new Error('Failed to update request status');
-            }
-
-            // Refresh the list after successful update
-            await fetchRequests();
-            setSelectedRequest(null);
-
-        } catch (err) {
-            setError(err.message || 'Failed to update request');
-        } finally {
-            setActionLoading(null);
-        }
-    };
 
     const formatDate = (dateString) => {
         return new Date(dateString).toLocaleDateString('en-US', {
@@ -494,14 +507,14 @@ export default function AdminPanel() {
                                     <h3 className="font-fraunces font-semibold text-[#4B3935] mb-4 text-sm sm:text-base">Admin Actions</h3>
                                     <div className="flex flex-col sm:flex-row gap-3">
                                         <button
-                                            onClick={() => handleStatusUpdate(selectedRequest.id, 'ACCEPTED')}
+                                            onClick={(e) => acceptRequest(e, selectedRequest.id)}
                                             disabled={actionLoading === selectedRequest.id}
                                             className="bg-green-50 text-green-700 border px-4 py-2 rounded-lg font-fraunces disabled:opacity-50 transition-colors cursor-pointer text-sm sm:text-base"
                                         >
                                             {actionLoading === selectedRequest.id ? 'Processing...' : 'Accept Request'}
                                         </button>
                                         <button
-                                            onClick={() => handleStatusUpdate(selectedRequest.id, 'REJECTED')}
+                                            onClick={(e) => rejectRequest(e, selectedRequest.id, 'REJECTED')}
                                             disabled={actionLoading === selectedRequest.id}
                                             className="bg-red-50 border text-red-700 px-4 py-2 rounded-lg font-fraunces disabled:opacity-50 transition-colors cursor-pointer text-sm sm:text-base"
                                         >
