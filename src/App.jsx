@@ -21,7 +21,7 @@ function App() {
       <Routes>
           <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/home" element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredRole="USER">
                 <Home />
             </ProtectedRoute>
             } ></Route>
@@ -30,17 +30,17 @@ function App() {
         <Route path="/signup" element={<Signup/>}></Route>
 
         <Route path="/profile" element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredRole="USER">
             <Profile />
                 </ProtectedRoute>}></Route>
 
           <Route path="/user/:username" element={
-              <ProtectedRoute>
+              <ProtectedRoute requiredRole="USER">
                   <OtherProfile />
               </ProtectedRoute>}>
           </Route>
           <Route path="/admin/requests" element={
-              <ProtectedRoute>
+              <ProtectedRoute requiredRole="ADMIN">
               <AdminPanel />
                 </ProtectedRoute>
           }>
