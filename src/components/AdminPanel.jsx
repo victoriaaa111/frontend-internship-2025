@@ -1,5 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback} from 'react';
 import { useNavigate } from 'react-router-dom';
+const API_BASE = import.meta.env.VITE_API_BASE;
+import { csrfFetch } from '../csrf.js';
+
 const StatusDropdown = ({ value, onChange }) => {
     const [isOpen, setIsOpen] = useState(false);
 
@@ -79,84 +82,99 @@ const StatusDropdown = ({ value, onChange }) => {
 
 export default function AdminPanel() {
     const [requests, setRequests] = useState([]);
-    const [filteredRequests, setFilteredRequests] = useState([]);
     const [statusFilter, setStatusFilter] = useState('ALL');
     const [loading, setLoading] = useState(true);
     const [selectedRequest, setSelectedRequest] = useState(null);
     const [actionLoading, setActionLoading] = useState(null);
-    const [viewMode, setViewMode] = useState('table'); // 'table' or 'cards'
+    const [viewMode, setViewMode] = useState('table');
+    const [error, setError] = useState('');
+
+    // Pagination state
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize] = useState(10);
+    const [totalPages, setTotalPages] = useState(0);
+    const [totalCount, setTotalCount] = useState(0);
+    const [hasNextPage, setHasNextPage] = useState(false);
+    const [hasPreviousPage, setHasPreviousPage] = useState(false);
+
     const navigate = useNavigate();
 
-    // Mock data for borrow requests
-    const mockRequests = [
-        {
-            id: 1,
-            bookTitle: "The Great Gatsby",
-            borrower: "alice_reader",
-            lender: "book_collector",
-            status: "PENDING",
-            requestDate: "2025-10-23T10:30:00Z",
-            responseDate: null,
-        },
-        {
-            id: 2,
-            bookTitle: "1984",
-            borrower: "john_doe",
-            lender: "dystopia_fan",
-            status: "ACCEPTED",
-            requestDate: "2025-10-14T14:20:00Z",
-            responseDate: "2025-10-14T16:45:00Z",
-        },
-        {
-            id: 3,
-            bookTitle: "To Kill a Mockingbird",
-            borrower: "literature_lover",
-            lender: "classic_books",
-            status: "REJECTED",
-            requestDate: "2025-09-26T09:15:00Z",
-            responseDate: "2025-09-27T12:30:00Z",
-        },
-        {
-            id: 4,
-            bookTitle: "Pride and Prejudice",
-            borrower: "jane_austen_fan",
-            lender: "romance_reader",
-            status: "PENDING",
-            requestDate: "2025-10-12T16:00:00Z",
-            responseDate: null,
-        }
-    ];
+    const fetchRequests = useCallback(async () => {
+        setLoading(true);
+        setError('');
 
-    useEffect(() => {
-        // Simulate API call
-        setTimeout(() => {
-            setRequests(mockRequests);
-            setFilteredRequests(mockRequests);
+        try {
+            const params = new URLSearchParams({
+                pageIndex: currentPage.toString(),
+                pageSize: pageSize.toString()
+            });
+
+            if (statusFilter !== 'ALL') {
+                params.append('status', statusFilter);
+            }
+
+            const response = await csrfFetch(
+                `${API_BASE}/api/admin/borrow-requests?${params.toString()}`
+            );
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch requests');
+            }
+
+            const data = await response.json();
+
+            setRequests(data.items || []);
+            setTotalPages(data.totalPages || 0);
+            setTotalCount(data.totalCount || 0);
+            setHasNextPage(data.hasNextPage || false);
+            setHasPreviousPage(data.hasPreviousPage || false);
+
+        } catch (err) {
+            setError(err.message || 'Failed to load requests');
+            setRequests([]);
+        } finally {
             setLoading(false);
-        }, 1000);
-    }, []);
+        }
+    }, [currentPage, pageSize, statusFilter]);
 
     useEffect(() => {
-        if (statusFilter === 'ALL') {
-            setFilteredRequests(requests);
-        } else {
-            setFilteredRequests(requests.filter(req => req.status === statusFilter));
-        }
-    }, [statusFilter, requests]);
+        fetchRequests();
+    }, [fetchRequests]);
+
+    // Reset to page 1 when status filter changes
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [statusFilter]);
 
     const handleStatusUpdate = async (requestId, newStatus) => {
         setActionLoading(requestId);
+        setError('');
 
-        // Simulate API call
-        setTimeout(() => {
-            setRequests(prev => prev.map(req =>
-                req.id === requestId
-                    ? { ...req, status: newStatus, responseDate: new Date().toISOString() }
-                    : req
-            ));
-            setActionLoading(null);
+        try {
+            const response = await csrfFetch(
+                `${API_BASE}/api/admin/borrow-requests/${requestId}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ status: newStatus })
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error('Failed to update request status');
+            }
+
+            // Refresh the list after successful update
+            await fetchRequests();
             setSelectedRequest(null);
-        }, 1000);
+
+        } catch (err) {
+            setError(err.message || 'Failed to update request');
+        } finally {
+            setActionLoading(null);
+        }
     };
 
     const formatDate = (dateString) => {
@@ -178,7 +196,7 @@ export default function AdminPanel() {
         }
     };
 
-    if (loading) {
+    if (loading && currentPage === 1) {
         return (
             <div className="min-h-screen bg-[#F6F2ED] p-4 sm:p-6 flex items-center justify-center">
                 <div className="text-[#4B3935] font-fraunces text-lg">Loading admin panel...</div>
@@ -199,6 +217,18 @@ export default function AdminPanel() {
                     </p>
                 </div>
 
+                {/* Error Message */}
+                {error && (
+                    <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">
+                        <div className="flex items-center">
+                            <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                            </svg>
+                            <span className="font-fraunces text-sm">{error}</span>
+                        </div>
+                    </div>
+                )}
+
                 {/* Filters and View Toggle */}
                 <div className="bg-white rounded-xl shadow-[0_2px_8px_rgba(75,57,53,0.1)] p-4 sm:p-6 mb-6">
                     <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
@@ -212,11 +242,11 @@ export default function AdminPanel() {
                             />
                         </div>
 
-                        {/* View Mode Toggle for Mobile */}
+                        {/* View Mode Toggle */}
                         <div className="flex gap-2 sm:hidden">
                             <button
                                 onClick={() => setViewMode('cards')}
-                                className={`px-3 py-1 rounded-lg font-fraunces text-sm transition-colors cursor-pointer${
+                                className={`px-3 py-1 rounded-lg font-fraunces text-sm transition-colors cursor-pointer ${
                                     viewMode === 'cards'
                                         ? 'bg-[#2C365A] text-white'
                                         : 'bg-gray-100 text-[#4B3935]'
@@ -237,14 +267,14 @@ export default function AdminPanel() {
                         </div>
 
                         <div className="text-xs sm:text-sm text-[#4B3935]/70 font-fraunces">
-                            Showing {filteredRequests.length} of {requests.length} requests
+                            Showing {requests.length} of {totalCount} requests
                         </div>
                     </div>
                 </div>
 
                 {/* Mobile Card View */}
                 <div className={`${viewMode === 'cards' ? 'block' : 'hidden'} sm:hidden space-y-4`}>
-                    {filteredRequests.map((request) => (
+                    {requests.map((request) => (
                         <div key={request.id} className="bg-white rounded-xl shadow-[0_2px_8px_rgba(75,57,53,0.1)] p-4">
                             <div className="flex justify-between items-start mb-3">
                                 <h3 className="font-fraunces font-medium text-[#4B3935] text-lg">{request.bookTitle}</h3>
@@ -287,7 +317,7 @@ export default function AdminPanel() {
                         </div>
                     ))}
 
-                    {filteredRequests.length === 0 && (
+                    {requests.length === 0 && (
                         <div className="text-center py-12 text-[#4B3935]/50 font-fraunces">
                             No requests found matching the selected filter.
                         </div>
@@ -309,7 +339,7 @@ export default function AdminPanel() {
                             </tr>
                             </thead>
                             <tbody>
-                            {filteredRequests.map((request) => (
+                            {requests.map((request) => (
                                 <tr key={request.id} className="border-b border-[#9C8F7F]/10 hover:bg-[#F6F2ED]/30 transition-colors">
                                     <td className="px-3 sm:px-6 py-3 sm:py-4">
                                         <div className="font-fraunces text-[#4B3935] font-medium text-sm sm:text-base">{request.bookTitle}</div>
@@ -352,12 +382,52 @@ export default function AdminPanel() {
                         </table>
                     </div>
 
-                    {filteredRequests.length === 0 && (
+                    {requests.length === 0 && (
                         <div className="text-center py-12 text-[#4B3935]/50 font-fraunces">
                             No requests found matching the selected filter.
                         </div>
                     )}
                 </div>
+
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                    <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 bg-white rounded-xl shadow-[0_2px_8px_rgba(75,57,53,0.1)] p-4">
+                        <div className="text-sm text-[#4B3935]/70 font-fraunces">
+                            Page {currentPage} of {totalPages}
+                        </div>
+
+                        <div className="flex gap-2">
+                            <button
+                                onClick={() => setCurrentPage(1)}
+                                disabled={!hasPreviousPage || loading}
+                                className="px-3 py-2 rounded-lg bg-[#EEE8DF] text-[#4B3935] font-fraunces text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-[0_2px_4px_#9C8F7F] transition cursor-pointer"
+                            >
+                                First
+                            </button>
+                            <button
+                                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                                disabled={!hasPreviousPage || loading}
+                                className="px-3 py-2 rounded-lg bg-[#EEE8DF] text-[#4B3935] font-fraunces text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-[0_2px_4px_#9C8F7F] transition cursor-pointer"
+                            >
+                                Previous
+                            </button>
+                            <button
+                                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                                disabled={!hasNextPage || loading}
+                                className="px-3 py-2 rounded-lg bg-[#EEE8DF] text-[#4B3935] font-fraunces text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-[0_2px_4px_#9C8F7F] transition cursor-pointer"
+                            >
+                                Next
+                            </button>
+                            <button
+                                onClick={() => setCurrentPage(totalPages)}
+                                disabled={!hasNextPage || loading}
+                                className="px-3 py-2 rounded-lg bg-[#EEE8DF] text-[#4B3935] font-fraunces text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-[0_2px_4px_#9C8F7F] transition cursor-pointer"
+                            >
+                                Last
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Request Details Modal */}
