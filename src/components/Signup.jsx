@@ -146,8 +146,15 @@ export default function Signup() {
             // Clear sessionId since it's no longer needed
             setSessionId('');
 
-            // Navigate to welcome page
-            navigate("/profile");
+            const response =  await csrfFetch(`${API_BASE}/api/user/me`);
+            const dataUser = await response.json();
+            if(dataUser.role === 'USER'){
+                navigate("/profile");
+            }else if(dataUser.role === 'ADMIN'){
+                navigate("/admin/requests");
+            }else{
+                navigate("/profile");
+            }
         } catch (err) {
             const remaining = attemptsLeft - 1;
             setAttemptsLeft(remaining);

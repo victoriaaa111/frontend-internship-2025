@@ -201,16 +201,6 @@ export default function Home() {
         await performSearch(1);
     };
 
-    const handlePageChange = async (page) => {
-        if (page >= 1 && page <= totalPages && searchQuery.trim()) {
-            await performSearch(page);
-        }
-    };
-
-
-
-
-
 
     const handleBorrowSuccess = useCallback((bookTitle) => {
         setFlash({ message: `Borrow request sent successfully for ${bookTitle}`, type: "success" });
@@ -312,15 +302,15 @@ export default function Home() {
                 </div>
             )}
 
-            {/* Pagination */}
+            {/* Pagination Controls */}
             {hasSearched && totalPages > 1 && (
                 <div className="flex justify-center items-center mt-8 mb-8 px-4">
                     <div className="flex items-center space-x-1 sm:space-x-2">
                         {/* Previous Button */}
                         <button
-                            onClick={() => handlePageChange(currentPage - 1)}
+                            onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                             disabled={currentPage === 1 || isSearching}
-                            className="px-2 py-1 sm:px-3 sm:py-2 text-sm sm:text-base font-fraunces-light text-[#4B3935] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#EEE8DF] rounded transition"
+                            className="px-2 py-1 sm:px-3 sm:py-2 text-sm sm:text-base font-fraunces text-[#4B3935] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#EEE8DF] rounded transition"
                         >
                             &lt;
                         </button>
@@ -330,14 +320,12 @@ export default function Home() {
                             const pages = [];
                             const maxVisible = 3; // Show max 3 page numbers on mobile
                             const maxVisibleDesktop = 5; // Show max 5 page numbers on desktop
-                            
-                            // Determine how many pages to show based on screen size
+
                             const getMaxVisible = () => window.innerWidth >= 640 ? maxVisibleDesktop : maxVisible;
-                            
+
                             let startPage = Math.max(1, currentPage - Math.floor(getMaxVisible() / 2));
                             let endPage = Math.min(totalPages, startPage + getMaxVisible() - 1);
-                            
-                            // Adjust startPage if we're near the end
+
                             if (endPage - startPage + 1 < getMaxVisible()) {
                                 startPage = Math.max(1, endPage - getMaxVisible() + 1);
                             }
@@ -347,9 +335,9 @@ export default function Home() {
                                 pages.push(
                                     <button
                                         key={1}
-                                        onClick={() => handlePageChange(1)}
+                                        onClick={() => setCurrentPage(1)}
                                         disabled={isSearching}
-                                        className="px-2 py-1 sm:px-3 sm:py-2 text-sm sm:text-base font-fraunces-light text-[#4B3935] hover:bg-[#EEE8DF] rounded transition disabled:cursor-not-allowed"
+                                        className="px-2 py-1 sm:px-3 sm:py-2 text-sm sm:text-base font-fraunces text-[#4B3935] hover:bg-[#EEE8DF] rounded transition disabled:cursor-not-allowed"
                                     >
                                         1
                                     </button>
@@ -366,9 +354,9 @@ export default function Home() {
                                 pages.push(
                                     <button
                                         key={i}
-                                        onClick={() => handlePageChange(i)}
+                                        onClick={() => setCurrentPage(i)}
                                         disabled={isSearching}
-                                        className={`px-2 py-1 sm:px-3 sm:py-2 text-sm sm:text-base font-fraunces-light rounded transition disabled:cursor-not-allowed ${
+                                        className={`px-2 py-1 sm:px-3 sm:py-2 text-sm sm:text-base font-fraunces rounded transition disabled:cursor-not-allowed ${
                                             i === currentPage
                                                 ? 'bg-[#4B3935] text-[#EEE8DF]'
                                                 : 'text-[#4B3935] hover:bg-[#EEE8DF]'
@@ -389,9 +377,9 @@ export default function Home() {
                                 pages.push(
                                     <button
                                         key={totalPages}
-                                        onClick={() => handlePageChange(totalPages)}
+                                        onClick={() => setCurrentPage(totalPages)}
                                         disabled={isSearching}
-                                        className="px-2 py-1 sm:px-3 sm:py-2 text-sm sm:text-base font-fraunces-light text-[#4B3935] hover:bg-[#EEE8DF] rounded transition disabled:cursor-not-allowed"
+                                        className="px-2 py-1 sm:px-3 sm:py-2 text-sm sm:text-base font-fraunces text-[#4B3935] hover:bg-[#EEE8DF] rounded transition disabled:cursor-not-allowed"
                                     >
                                         {totalPages}
                                     </button>
@@ -403,9 +391,9 @@ export default function Home() {
 
                         {/* Next Button */}
                         <button
-                            onClick={() => handlePageChange(currentPage + 1)}
+                            onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                             disabled={currentPage === totalPages || isSearching}
-                            className="px-2 py-1 sm:px-3 sm:py-2 text-sm sm:text-base font-fraunces-light text-[#4B3935] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#EEE8DF] rounded transition"
+                            className="px-2 py-1 sm:px-3 sm:py-2 text-sm sm:text-base font-fraunces text-[#4B3935] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#EEE8DF] rounded transition"
                         >
                             &gt;
                         </button>

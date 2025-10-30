@@ -5,8 +5,9 @@ import { csrfFetch} from '../csrf.js';
 
 const API_BASE = import.meta.env.VITE_API_BASE;
 
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute = ({ children, requiredRole }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(null); // null = loading
+    const [userRole, setUserRole] = useState(null);
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -17,7 +18,9 @@ const ProtectedRoute = ({ children }) => {
                 if (response.__unauthorized || !response.ok) {
                     setIsAuthenticated(false);
                 } else {
+                    const data = await response.json();
                     setIsAuthenticated(true);
+                    setUserRole(data.role);
                 }
             } catch (error) {
                 console.error('Auth check failed:', error);
@@ -39,6 +42,11 @@ const ProtectedRoute = ({ children }) => {
 
     // Redirect to login if not authenticated
     if (!isAuthenticated) {
+        return <Navigate to="/login" replace />;
+    }
+
+    //check if right role
+    if (requiredRole && userRole !== requiredRole) {
         return <Navigate to="/login" replace />;
     }
 
