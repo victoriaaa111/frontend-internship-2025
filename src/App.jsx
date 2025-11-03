@@ -6,6 +6,7 @@ import Home from "./components/Home.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import OtherProfile from "./components/OtherProfile.jsx";
 import AdminPanel from "./components/AdminPanel.jsx";
+import UserManagement from "./components/UserManagement.jsx";
 import {useEffect} from "react";
 import {initCsrf} from "./csrf.js";
 const API_BASE = import.meta.env.VITE_API_BASE;
@@ -43,6 +44,12 @@ function App() {
               <ProtectedRoute requiredRole="ADMIN">
               <AdminPanel />
                 </ProtectedRoute>
+          }>
+          </Route>
+          <Route path="/admin/users" element={
+              <ProtectedRoute requiredRole="ADMIN">
+                  <UserManagement />
+              </ProtectedRoute>
           }>
           </Route>
       </Routes>

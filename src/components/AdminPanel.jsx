@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback} from 'react';
 import { useNavigate } from 'react-router-dom';
 const API_BASE = import.meta.env.VITE_API_BASE;
 import { csrfFetch } from '../csrf.js';
+import AdminNavDropdown from './AdminNavDropdown.jsx';
 
 const StatusDropdown = ({ value, onChange }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -221,13 +222,16 @@ export default function AdminPanel() {
         <div className="min-h-screen bg-[#F6F2ED] p-4 sm:p-6">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
-                <div className="mb-6 sm:mb-8">
-                    <h1 className="text-2xl sm:text-3xl font-cotta font-bold text-[#4B3935] mb-2">
-                        Admin Panel
-                    </h1>
-                    <p className="text-sm sm:text-base text-[#4B3935]/70 font-fraunces">
-                        Manage borrow requests
-                    </p>
+                <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div>
+                        <h1 className="text-2xl sm:text-3xl font-cotta font-bold text-[#4B3935] mb-2">
+                            Request Management
+                        </h1>
+                        <p className="text-sm sm:text-base text-[#4B3935]/70 font-fraunces">
+                            Manage borrow requests
+                        </p>
+                    </div>
+                    <AdminNavDropdown />
                 </div>
 
                 {/* Error Message */}
