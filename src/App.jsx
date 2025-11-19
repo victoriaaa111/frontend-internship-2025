@@ -5,6 +5,8 @@ import Login from "./components/Login";
 import Home from "./components/Home.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import OtherProfile from "./components/OtherProfile.jsx";
+import AdminPanel from "./components/AdminPanel.jsx";
+import UserManagement from "./components/UserManagement.jsx";
 import {useEffect} from "react";
 import {initCsrf} from "./csrf.js";
 const API_BASE = import.meta.env.VITE_API_BASE;
@@ -20,7 +22,7 @@ function App() {
       <Routes>
           <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/home" element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredRole="USER">
                 <Home />
             </ProtectedRoute>
             } ></Route>
@@ -29,14 +31,26 @@ function App() {
         <Route path="/signup" element={<Signup/>}></Route>
 
         <Route path="/profile" element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredRole="USER">
             <Profile />
                 </ProtectedRoute>}></Route>
 
           <Route path="/user/:username" element={
-              <ProtectedRoute>
+              <ProtectedRoute requiredRole="USER">
                   <OtherProfile />
               </ProtectedRoute>}>
+          </Route>
+          <Route path="/admin/requests" element={
+              <ProtectedRoute requiredRole="ADMIN">
+              <AdminPanel />
+                </ProtectedRoute>
+          }>
+          </Route>
+          <Route path="/admin/users" element={
+              <ProtectedRoute requiredRole="ADMIN">
+                  <UserManagement />
+              </ProtectedRoute>
+          }>
           </Route>
       </Routes>
 

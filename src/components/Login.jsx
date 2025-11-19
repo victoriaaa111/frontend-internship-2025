@@ -14,9 +14,14 @@ export default function Login() {
   useEffect(() => {
     const checkAuth = async () => {
       const response = await csrfFetch(`${API_BASE}/api/user/me`);
+      const data = await response.json();
       if (response.ok) {
         // User is authenticated, redirect away from login
-        navigate("/profile");
+        if (data.role === 'USER'){
+          navigate("/profile");
+        }else if(data.role === 'ADMIN'){
+            navigate("/admin/requests");
+        }
       }
     };
     checkAuth();
@@ -157,7 +162,16 @@ export default function Login() {
       if (!res.ok) throw new Error(data?.message || "Invalid verification code");
 
       setSessionId('');
-      navigate("/profile");
+      const response =  await csrfFetch(`${API_BASE}/api/user/me`);
+      const dataUser = await response.json();
+      if(dataUser.role === 'USER'){
+        navigate("/profile");
+      }else if(dataUser.role === 'ADMIN'){
+        navigate("/admin/requests");
+      }else{
+        navigate("/profile");
+      }
+
     } catch (err) {
       const remaining = attemptsLeft - 1;
       setAttemptsLeft(remaining);
