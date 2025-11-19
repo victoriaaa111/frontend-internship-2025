@@ -67,21 +67,19 @@ export default function BookCard({ cover, title, author, status, lender, onDelet
 
                 {/* Bottom block pinned to card bottom */}
                 <div className="mt-auto w-full flex flex-col items-center gap-2">
-                    {!isInBorrowedCollection && !resolvedUsername ? (
+                    {!isInBorrowedCollection && !resolvedUsername && status ? (
                         <span
                             className={`px-3 py-1 rounded-full text-xs md:text-sm lg:text-base font-neuton ${
                                 status === "AVAILABLE" ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"
                             }`}
                         >
-      {formatStatus(status)}
-    </span>
-                    ) : (
-                        lender && (
-                            <p className="font-cotta text-xs md:text-sm text-[#4B3935] text-center w-full line-clamp-2 leading-tight">
-                                owned by <button className="underline text-[#2C365A] underline-offset-2 decoration-[#9C8F7F]/40" onClick={()=>navigate(`/user/${lender}`)}>@{lender}</button>
-                            </p>
-                        )
-                    )}
+                            {formatStatus(status)}
+                        </span>
+                    ) : lender ? (
+                        <p className="font-cotta text-xs md:text-sm text-[#4B3935] text-center w-full line-clamp-2 leading-tight">
+                            owned by <button className="underline text-[#2C365A] underline-offset-2 decoration-[#9C8F7F]/40" onClick={()=>navigate(`/user/${lender}`)}>@{lender}</button>
+                        </p>
+                    ) : null}
 
                     {!status && !lender && !isInBorrowedCollection && resolvedUsername && !pending && (
                         <BorrowBookForm
