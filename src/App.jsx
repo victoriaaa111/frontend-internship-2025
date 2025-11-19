@@ -36,7 +36,7 @@ function App() {
                 </ProtectedRoute>}></Route>
 
           <Route path="/user/:username" element={
-              <ProtectedRoute requiredRole="USER">
+              <ProtectedRoute >
                   <OtherProfile />
               </ProtectedRoute>}>
           </Route>

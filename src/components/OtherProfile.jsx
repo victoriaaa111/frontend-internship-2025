@@ -22,6 +22,23 @@ export default function OtherProfile() {
     const [flash, setFlash] = useState({ message: "", type: "" });
     const [books, setBooks] = useState([]);
     const [userNotFound, setUserNotFound] = useState(false);
+    const [currentUserRole, setCurrentUserRole] = useState(null);
+
+    const getCurrentUserRole = useCallback(async () => {
+        try {
+            const response = await csrfFetch(`${API_BASE}/api/user/me`);
+            if (response.ok) {
+                const userData = await response.json();
+                setCurrentUserRole(userData.role);
+            }
+        } catch (error) {
+            console.error("Error fetching user role:", error);
+        }
+    }, []);
+
+    useEffect(() => {
+        getCurrentUserRole();
+    }, [getCurrentUserRole]);
 
     const checkIfOwnProfile = useCallback(async () => {
         if (!resolvedUsername) return false;
@@ -177,7 +194,7 @@ export default function OtherProfile() {
                                     cover={book.cover}
                                     title={book.title}
                                     author={book.author}
-                                    resolvedUsername={resolvedUsername}
+                                    resolvedUsername={currentUserRole === 'ADMIN' ? null : resolvedUsername}
                                     onBorrowSuccess={handleBorrowSuccess}
                                     pending={book.pending}
                                 />
