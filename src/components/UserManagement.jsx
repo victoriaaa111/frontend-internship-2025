@@ -176,10 +176,7 @@ export default function UserManagement() {
                                         Username
                                     </th>
                                     <th className="px-6 py-4 text-left font-fraunces font-semibold text-[#4B3935] text-sm">
-                                        Books in Collection
-                                    </th>
-                                    <th className="px-6 py-4 text-left font-fraunces font-semibold text-[#4B3935] text-sm">
-                                        Borrowed Books
+                                        Role
                                     </th>
                                     <th className="px-6 py-4 text-left font-fraunces font-semibold text-[#4B3935] text-sm">
                                         Action
@@ -210,10 +207,7 @@ export default function UserManagement() {
                                                 </button>
                                             </td>
                                             <td className="px-6 py-4 font-fraunces text-[#4B3935] text-sm">
-                                                {user.booksInCollection || 0}
-                                            </td>
-                                            <td className="px-6 py-4 font-fraunces text-[#4B3935] text-sm">
-                                                {user.borrowedBooks || 0}
+                                                {user.role}
                                             </td>
                                             <td className="px-6 py-4">
                                                 <button
@@ -258,11 +252,7 @@ export default function UserManagement() {
                                     <div className="grid grid-cols-2 gap-3">
                                         <div>
                                             <div className="text-xs font-fraunces text-[#4B3935]/60 mb-1">Books in Collection</div>
-                                            <div className="font-fraunces text-[#4B3935] text-sm">{user.booksInCollection || 0}</div>
-                                        </div>
-                                        <div>
-                                            <div className="text-xs font-fraunces text-[#4B3935]/60 mb-1">Borrowed Books</div>
-                                            <div className="font-fraunces text-[#4B3935] text-sm">{user.borrowedBooks || 0}</div>
+                                            <div className="font-fraunces text-[#4B3935] text-sm">{user.role}</div>
                                         </div>
                                     </div>
                                     <div className="pt-2">
