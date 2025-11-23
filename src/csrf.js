@@ -32,7 +32,6 @@ export const initCsrf = async (baseUrl = `${API_BASE}`) => {
 export const csrfFetch = async (url, options = {}) => {
     const { headers = {}, body, credentials, ...rest } = options;
 
-    // Get CSRF token
     let token = getCsrfTokenFromCookie();
     if (!token) {
         let inferredBase = undefined;
@@ -45,7 +44,6 @@ export const csrfFetch = async (url, options = {}) => {
         token = getCsrfTokenFromCookie();
     }
 
-    // Prepare headers with CSRF token
     const finalHeaders = {
         'Content-Type': 'application/json',
         [CSRF_HEADER]: token || '',
@@ -60,13 +58,11 @@ export const csrfFetch = async (url, options = {}) => {
         ...rest,
     };
 
-    // Make initial request
     let response = await fetch(url, finalOptions);
 
     // Handle 401 Unauthorized
     if (response.status === 403 || response.status === 401) {
         try {
-            // Try to refresh token
             const refreshResponse = await fetch(
                 `${API_BASE}/api/v1/auth/refreshtoken`,
                 {
@@ -79,7 +75,6 @@ export const csrfFetch = async (url, options = {}) => {
             );
 
             if (refreshResponse.ok) {
-                // Retry original request with new token
                 const newToken = getCsrfTokenFromCookie();
 
                 if (!newToken) {

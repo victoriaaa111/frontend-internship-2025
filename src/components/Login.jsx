@@ -5,7 +5,7 @@ import OAuthButton from "./OAuthButton.jsx";
 import { useEffect } from "react";
 import DOMPurify from 'dompurify';
 const MAX_ATTEMPTS = 5;
-const DEV_FAKE_SESSION = true; // set to false in production
+const DEV_FAKE_SESSION = true;
 
 const API_BASE = import.meta.env.VITE_API_BASE;
 
@@ -49,13 +49,11 @@ export default function Login() {
 
 
   const validatePassword = (password) => {
-    // Check for minimum length and complexity
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,128}$/;
     return passwordRegex.test(password);
   };
 
   const validateUsername = (username) => {
-    // Allow only alphanumeric and safe characters
     const usernameRegex = /^[a-zA-Z0-9_-]+$/;
     return usernameRegex.test(username) && username.length >= 5 && username.length <= 30;
   };
