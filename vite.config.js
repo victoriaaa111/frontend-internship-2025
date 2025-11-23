@@ -8,6 +8,10 @@ export default defineConfig({
   tailwindcss()],
   server:{
     port:3000,
+    headers: {
+      'X-Frame-Options': 'DENY',
+      'X-Content-Type-Options': 'nosniff'
+    }
   },
   base: '/'
 })
