@@ -1,9 +1,8 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Cotta&family=Neuton:wght@400;700&display=swap');
 
 @font-face {
     font-family: 'Cotta';
-    src: url('./assets/fonts/cotta-free.otf') format('opentype');
+    src: url('./assets/fonts/Cotta.ttf') format('truetype');
     font-weight: 400;
     font-style: normal;
 }

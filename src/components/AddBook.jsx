@@ -26,7 +26,7 @@ export default function AddBook({ onClose, onAdded }) {
 
     const [error, setError] = useState('');
     const [title, setTitle] = useState('');
-    const [status, setStatus] = useState('Available'); // UI value; API expects uppercased
+    const [status, setStatus] = useState('Available');
     const [open, setOpen] = useState(false);
     const [searchResults, setSearchResults] = useState([]);
     const [showResults, setShowResults] = useState(false);
@@ -60,8 +60,8 @@ export default function AddBook({ onClose, onAdded }) {
 
         try {
             const payload = {
-                googleBookId: sanitizeInput(selectedBook.googleBookId), // from your search API
-                status: status.toUpperCase(),            // Swagger expects "AVAILABLE"/"BORROWED"
+                googleBookId: sanitizeInput(selectedBook.googleBookId),
+                status: status.toUpperCase(),
             };
 
             const res = await csrfFetch(CREATE_BOOK_URL, {
@@ -80,8 +80,7 @@ export default function AddBook({ onClose, onAdded }) {
                 throw new Error(msg || 'Failed to add book');
             }
 
-            const created = await res.json(); // matches the 200 example (userBookId, title, author[], imageLink, etc.)
-            // notify parent so it can show success and optionally update UI list
+            const created = await res.json();
             onAdded?.(created);
             onClose();
         } catch (err) {
@@ -101,7 +100,16 @@ export default function AddBook({ onClose, onAdded }) {
 
     const handleImageError = (e) => { e.target.src = defaultBookImage; };
 
-    const processBookData = (book) => ({ ...book, imageLink: book.imageLink || defaultBookImage });
+    const processBookData = (book) => {
+        const raw = book.imageLink || defaultBookImage;
+
+        const safeImage = raw?.replace(/^http:\/\//, 'https://');
+
+        return {
+            ...book,
+            imageLink: safeImage,
+        };
+    };
 
     const handleSearch = async () => {
         if (!title.trim()) return;

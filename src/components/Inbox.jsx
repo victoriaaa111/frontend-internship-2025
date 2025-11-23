@@ -90,7 +90,6 @@ export default function Inbox() {
         setIsInboxOpen(false); // Close the dropdown when opening modal
     };
 
-    // Fetch incoming borrow requests
     const fetchNotifications = async (page = 1, size = 3) => {
         setIsLoadingNotifications(true);
         try {
@@ -104,7 +103,6 @@ export default function Inbox() {
 
             const data = await response.json();
 
-            // Transform the API response to match our component structure
             const transformedNotifications = (data.items || [])
                 .filter(item => item.status === 'PENDING')
                 .map(item => ({
@@ -112,8 +110,8 @@ export default function Inbox() {
                     type: 'borrow_request',
                     username: item.borrowerUsername,
                     bookTitle: item.bookTitle,
-                    meetingDate: item.meetingTime.split('T')[0], // date only
-                    meetingTime: item.meetingTime.split('T')[1].substring(0, 5), // HH:MM
+                    meetingDate: item.meetingTime.split('T')[0],
+                    meetingTime: item.meetingTime.split('T')[1].substring(0, 5),
                     location: item.location,
                     dueDate: item.dueDate,
                     requestedAt: item.createdAt

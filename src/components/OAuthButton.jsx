@@ -3,7 +3,6 @@ const API_BASE = import.meta.env.VITE_API_BASE || 'https://borrow-book-backend.o
 const GOOGLE_AUTH_URL = `${API_BASE}/oauth2/authorization/google`;
 export default function OAuthButton({type}) {
   const handleGoogleLogin = () => {
-    // Simply redirect to Google OAuth URL
     window.location.href = GOOGLE_AUTH_URL;
   };
 

@@ -135,15 +135,19 @@ export default function ProfilePage() {
 
       const data = await response.json();
 
+      const normalizeImage = (url) =>
+          url ? url.replace(/^http:\/\//, 'https://') : null;
+
       const mapped = data.map((b, index) => ({
         key: b.userBookId ?? `temp-${index}`,
         userBookId: b.userBookId ?? null,
-        cover: b.imageLink,
+        cover: normalizeImage(b.imageLink),
         title: b.title,
         author: Array.isArray(b.authors) ? b.authors.join(", ") : b.authors,
         status: b.status || "AVAILABLE",
         lender: collectionType === "borrowedBooks" ? b.ownerUsername : null,
       }));
+
 
       setBooks(mapped);
     } catch (error) {
@@ -210,7 +214,6 @@ export default function ProfilePage() {
         type: "success",
       });
 
-      // Clear flash message after delay
       setTimeout(() => setFlash({ message: "", type: "" }), 3000);
     } catch (err) {
       console.error("Delete error:", err);
