@@ -1,13 +1,19 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import tailwindcss from "@tailwindcss/vite";
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(),
-  tailwindcss()],
-  server:{
-    port:3000,
+  plugins: [react()],
+  server: {
+    port: 3000,
+    open: true,
+    strictPort: true,
+    headers: {
+      "X-Content-Type-Options": "nosniff"
+    }
   },
-  base: '/'
-})
+  preview: {
+    headers: {
+      "X-Content-Type-Options": "nosniff"
+    }
+  }
+});
