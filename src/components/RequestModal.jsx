@@ -23,7 +23,6 @@ const RequestModal = ({ request, isOpen, onClose, onAccept, onReject }) => {
     const formatRequestDate = (dateString) => {
         const date = new Date(dateString);
         
-        // Don't add any hours - use the timestamp as-is from backend
         return date.toLocaleDateString('en-US', {
             month: 'short',
             day: 'numeric',

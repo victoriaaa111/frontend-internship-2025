@@ -143,7 +143,6 @@ export default function Signup() {
             const data = await res.json().catch(() => ({}));
             if (!res.ok) throw new Error(data?.message || "Invalid verification code");
 
-            // Clear sessionId since it's no longer needed
             setSessionId('');
 
             const response =  await csrfFetch(`${API_BASE}/api/user/me`);

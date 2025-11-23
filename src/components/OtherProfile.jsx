@@ -80,15 +80,19 @@ export default function OtherProfile() {
 
             const data = await response.json();
 
+            const normalizeImage = (url) =>
+                url ? url.replace(/^http:\/\//, "https://") : null;
+
             const mapped = data.map((b, index) => ({
-                key: index,
+                key: b.userBookId ?? `temp-${index}`,
                 userBookId: b.userBookId,
-                cover: b.imageLink,
+                cover: normalizeImage(b.imageLink),
                 title: b.title,
                 author: Array.isArray(b.authors) ? b.authors.join(", ") : b.authors,
                 status: b.status,
                 pending: b.pending
             }));
+
 
             setBooks(mapped);
         } catch {
