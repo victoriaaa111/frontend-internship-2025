@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 const API_BASE = import.meta.env.VITE_API_BASE;
 import { csrfFetch } from '../csrf.js';
 import AdminNavDropdown from './AdminNavDropdown.jsx';
+import Logout from './Logout.jsx';
 
 const StatusDropdown = ({ value, onChange }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -89,7 +90,7 @@ export default function AdminPanel() {
     const [actionLoading, setActionLoading] = useState(null);
     const [viewMode, setViewMode] = useState('table');
     const [error, setError] = useState('');
-
+    const [showLogout, setShowLogout] = useState(false);
     // Pagination state
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize] = useState(10);
@@ -218,6 +219,7 @@ export default function AdminPanel() {
         );
     }
 
+
     return (
         <div className="min-h-screen bg-[#F6F2ED] p-4 sm:p-6">
             <div className="max-w-7xl mx-auto">
@@ -231,7 +233,16 @@ export default function AdminPanel() {
                             Manage borrow requests
                         </p>
                     </div>
-                    <AdminNavDropdown />
+                    <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+                        <button
+                            className="bg-[#2C365A] px-5 py-2 rounded-full shadow-[0_2px_3px_#9C8F7F] hover:shadow-[0_4px_4px_#9C8F7F] transition font-fraunces-light text-[#EEE8DF] text-sm sm:text-base cursor-pointer"
+                            onClick={() => setShowLogout(true)}
+                        >
+                            Log out
+                        </button>
+                        <AdminNavDropdown />
+                    </div>
+
                 </div>
 
                 {/* Error Message */}
@@ -531,6 +542,7 @@ export default function AdminPanel() {
                     </div>
                 </div>
             )}
+            {showLogout && <Logout onClose={() => setShowLogout(false)} />}
         </div>
     );
 }

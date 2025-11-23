@@ -1,4 +1,3 @@
-// src/components/ProtectedRoute.jsx
 import React, { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { csrfFetch} from '../csrf.js';
@@ -6,7 +5,7 @@ import { csrfFetch} from '../csrf.js';
 const API_BASE = import.meta.env.VITE_API_BASE;
 
 const ProtectedRoute = ({ children, requiredRole }) => {
-    const [isAuthenticated, setIsAuthenticated] = useState(null); // null = loading
+    const [isAuthenticated, setIsAuthenticated] = useState(null);
     const [userRole, setUserRole] = useState(null);
 
     useEffect(() => {
@@ -31,7 +30,6 @@ const ProtectedRoute = ({ children, requiredRole }) => {
         checkAuth();
     }, []);
 
-    // Show loading while checking authentication
     if (isAuthenticated === null) {
         return (
             <div className="min-h-screen bg-[#d9d1c0] flex justify-center items-center">
