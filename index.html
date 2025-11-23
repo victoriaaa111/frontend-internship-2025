@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="Content-Security-Policy" content="
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="
       default-src 'self';
       script-src 'self';
       style-src 'self' 'unsafe-inline';
@@ -11,18 +11,18 @@
       http://localhost:8080
       https://books.google.com
       https://books.googleapis.com;
-      connect-src 'self' http://localhost:8080 ws://localhost:* https://api.borrowbook.me;
+      connect-src 'self' http://localhost:8080 https://api.borrowbook.me;
       font-src 'self';
       form-action 'self';
       frame-ancestors 'none';
       base-uri 'self';
     ">
-    <link rel="icon" type="image/svg+xml" href="public/BB-link.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BorrowBook</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+  <link rel="icon" type="image/svg+xml" href="public/BB-link.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BorrowBook</title>
+</head>
+<body>
+<div id="root"></div>
+<script type="module" src="/src/main.jsx"></script>
+</body>
 </html>
