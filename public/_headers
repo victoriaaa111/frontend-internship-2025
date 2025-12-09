@@ -1,0 +1,13 @@
+/*
+  # Clickjacking protection
+  X-Frame-Options: DENY
+
+  # fixes "X-Content-Type-Options Header Missing"
+  X-Content-Type-Options: nosniff
+
+  # Privacy
+  Referrer-Policy: strict-origin-when-cross-origin
+
+  # Lock down some browser features
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+
