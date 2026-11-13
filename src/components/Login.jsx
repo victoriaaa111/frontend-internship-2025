@@ -279,7 +279,7 @@ export default function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="hover:shadow-[0_2px_6px_#9C8F7F] transition duration-200 cursor-pointer w-1/2 bg-[#4B3935] text-[#F6F2ED] text-sm sm:text-lg py-2 rounded-md font-fraunces-light mx-auto block mb-4"
+            className={`${loading ? 'opacity-60 cursor-not-allowed' : 'hover:shadow-[0_2px_6px_#9C8F7F] cursor-pointer'} transition duration-200 w-1/2 bg-[#4B3935] text-[#F6F2ED] text-sm sm:text-lg py-2 rounded-md font-fraunces-light mx-auto block mb-4`}
           >
             {loading ? "Logging in..." : "Login"}
           </button>
@@ -306,6 +306,19 @@ export default function Login() {
           <div className="fixed inset-0 z-50 flex items-center justify-center">
             <div className="absolute inset-0 backdrop-blur-sm bg-black/30" />
             <div className="relative z-50 bg-[#D9D9D9] p-8 rounded-lg shadow-xl w-[90%] max-w-[450px]">
+              <button
+                  type="button"
+                  aria-label="Close"
+                  onClick={() => {
+                    setShowVerification(false);
+                    setVerificationCode('');
+                    setAttemptsLeft(MAX_ATTEMPTS);
+                    setError('');
+                  }}
+                  className="absolute top-3 right-4 text-2xl leading-none text-[#4B3935] hover:text-[#9C8F7F] transition duration-200 cursor-pointer"
+              >
+                &times;
+              </button>
               {/* Error */}
               {error && (
                   <div className="bg-red-50 border text-red-700 px-4 py-3 rounded-lg mb-4 text-center">
