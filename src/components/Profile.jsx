@@ -282,9 +282,6 @@ export default function ProfilePage() {
                 <p className="font-fraunces-light text-base md:text-lg lg:text-xl text-[#4B3935]">
                   @{username || "Loading..."}
                 </p>
-                <p className="font-fraunces text-sm md:text-base lg:text-lg text-[#2C365A]">
-                  1111 friends
-                </p>
               </div>
 
               <button
