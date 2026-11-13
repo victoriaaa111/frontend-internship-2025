@@ -57,6 +57,7 @@ export default function Signup() {
     const [verifying, setVerifying] = useState(false);
 
     const [error, setError] = useState('');
+    const [submitting, setSubmitting] = useState(false);
 
     const handleChange = (e) => {
         setFormData(
@@ -86,6 +87,7 @@ export default function Signup() {
             return;
         }
 
+        setSubmitting(true);
         try {
 
             const response = await csrfFetch(`${API_BASE}/api/v1/auth/register`, {
@@ -124,6 +126,8 @@ export default function Signup() {
             setTimeout(() => {
                 setError("");
             }, 4500)
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -186,6 +190,19 @@ export default function Signup() {
                 <div className="fixed inset-0 z-50 flex items-center justify-center">
                     <div className="absolute inset-0 backdrop-blur-sm bg-black/30" />
                     <div className="relative z-50 bg-[#D9D9D9] p-8 rounded-lg shadow-xl w-[90%] max-w-[450px]">
+                        <button
+                            type="button"
+                            aria-label="Close"
+                            onClick={() => {
+                                setShowVerification(false);
+                                setVerificationCode('');
+                                setAttemptsLeft(MAX_ATTEMPTS);
+                                setError('');
+                            }}
+                            className="absolute top-3 right-4 text-2xl leading-none text-[#4B3935] hover:text-[#9C8F7F] transition duration-200 cursor-pointer"
+                        >
+                            &times;
+                        </button>
                         {/* Error */}
                         {error && (
                             <div className="bg-red-50 border text-red-700 px-4 py-3 rounded-lg mb-4 text-center">
@@ -330,9 +347,9 @@ export default function Signup() {
                             </div>
                         </div>
                     </div>
-                    <button type="submit" className="max-w-45 w-full bg-[#4B3935] font-fraunces-light text-[#F6F2ED] rounded-md mt-4 text-base py-2
-                md:max-w-[228px] md:text-xl md:mt-6 cursor-pointer hover:shadow-[0_2px_6px_#9C8F7F] transition duration-200">
-                        Create Account
+                    <button type="submit" disabled={submitting} className={`${submitting ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer hover:shadow-[0_2px_6px_#9C8F7F]'} max-w-45 w-full bg-[#4B3935] font-fraunces-light text-[#F6F2ED] rounded-md mt-4 text-base py-2
+                md:max-w-[228px] md:text-xl md:mt-6 transition duration-200`}>
+                        {submitting ? 'Creating...' : 'Create Account'}
                     </button>
                     <div className="flex items-center my-4 w-full md:w-[400px] lg:w-[350px]">
                         <hr className="flex-grow border-[#4B3935]" />

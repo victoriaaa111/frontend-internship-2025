@@ -174,9 +174,6 @@ export default function OtherProfile() {
                     <p className="font-fraunces-light text-base md:text-lg lg:text-xl text-[#F6F2ED]">
                         @{resolvedUsername|| "Loading..."}
                     </p>
-                    <p className="font-fraunces-light text-sm md:text-base lg:text-lg text-[#EEE8DF]">
-                        1111 friends
-                    </p>
                 </div>
 
                 {/* Books Section */}
